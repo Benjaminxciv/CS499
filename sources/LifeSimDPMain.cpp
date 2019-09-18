@@ -5,7 +5,7 @@
 // Author: Dr. Rick Coleman
 // Date: January 2017
 //===================================================================================
-//junk
+
 #include <iostream>
 #include "LifeSimDataParser.h"
 using namespace std;
