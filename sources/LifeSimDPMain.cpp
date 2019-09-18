@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include "LifeSimDataParser.h"
-//ghfghgf
 using namespace std;
 
 #define DATAFILE "LifeSimulation01.xml"
