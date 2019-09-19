@@ -13,7 +13,7 @@ using namespace std;
 
 #define DATAFILE "LifeSimulation01.xml"
 
-int main()
+/*int main()
 {
 	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
@@ -262,4 +262,4 @@ int main()
 		}
 	}
 	return 0;
-}
+}*/
