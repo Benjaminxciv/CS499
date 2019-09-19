@@ -5,18 +5,11 @@
 
 #ifndef GRID_H
 #define GRID_H
-
-#include "boulder.h"
-#include "plant.h"
-#include "predator.h"
-#include "dmco.h"
+#include "environment_object.h"
 
 struct grid_cell
 {
-	boulder* boulder_content;
-	plant* plant_content;
-	predator* predator_content;
-	dmco* dmco_content;
+	environment_object* environ_obj;
 	grid_cell();
 	~grid_cell();
 };
@@ -30,8 +23,8 @@ class grid
 		grid(int, int);
 		~grid();
 	public:
-		void get_cell_contents(int, int, boulder** = nullptr, plant** = nullptr, predator** = nullptr, dmco** = nullptr);
-		void set_cell_contents(int, int, boulder* = nullptr, plant* = nullptr, predator* = nullptr, dmco* = nullptr);
+		environment_object* get_cell_contents(int, int);
+		void set_cell_contents(int, int, environment_object*);
 		static grid& get_instance(int, int);
 };
 
