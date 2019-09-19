@@ -23,3 +23,13 @@ void environment_object::set_location(int set_x_loc, int set_y_loc)
     this->location->x_loc = set_x_loc;
     this->location->y_loc = set_y_loc;
 }
+
+void environment_object::act()
+{
+
+}
+
+std::string environment_object::get_type()
+{
+    return "";
+}
