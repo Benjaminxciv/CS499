@@ -7,7 +7,7 @@ grid_cell::grid_cell()
 
 grid_cell::~grid_cell()
 {
-
+//test
 }
 
 grid::grid(int x_size, int y_size)
