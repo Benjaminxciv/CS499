@@ -1,7 +1,7 @@
 #include <iostream>
-#include <grid.h>
-#include <boulder.h>
-#include <LifeSimDataParser.h>
+#include "grid.h"
+#include "boulder.h"
+#include "LifeSimDataParser.h"
 
 #define DATAFILE "LifeSimulation01.xml"
 
@@ -134,7 +134,7 @@ int main()
     boulder* bould = new boulder(1,1);
     sim_grid.set_cell_contents(1, 1, bould);
     boulder* bould2 = nullptr;
-    sim_grid.get_cell_contents(1,1,&bould2);
+    //sim_grid.get_cell_contents(1,1,&bould2);
     point* p = bould2->get_loc();
     std::cout << p->x_loc << std::endl << p->y_loc << std::endl;
     std::cin.get();

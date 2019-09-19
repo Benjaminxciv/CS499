@@ -1,6 +1,8 @@
 #ifndef ENVIRONMENT_OBJECT_H
 #define ENVIRONMENT_OBJECT_H
 
+#include <string>
+
 struct point
 {
     int x_loc;
@@ -17,8 +19,8 @@ class environment_object
         
         point* get_loc();
         void set_location(int, int); 
-
-
+        virtual void act();
+        virtual std::string get_type();
 };
 
 #endif
