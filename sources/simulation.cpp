@@ -2,10 +2,10 @@
 #include "grid.h"
 #include "boulder.h"
 #include "LifeSimDataParser.h"
-
+#include "plant.h"
 #define DATAFILE "LifeSimulation01.xml"
 
-int main()
+/*int main()
 {
     int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
@@ -140,6 +140,9 @@ int main()
 	}
     //point* p = bould2->get_loc();
     //std::cout << p->x_loc << std::endl << p->y_loc << std::endl;
+
+	plant* pt = new plant::seed_pod_values();
+
     std::cin.get();
     return 0;
-}
+}*/
