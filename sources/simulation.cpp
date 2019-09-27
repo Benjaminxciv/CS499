@@ -1,4 +1,5 @@
 #include "simulation.h"
+#include "stdlib.h"
 
 #define DATAFILE "LifeSimulation01.xml"
 
@@ -33,9 +34,9 @@ void simulation::run_sim()
 
     // Call all the simple get functions and test the results
 	// World info functions
-	dVal = lsdp->getWorldWidth();
+	int x_size = lsdp->getWorldWidth();
 
-	dVal = lsdp->getWorldHeight();
+	int y_size = lsdp->getWorldHeight();
 
 	// Plant info functions
 	iVal = lsdp->getInitialPlantCount();
@@ -142,16 +143,18 @@ void simulation::run_sim()
 		}
 	}
 
-    grid& sim_grid = grid::get_instance(10,10);
-    boulder* bould = new boulder(1,1);
-    sim_grid.set_cell_contents(1, 1, bould);
-    environment_object* empty_obj = sim_grid.get_cell_contents(1,1);
-	if(empty_obj->get_type() == "boulder")
+    grid& sim_grid = grid::get_instance(x_size,y_size);
+	while(1)
 	{
-		std::cout << "Got a boulder!" << endl;
+    	for(int x = 0; x < x_size; x++)
+		{
+			for(int y = 0; y < y_size; y++)
+			{
+				sim_grid.get_cell_contents(x, y)->act();
+			}
+		}
+		_sleep(this->tick_speed);
 	}
-    //point* p = bould2->get_loc();
-    //std::cout << p->x_loc << std::endl << p->y_loc << std::endl;
     std::cin.get();
 }
 
