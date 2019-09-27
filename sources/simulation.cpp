@@ -5,7 +5,7 @@
 
 simulation::simulation()
 {
-	this->tick_speed = 1;
+	this->tick_speed = 1000;
 }
 
 simulation::~simulation()
@@ -16,6 +16,27 @@ simulation::~simulation()
 void simulation::set_tick_speed(int new_tick_speed)
 {
 	this->tick_speed = new_tick_speed;
+}
+
+void simulation::increase_tick_speed()
+{
+	switch(this->tick_speed)
+	{
+		case x1:
+			this->set_tick_speed(1000 / x10);
+			break;
+		case x10:
+			this->set_tick_speed(1000 / x50);
+			break;
+		case x50:
+			this->set_tick_speed(1000 / x100);
+			break;
+		case x100:
+			this->set_tick_speed(1000 / x1);
+			break;
+		default:
+			break;
+	}
 }
 
 void simulation::run_sim()
