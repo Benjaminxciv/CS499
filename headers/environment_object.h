@@ -14,6 +14,7 @@ class environment_object
     private:
         point* location;
     public:
+        environment_object();
         environment_object(int, int);
         ~environment_object();
         
