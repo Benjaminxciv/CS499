@@ -19,12 +19,7 @@ void simulation::set_tick_speed(int new_tick_speed)
 
 void simulation::run_sim()
 {
-	
-}
-
-int main()
-{
-    int iVal;
+	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
 	double dVal;
 	int xPos, yPos;
@@ -158,5 +153,11 @@ int main()
     //point* p = bould2->get_loc();
     //std::cout << p->x_loc << std::endl << p->y_loc << std::endl;
     std::cin.get();
+}
+
+int main()
+{
+    simulation* sim = new simulation();
+	sim->run_sim();
     return 0;
 }
