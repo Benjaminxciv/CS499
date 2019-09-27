@@ -1,9 +1,26 @@
-#include <iostream>
-#include "grid.h"
-#include "boulder.h"
-#include "LifeSimDataParser.h"
+#include "simulation.h"
 
 #define DATAFILE "LifeSimulation01.xml"
+
+simulation::simulation()
+{
+	this->tick_speed = 1;
+}
+
+simulation::~simulation()
+{
+
+}
+
+void simulation::set_tick_speed(int new_tick_speed)
+{
+	this->tick_speed = new_tick_speed;
+}
+
+void simulation::run_sim()
+{
+	
+}
 
 int main()
 {
