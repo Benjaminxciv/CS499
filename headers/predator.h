@@ -1,3 +1,10 @@
+/*
+Name: predator.h
+Purpose: Header file for predators.
+Last edit: 09-29-2019
+Last editor: MG
+*/
+
 #ifndef PREDATOR_H
 #define PREDATOR_H
 
@@ -10,6 +17,7 @@ class predator : public environment_object
         predator(int, int);
         ~predator();
         std::string get_type();
+        std::string print_self();
 };
 
 #endif

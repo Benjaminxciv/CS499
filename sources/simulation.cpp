@@ -1,3 +1,11 @@
+/*
+Name: simulation.cpp
+Purpose: Acts as the control flow for Life Simulation
+Last edit: 09-29-19
+Last editor: MG
+*/
+
+
 #include "simulation.h"
 
 #define DATAFILE "LifeSimulation01.xml"
@@ -142,14 +150,28 @@ void simulation::run_sim()
 		}
 	}
 
-    grid& sim_grid = grid::get_instance(10,10);
-    boulder* bould = new boulder(1,1);
-    sim_grid.set_cell_contents(1, 1, bould);
-    environment_object* empty_obj = sim_grid.get_cell_contents(1,1);
-	if(empty_obj->get_type() == "boulder")
+
+
+/*
+Purpose: test code used to prove that the virtual print_self() fx works.
+Trace: Traces to Epic 2, acceptance criteria 2
+*/
+/*  grid& sim_grid = grid::get_instance(10,10);
+    predator* plan = new predator(5,5);
+    sim_grid.set_cell_contents(5, 5, plan);
+    environment_object* empty_obj = sim_grid.get_cell_contents(5,5);
+	for(int i=0; i< iPredatorCount; i++)
 	{
-		std::cout << "Got a boulder!" << endl;
+		if(empty_obj->get_type() == "predator" && empty_obj->print_self() == "*")
+		{
+			std::cout << "Got a predator!" << endl;
+			lsdp->getPredatorData(&xPos, &yPos, &energy, genotype);
+			cout << "Predator " << i << " (" << xPos << ", " << yPos << ") energy level = " << energy << ", genotype = " << genotype << endl;
+			std::cout << "* : " << xPos << ", " << yPos << endl;
+		}
 	}
+*/
+
     //point* p = bould2->get_loc();
     //std::cout << p->x_loc << std::endl << p->y_loc << std::endl;
     std::cin.get();
@@ -157,7 +179,9 @@ void simulation::run_sim()
 
 int main()
 {
-    simulation* sim = new simulation();
+
+ simulation* sim = new simulation();
 	sim->run_sim();
+  
     return 0;
 }

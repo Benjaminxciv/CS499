@@ -1,3 +1,11 @@
+/*
+Name: environment_object.h
+Purpose: Header file for environment_object. 
+Last edit: 
+Last editor: 
+*/
+
+
 #ifndef ENVIRONMENT_OBJECT_H
 #define ENVIRONMENT_OBJECT_H
 
@@ -21,6 +29,7 @@ class environment_object
         void set_location(int, int); 
         virtual void act();
         virtual std::string get_type();
+        virtual std::string print_self();
 };
 
 #endif
