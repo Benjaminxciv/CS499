@@ -1,4 +1,5 @@
 #include "grid.h"
+#include <iostream>
 
 grid_cell::grid_cell()
 {
@@ -56,4 +57,64 @@ void grid::set_cell_contents(int x_loc, int y_loc, environment_object* environ_o
 {
     grid_cell* cell = &(this->cells[x_loc*this->height+y_loc]);
     cell->environ_obj = environ_obj;
+}
+
+//Name: grid::print_gridle
+//Purpose: calls print_cols and print_rows functions 
+//Parameters: 
+    //width: int
+        //width of enviroment boundary
+    //height: int
+        //height of enviroment boundary
+//Last edit: 09/29/19
+void grid::print_grid(int width , int height)
+{
+    print_cols(width);
+    print_rows(width, height);
+    print_cols(width);  
+}
+
+//Name: grid::print_cols
+//Purpose: print the column header of the simulation grid from given width boundary
+//Parameters: 
+    //width: int
+        //width of enviroment boundary
+//Last edit: 09/29/19
+void grid::print_cols(int width)
+{
+    std::string column_space =  "     ";
+    std::cout << column_space;
+    for(int i = 1; i < (width/25)+1; i++)
+    {
+        std::cout.fill('0');
+        std::cout.width(3);
+        std::cout << i*25 << " ";
+    }
+    std::cout << std::endl;
+}
+
+//Name: grid::print_rows
+//Purpose: print the rows of the simulation grid
+//Parameters: 
+    //width: int
+        //width of enviroment boundary
+    //height: int
+        //height of enviroment boundary
+//Last edit: 09/29/19
+void grid::print_rows(int width,int height)
+{
+    for (int j = 0; j < (height/25)+1; j++)
+    {   
+        std::cout.fill('0');
+        std::cout.width(3);
+        std::cout << j*25;
+
+        for(int k = 0; k < (width/25); k++)
+        {
+            std::cout.fill(' ');
+            std::cout.width(4);
+            std::cout << "*";
+        } 
+        std::cout << std::endl;
+    }      
 }
