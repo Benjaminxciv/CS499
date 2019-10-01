@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include "grid.h"
 #include "boulder.h"
@@ -5,9 +6,31 @@
 #include "plant.h"
 #define DATAFILE "LifeSimulation01.xml"
 
-/*int main()
+
+=======
+#include "simulation.h"
+
+#define DATAFILE "LifeSimulation01.xml"
+
+simulation::simulation()
 {
-    int iVal;
+	this->tick_speed = 1;
+}
+
+simulation::~simulation()
+
+{
+
+}
+
+void simulation::set_tick_speed(int new_tick_speed)
+{
+	this->tick_speed = new_tick_speed;
+}
+
+void simulation::run_sim()
+{
+	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
 	double dVal;
 	int xPos, yPos;
@@ -16,14 +39,19 @@
 	char genotype[16];
 	int height;
 
+	int world_height;
+	int world_width;
+
 	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
 	lsdp->initDataParser(DATAFILE);
 
     // Call all the simple get functions and test the results
 	// World info functions
-	dVal = lsdp->getWorldWidth();
-
-	dVal = lsdp->getWorldHeight();
+	world_height = lsdp->getWorldWidth();
+	world_width = lsdp->getWorldHeight();
+	grid& sim_grid = grid::get_instance(world_height,world_width);
+	
+	sim_grid.print_grid();
 
 	// Plant info functions
 	iVal = lsdp->getInitialPlantCount();
@@ -130,7 +158,7 @@
 		}
 	}
 
-    grid& sim_grid = grid::get_instance(10,10);
+   
     boulder* bould = new boulder(1,1);
     sim_grid.set_cell_contents(1, 1, bould);
     environment_object* empty_obj = sim_grid.get_cell_contents(1,1);
@@ -144,5 +172,11 @@
 	plant* pt = new plant::seed_pod_values();
 
     std::cin.get();
+}
+
+int main()
+{
+    simulation* sim = new simulation();
+	sim->run_sim();
     return 0;
-}*/
+}
