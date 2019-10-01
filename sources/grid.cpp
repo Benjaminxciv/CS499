@@ -52,26 +52,32 @@ environment_object* grid::get_cell_contents(int x_loc, int y_loc)
         //Y location of cell to access
     //environ_obj: environment_object*
         //Pointer to environment_object that will be put in the cell
-//Last edit: 09/18/19
+//Last edit:
+ /*
+BP 10/1/19
+*/
 void grid::set_cell_contents(int x_loc, int y_loc, environment_object* environ_obj)
 {
     grid_cell* cell = &(this->cells[x_loc*this->height+y_loc]);
     cell->environ_obj = environ_obj;
 }
 
-//Name: grid::print_gridle
+//Name: grid::print_grid
 //Purpose: calls print_cols and print_rows functions 
 //Parameters: 
     //width: int
         //width of enviroment boundary
     //height: int
         //height of enviroment boundary
-//Last edit: 09/29/19
-void grid::print_grid(int width , int height)
+//Last edit:
+/*
+BP 10/1/19
+*/
+void grid::print_grid()
 {
-    print_cols(width);
-    print_rows(width, height);
-    print_cols(width);  
+    print_cols();
+    print_rows();
+    print_cols();  
 }
 
 //Name: grid::print_cols
@@ -79,16 +85,20 @@ void grid::print_grid(int width , int height)
 //Parameters: 
     //width: int
         //width of enviroment boundary
-//Last edit: 09/29/19
-void grid::print_cols(int width)
+//Last edit:
+/*
+BP 10/1/19
+*/
+void grid::print_cols()
 {
+    int du_scale = 25;
     std::string column_space =  "     ";
     std::cout << column_space;
-    for(int i = 1; i < (width/25)+1; i++)
+    for(int i = 1; i < (this->width/du_scale)+1; i++)
     {
         std::cout.fill('0');
         std::cout.width(3);
-        std::cout << i*25 << " ";
+        std::cout << i*du_scale << " ";
     }
     std::cout << std::endl;
 }
@@ -101,15 +111,16 @@ void grid::print_cols(int width)
     //height: int
         //height of enviroment boundary
 //Last edit: 09/29/19
-void grid::print_rows(int width,int height)
+void grid::print_rows()
 {
-    for (int j = 0; j < (height/25)+1; j++)
+    int du_scale = 25;
+    for (int j = 0; j < (this->height/du_scale)+1; j++)
     {   
         std::cout.fill('0');
         std::cout.width(3);
-        std::cout << j*25;
+        std::cout << j*du_scale;
 
-        for(int k = 0; k < (width/25); k++)
+        for(int k = 0; k < (this->width/du_scale); k++)
         {
             std::cout.fill(' ');
             std::cout.width(4);
