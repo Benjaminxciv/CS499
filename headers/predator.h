@@ -17,7 +17,7 @@ class predator : public environment_object
         predator(int, int);
         ~predator();
         std::string get_type();
-        std::string print_self();
+        int print_self();
 };
 
 #endif

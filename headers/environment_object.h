@@ -10,6 +10,7 @@ Last editor:
 #define ENVIRONMENT_OBJECT_H
 
 #include <string>
+#include <iostream>
 
 struct point
 {
@@ -29,7 +30,7 @@ class environment_object
         void set_location(int, int); 
         virtual void act();
         virtual std::string get_type();
-        virtual std::string print_self();
+        virtual int print_self();
 };
 
 #endif

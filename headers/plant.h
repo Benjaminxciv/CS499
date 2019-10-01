@@ -10,6 +10,7 @@ Last editor: MG
 
 #include <string>
 #include "environment_object.h"
+#include <iostream>
 
 class plant : public environment_object
 {
@@ -18,7 +19,7 @@ class plant : public environment_object
         plant(int, int);
         ~plant();
         std::string get_type();
-        std::string print_self();
+        int print_self();
 };
 
 #endif

@@ -29,9 +29,9 @@ Trace: Traces to Epic 2, acceptance criteria 2
 Parameters: N/A
 Returns: string with at symbol
 */
-std::string grazer::print_self()
+int grazer::print_self()
 {
-    std::string grazers_symbol = "@";
-    return grazers_symbol;
+    std::cout << "@";
+    return 0;
 
 }

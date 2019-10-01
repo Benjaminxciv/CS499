@@ -19,7 +19,7 @@ class grazer : public environment_object
         grazer(int, int);
         ~grazer();
         std::string get_type();
-        std::string print_self();
+        int print_self();
 };
 
 #endif

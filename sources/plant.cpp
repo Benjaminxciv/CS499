@@ -29,9 +29,10 @@ Trace: Traces to Epic 2, acceptance criteria 2
 Parameters: N/A
 Returns: string with octothorpe
 */
-std::string plant::print_self()
+int plant::print_self()
 {
-    std::string plant_symbol = "#";
-    return plant_symbol;
+    std::cout << "#" ;
+
+    return 0;
 
 }

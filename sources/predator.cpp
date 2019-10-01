@@ -30,9 +30,9 @@ Trace: Traces to Epic 2, acceptance criteria 2
 Parameters: N/A
 Returns: string with an asterisk
 */
-std::string predator::print_self()
+int predator::print_self()
 {
-    std::string predator_symbol = "*";
-    return predator_symbol;
+    std::cout << "*";
+    return 0;
 
 }

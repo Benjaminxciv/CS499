@@ -48,8 +48,9 @@ Trace: Traces to Epic 2, acceptance criteria 2
 Parameters: N/A
 Returns: string containing the symbol
 */
-std::string environment_object::print_self()
+int environment_object::print_self()
 {
-    return "";
+    std::cout << " ";
+    return 0;
 }
 

@@ -19,7 +19,7 @@ class boulder : public environment_object
         boulder(int, int);
         ~boulder();
         std::string get_type();
-        std::string print_self();
+        int print_self();
 };
 
 #endif

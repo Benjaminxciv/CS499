@@ -29,9 +29,9 @@ Trace: Traces to Epic 2, acceptance criteria 2
 Parameters: N/A
 Returns: string with an asterisk
 */
-std::string boulder::print_self()
+int boulder::print_self()
 {
-    std::string boulder_symbol = "O";
-    return boulder_symbol;
+    std::cout << "O";
+    return 0;
 
 }
