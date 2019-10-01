@@ -26,6 +26,9 @@ class grid
 		environment_object* get_cell_contents(int, int);
 		void set_cell_contents(int, int, environment_object*);
 		static grid& get_instance(int, int);
+		void print_grid();
+		void print_cols();
+		void print_rows();
 };
 
 #endif

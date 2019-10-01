@@ -36,14 +36,19 @@ void simulation::run_sim()
 	char genotype[16];
 	int height;
 
+	int world_height;
+	int world_width;
+
 	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
 	lsdp->initDataParser(DATAFILE);
 
     // Call all the simple get functions and test the results
 	// World info functions
-	dVal = lsdp->getWorldWidth();
-
-	dVal = lsdp->getWorldHeight();
+	world_height = lsdp->getWorldWidth();
+	world_width = lsdp->getWorldHeight();
+	grid& sim_grid = grid::get_instance(world_height,world_width);
+	
+	sim_grid.print_grid();
 
 	// Plant info functions
 	iVal = lsdp->getInitialPlantCount();
@@ -152,6 +157,7 @@ void simulation::run_sim()
 
 
 
+
 /*
 Purpose: test code used to prove that the virtual print_self() fx works.
 Trace: Traces to Epic 2, acceptance criteria 2
@@ -161,6 +167,11 @@ Trace: Traces to Epic 2, acceptance criteria 2
     sim_grid.set_cell_contents(5, 5, plan);
     environment_object* empty_obj = sim_grid.get_cell_contents(5,5);
 	for(int i=0; i< iPredatorCount; i++)
+    boulder* bould = new boulder(1,1);
+    sim_grid.set_cell_contents(1, 1, bould);
+    environment_object* empty_obj = sim_grid.get_cell_contents(1,1);
+	if(empty_obj->get_type() == "boulder")
+
 	{
 		if(empty_obj->get_type() == "predator" && empty_obj->print_self() == "*")
 		{
