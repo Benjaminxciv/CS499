@@ -1,3 +1,8 @@
+/*Name: environment_object.cpp
+Purpose: Defines the basic object for the simulation, which holds any shared attributes for all objects
+Last edit: 10-01-19
+Last editor: AW*/
+
 #include "environment_object.h"
 
 environment_object::environment_object(int init_x_loc, int init_y_loc)

@@ -1,3 +1,8 @@
+/*Name: grid.cpp
+Purpose: Holds functions for the grid, including getting & setting cells contents
+Last edit: 10-01-19
+Last editor: AW*/
+
 #include "grid.h"
 
 grid_cell::grid_cell()
