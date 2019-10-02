@@ -28,14 +28,19 @@ void simulation::run_sim()
 	char genotype[16];
 	int height;
 
+	int world_height;
+	int world_width;
+
 	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
 	lsdp->initDataParser(DATAFILE);
 
     // Call all the simple get functions and test the results
 	// World info functions
-	dVal = lsdp->getWorldWidth();
-
-	dVal = lsdp->getWorldHeight();
+	world_height = lsdp->getWorldWidth();
+	world_width = lsdp->getWorldHeight();
+	grid& sim_grid = grid::get_instance(world_height,world_width);
+	
+	sim_grid.print_grid();
 
 	// Plant info functions
 	iVal = lsdp->getInitialPlantCount();
@@ -142,7 +147,7 @@ void simulation::run_sim()
 		}
 	}
 
-    grid& sim_grid = grid::get_instance(10,10);
+   
     boulder* bould = new boulder(1,1);
     sim_grid.set_cell_contents(1, 1, bould);
     environment_object* empty_obj = sim_grid.get_cell_contents(1,1);
