@@ -186,10 +186,10 @@ void simulation::run_sim()
 	}
 
 	while(1)
-  {
-    for(int x = 0; x < x_size; x++)
+	{
+    	for(int x = 0; x < world_width; x++)
 		{
-			for(int y = 0; y < y_size; y++)
+			for(int y = 0; y < world_height; y++)
 			{
 				sim_grid.get_cell_contents(x, y)->act();
 			}
