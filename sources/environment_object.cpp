@@ -1,5 +1,10 @@
 #include "environment_object.h"
 
+environment_object::environment_object()
+{
+    
+}
+
 environment_object::environment_object(int init_x_loc, int init_y_loc)
 {
     point* init_point = new point;

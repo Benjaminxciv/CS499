@@ -5,6 +5,11 @@ mammal::mammal(int init_energy)
     this->energy = init_energy;
 }
 
+mammal::~mammal()
+{
+    
+}
+
 void mammal::move(direction dir, int speed)
 {
     point* curr_loc = this->get_loc();
