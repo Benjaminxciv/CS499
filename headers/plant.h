@@ -2,6 +2,7 @@
 #define PLANT_H
 
 #include <string>
+#include <iostream>
 #include "environment_object.h"
 
 class plant : public environment_object
