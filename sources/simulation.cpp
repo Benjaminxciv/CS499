@@ -1,10 +1,16 @@
+/*Name: simulation.cpp
+Purpose: Runs the actual simulation, including calling all cell residents and passing their messages
+Last edit: 10-01-19
+Last editor: AW*/
+
 #include "simulation.h"
+#include "stdlib.h"
 
 #define DATAFILE "LifeSimulation01.xml"
 
 simulation::simulation()
 {
-	this->tick_speed = 1;
+	this->tick_speed = 1000;
 }
 
 simulation::~simulation()
@@ -12,11 +18,43 @@ simulation::~simulation()
 
 }
 
+/*Name: set_tick_speed
+Purpose: Set the refresh speed of the simulation
+Trace: Epic 1 Acceptance Criteria 3
+Parameters: 
+	new_tick_speed: int
+		The value that the tick speed will be set to
+Returns: NA*/
 void simulation::set_tick_speed(int new_tick_speed)
 {
 	this->tick_speed = new_tick_speed;
 }
 
+void simulation::increase_tick_speed()
+{
+	switch(this->tick_speed)
+	{
+		case x1:
+			this->set_tick_speed(1000 / x10);
+			break;
+		case x10:
+			this->set_tick_speed(1000 / x50);
+			break;
+		case x50:
+			this->set_tick_speed(1000 / x100);
+			break;
+		case x100:
+			this->set_tick_speed(1000 / x1);
+			break;
+		default:
+			break;
+	}
+}
+
+/*Name: run_sim
+Purpose: Runs the simulation, including reading the data file and calling all grid cells
+Parameters: NA
+Returns: NA*/
 void simulation::run_sim()
 {
 	int iVal;
@@ -147,16 +185,17 @@ void simulation::run_sim()
 		}
 	}
 
-   
-    boulder* bould = new boulder(1,1);
-    sim_grid.set_cell_contents(1, 1, bould);
-    environment_object* empty_obj = sim_grid.get_cell_contents(1,1);
-	if(empty_obj->get_type() == "boulder")
-	{
-		std::cout << "Got a boulder!" << endl;
+	while(1)
+  {
+    for(int x = 0; x < x_size; x++)
+		{
+			for(int y = 0; y < y_size; y++)
+			{
+				sim_grid.get_cell_contents(x, y)->act();
+			}
+		}
+		_sleep(this->tick_speed);
 	}
-    //point* p = bould2->get_loc();
-    //std::cout << p->x_loc << std::endl << p->y_loc << std::endl;
     std::cin.get();
 }
 
