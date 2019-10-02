@@ -1,3 +1,8 @@
+/*Name: simulation.cpp
+Purpose: Runs the actual simulation, including calling all cell residents and passing their messages
+Last edit: 10-01-19
+Last editor: AW*/
+
 #include "simulation.h"
 #include "stdlib.h"
 
@@ -13,6 +18,13 @@ simulation::~simulation()
 
 }
 
+/*Name: set_tick_speed
+Purpose: Set the refresh speed of the simulation
+Trace: Epic 1 Acceptance Criteria 3
+Parameters: 
+	new_tick_speed: int
+		The value that the tick speed will be set to
+Returns: NA*/
 void simulation::set_tick_speed(int new_tick_speed)
 {
 	this->tick_speed = new_tick_speed;
@@ -39,6 +51,10 @@ void simulation::increase_tick_speed()
 	}
 }
 
+/*Name: run_sim
+Purpose: Runs the simulation, including reading the data file and calling all grid cells
+Parameters: NA
+Returns: NA*/
 void simulation::run_sim()
 {
 	int iVal;
@@ -50,14 +66,19 @@ void simulation::run_sim()
 	char genotype[16];
 	int height;
 
+	int world_height;
+	int world_width;
+
 	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
 	lsdp->initDataParser(DATAFILE);
 
     // Call all the simple get functions and test the results
 	// World info functions
-	int x_size = lsdp->getWorldWidth();
-
-	int y_size = lsdp->getWorldHeight();
+	world_height = lsdp->getWorldWidth();
+	world_width = lsdp->getWorldHeight();
+	grid& sim_grid = grid::get_instance(world_height,world_width);
+	
+	sim_grid.print_grid();
 
 	// Plant info functions
 	iVal = lsdp->getInitialPlantCount();
@@ -164,10 +185,9 @@ void simulation::run_sim()
 		}
 	}
 
-    grid& sim_grid = grid::get_instance(x_size,y_size);
 	while(1)
-	{
-    	for(int x = 0; x < x_size; x++)
+  {
+    for(int x = 0; x < x_size; x++)
 		{
 			for(int y = 0; y < y_size; y++)
 			{
