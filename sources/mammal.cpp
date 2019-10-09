@@ -10,10 +10,15 @@ mammal::~mammal()
     
 }
 
-void mammal::move(direction dir, int speed)
+void mammal::set_direction(int dir)
+{
+    this->direction = dir;
+}
+
+void mammal::move(int speed)
 {
     point* curr_loc = this->get_loc();
-    switch(dir)
+    switch(this->direction)
     {
         case up:
             this->set_location(curr_loc->x_loc+1, curr_loc->y_loc);

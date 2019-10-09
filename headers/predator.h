@@ -10,6 +10,7 @@ class predator : public environment_object, public mammal
     public:
         predator(int, int, int);
         ~predator();
+        void smell();
         std::string get_type();
 };
 

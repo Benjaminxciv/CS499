@@ -10,10 +10,12 @@ class mammal : public environment_object
     private:
         int energy;
         int e_output;
+        int direction;
     public:
         mammal(int);
         ~mammal();
-        void move(direction, int);
+        void set_direction(int dir);
+        void move(int);
         void reproduce();
 };
 
