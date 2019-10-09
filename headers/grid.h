@@ -5,6 +5,8 @@
 
 #ifndef GRID_H
 #define GRID_H
+
+#include <iostream>
 #include "environment_object.h"
 
 struct grid_cell
