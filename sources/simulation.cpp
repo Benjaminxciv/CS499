@@ -2,7 +2,12 @@
 Purpose: Runs the actual simulation, including calling all cell residents and passing their messages
 Last edit: 10-01-19
 Last editor: AW*/
-
+#include <iostream>
+#include "grid.h"
+#include "boulder.h"
+#include "LifeSimDataParser.h"
+#include "plant.h"
+#define DATAFILE "LifeSimulation01.xml"
 #include "simulation.h"
 #include "stdlib.h"
 
@@ -14,6 +19,7 @@ simulation::simulation()
 }
 
 simulation::~simulation()
+
 {
 
 }
