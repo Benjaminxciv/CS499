@@ -1,3 +1,4 @@
+
 /*Name: environment_object.cpp
 Purpose: Defines the basic object for the simulation, which holds any shared attributes for all objects
 Last edit: 10-01-19
@@ -58,3 +59,17 @@ std::string environment_object::get_type()
 {
     return "";
 }
+
+/*
+Name: print_self()
+Purpose: virtual fx added to help with console output and prove the file is read in correctly. 
+Trace: Traces to Epic 2, acceptance criteria 2 
+Parameters: N/A
+Returns: string containing the symbol
+*/
+int environment_object::print_self()
+{
+    std::cout << " ";
+    return 0;
+}
+

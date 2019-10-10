@@ -1,7 +1,16 @@
+/*
+Name: environment_object.h
+Purpose: Header file for environment_object. 
+Last edit: 
+Last editor: 
+*/
+
+
 #ifndef ENVIRONMENT_OBJECT_H
 #define ENVIRONMENT_OBJECT_H
 
 #include <string>
+#include <iostream>
 
 struct point
 {
@@ -22,6 +31,7 @@ class environment_object
         void set_location(int, int); 
         virtual void act();
         virtual std::string get_type();
+        virtual int print_self();
 };
 
 #endif

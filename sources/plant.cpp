@@ -1,8 +1,8 @@
 /*
 Name: plant.cpp
-Purpose: Contains all the information specific to plant lifeforms for Life Simulation.
-Last edit: 09-25-19
-Last editor: MG
+Purpose: Class defining all the plant's function, such as location and growing pattern.
+Last edit: 09-29-2019
+Last editor: AW
 */
 
 #include "plant.h"
@@ -21,6 +21,21 @@ plant::~plant()
 std::string plant::get_type()
 {
     return "plant";
+}
+
+/*
+Name: print_self()
+Purpose: everytime it is called, it returns to environment_object this symbol.
+Trace: Traces to Epic 2, acceptance criteria 2
+Parameters: N/A
+Returns: string with octothorpe
+*/
+int plant::print_self()
+{
+    std::cout << "#" ;
+
+    return 0;
+
 }
 
 
@@ -47,7 +62,5 @@ std::cout << "seed pod distance: " << seed_pod_distance;
 std::cout << "\nseed pod number: " << seed_pod_seed_number;
 
 }
-
-
 
 

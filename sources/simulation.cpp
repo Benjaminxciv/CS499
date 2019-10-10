@@ -1,3 +1,4 @@
+
 /*Name: simulation.cpp
 Purpose: Runs the actual simulation, including calling all cell residents and passing their messages
 Last edit: 10-01-19
@@ -7,7 +8,6 @@ Last editor: AW*/
 #include "boulder.h"
 #include "LifeSimDataParser.h"
 #include "plant.h"
-#define DATAFILE "LifeSimulation01.xml"
 #include "simulation.h"
 #include "stdlib.h"
 
@@ -191,6 +191,39 @@ void simulation::run_sim()
 		}
 	}
 
+
+
+
+/*
+Purpose: test code used to prove that the virtual print_self() fx works.
+Trace: Traces to Epic 2, acceptance criteria 2
+*/
+/*  grid& sim_grid = grid::get_instance(10,10);
+    predator* plan = new predator(5,5);
+    sim_grid.set_cell_contents(5, 5, plan);
+    environment_object* empty_obj = sim_grid.get_cell_contents(5,5);
+	for(int i=0; i< iPredatorCount; i++)
+    boulder* bould = new boulder(1,1);
+    sim_grid.set_cell_contents(1, 1, bould);
+    environment_object* empty_obj = sim_grid.get_cell_contents(1,1);
+	if(empty_obj->get_type() == "boulder")
+
+	{
+		if(empty_obj->get_type() == "predator" && empty_obj->print_self() == "*")
+		{
+			std::cout << "Got a predator!" << endl;
+			lsdp->getPredatorData(&xPos, &yPos, &energy, genotype);
+			cout << "Predator " << i << " (" << xPos << ", " << yPos << ") energy level = " << energy << ", genotype = " << genotype << endl;
+			std::cout << "* : " << xPos << ", " << yPos << endl;
+		}
+	}
+*/
+
+    //point* p = bould2->get_loc();
+    //std::cout << p->x_loc << std::endl << p->y_loc << std::endl;
+
+  
+  
 	while(1)
 	{
     	for(int x = 0; x < world_width; x++)
@@ -202,12 +235,15 @@ void simulation::run_sim()
 		}
 		_sleep(this->tick_speed);
 	}
+
     std::cin.get();
 }
 
 int main()
 {
-    simulation* sim = new simulation();
+
+ simulation* sim = new simulation();
 	sim->run_sim();
+  
     return 0;
 }

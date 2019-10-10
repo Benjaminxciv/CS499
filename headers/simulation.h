@@ -1,3 +1,11 @@
+/*
+Name: simulation.h
+Purpose: Contains all header file information for simulation.cpp, controls flow of Life Simulation
+Last edit: 
+Last editor: 
+*/
+
+
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
@@ -5,6 +13,9 @@
 #include "grid.h"
 #include "boulder.h"
 #include "LifeSimDataParser.h"
+#include "plant.h"
+#include "predator.h"
+#include "grazer.h"
 
 enum tick_speeds {x1 = 1, x10 = 10, x50 = 50, x100 = 100};
 

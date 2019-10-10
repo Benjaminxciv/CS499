@@ -1,8 +1,9 @@
 /*
 Name: plant.h
-Purpose: Contains all the information specific to plant lifeforms for Life Simulation.
-Last edit: 09-25-19
-Last editor: MG
+
+Purpose: Header file for plants.
+Last edit: 09-29-2019
+Last editor: AW
 */
 
 #ifndef PLANT_H
@@ -12,7 +13,7 @@ Last editor: MG
 #include <iostream>
 #include "environment_object.h"
 #include <stdlib.h>
-#include <iostream>
+
 
 class plant : public environment_object
 {
@@ -21,9 +22,8 @@ class plant : public environment_object
         plant(int, int);
         ~plant();
         std::string get_type();
+        int print_self();
         void seed_pod_values();
-        
-
 };
 
 #endif
