@@ -183,7 +183,7 @@ void simulation::run_sim()
 	{
 		if(lsdp->getObstacleData(&xPos, &yPos, &diameter, &height))
 		{
-			cout << "Obstacle " << i << " (" << xPos << ", " << yPos << ") diameter = " << diameter << ", height = " << height << endl;
+			boulder* b = new boulder(xPos, yPos, diameter, height);
 		}
 		else
 		{
