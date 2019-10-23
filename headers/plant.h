@@ -24,6 +24,7 @@ class plant : public environment_object
         std::string get_type();
         int print_self();
         void seed_pod_values();
+        void seeds();
 };
 
 #endif
