@@ -3,6 +3,8 @@ Purpose: Runs the actual simulation, including calling all cell residents and pa
 Last edit: 10-01-19
 Last editor: AW*/
 
+#include <vector>
+#include <iostream>
 #include "simulation.h"
 #include "stdlib.h"
 
@@ -199,8 +201,43 @@ void simulation::run_sim()
     std::cin.get();
 }
 
+void sense_circle(int diameter, point center)
+{
+	if(diameter % 2 == 0)
+	{
+		return;
+	}
+
+	int radius = (diameter - 1) / 2;
+	std::vector<point> cells;
+
+	for (int y = radius; y >= 0; y--)
+	{
+		for(int x = 0; x <= (radius-y)*2; x++)
+		{
+			point smelly;
+			smelly.x_loc = (center.x_loc - x);
+			smelly.y_loc = (center.y_loc - y);
+			cells.push_back(smelly);
+		}
+	}
+	for (int y = 1; y <= radius; y++)
+	{
+		for(int x = 0; x <= (radius-y)*2; x++)
+		{
+			point smelly;
+			smelly.x_loc = (center.x_loc - x);
+			smelly.y_loc = (center.y_loc - y);
+			cells.push_back(smelly);
+		}
+	}
+}
+
 int main()
 {
+	sense_circle();
+	std::cin.get();
+	return 0;
     simulation* sim = new simulation();
 	sim->run_sim();
     return 0;
