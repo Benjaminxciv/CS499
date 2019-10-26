@@ -199,9 +199,9 @@ void simulation::run_sim()
     std::cin.get();
 }
 
-int main()
+/*int main()
 {
     simulation* sim = new simulation();
 	sim->run_sim();
     return 0;
-}
+}*/
