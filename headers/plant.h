@@ -23,8 +23,8 @@ class plant : public environment_object
         ~plant();
         std::string get_type();
         int print_self();
-        void seed_pod_values();
-        void seeds();
+        void set_seed_pod_values();
+        void seed_grow();
 };
 
 #endif

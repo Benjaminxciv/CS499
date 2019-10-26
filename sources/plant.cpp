@@ -7,6 +7,7 @@ Last editor: AW
 
 #include "plant.h"
 #include "time.h"
+#include "clock.h"
 
 plant::plant(int init_x_loc, int init_y_loc) : environment_object(init_x_loc, init_y_loc)
 {
@@ -46,12 +47,13 @@ Trace: Traces to Epic 3, acceptance criteria 1
 Parameters: N/A
 Returns: N/A
 */
-void seed_pod_values()
+void set_seed_pod_values()
 {
 
     //used for testing purposes only - these values will be provided by the XML file.
     int MAX_SEED_CAST_DISTANCE = 100;
     int MAX_SEED_NUMBER = 50;
+    
 
     srand(time(0));
 
@@ -70,7 +72,7 @@ Trace: Traces to Epic 3, acceptance criteria 1
 Parameters: N/A
 Returns: N/A
 */
-void seeds()
+void seed_grow()
 {
-
+    
 }
