@@ -49,18 +49,28 @@ Returns: N/A
 void seed_pod_values()
 {
 
-//used for testing purposes only - these values will be provided by the XML file.
-int MAX_SEED_CAST_DISTANCE = 100;
-int MAX_SEED_NUMBER = 50;
+    //used for testing purposes only - these values will be provided by the XML file.
+    int MAX_SEED_CAST_DISTANCE = 100;
+    int MAX_SEED_NUMBER = 50;
 
-srand(time(0));
+    srand(time(0));
 
-int seed_pod_distance = rand() %  MAX_SEED_CAST_DISTANCE + 0;
-int seed_pod_seed_number = rand() %  MAX_SEED_NUMBER + 0; 
+    int seed_pod_distance = rand() %  MAX_SEED_CAST_DISTANCE + 0;
+    int seed_pod_seed_number = rand() %  MAX_SEED_NUMBER + 0; 
 
-std::cout << "seed pod distance: " << seed_pod_distance;
-std::cout << "\nseed pod number: " << seed_pod_seed_number;
+    std::cout << "seed pod distance: " << seed_pod_distance;
+    std::cout << "\nseed pod number: " << seed_pod_seed_number;
 
 }
 
+/*
+Name: seed()
+Purpose: accounts for attributes of the plant's seeds. Viability, begin growth, and rate of growth.
+Trace: Traces to Epic 3, acceptance criteria 1 
+Parameters: N/A
+Returns: N/A
+*/
+void seeds()
+{
 
+}
