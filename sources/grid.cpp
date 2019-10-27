@@ -72,16 +72,16 @@ void grid::set_cell_contents(int x_loc, int y_loc, environment_object* environ_o
     cell->environ_obj = environ_obj;
 }
 
-//Name: grid::print_grid
-//Purpose: calls print_cols and print_rows functions 
-//Parameters: 
-    //width: int
-        //width of enviroment boundary
-    //height: int
-        //height of enviroment boundary
-//Last edit:
-/*
-BP 10/1/19
+/*Name: grid::print_grid
+Purpose: calls print_cols and print_rows functions 
+Parameters: 
+    width: int
+    width of enviroment boundary
+    height: int
+    height of enviroment boundary
+Returns: N/A
+Last edit:
+    BP 10/1/19
 */
 void grid::print_grid()
 {
@@ -90,14 +90,13 @@ void grid::print_grid()
     print_cols();  
 }
 
-//Name: grid::print_cols
-//Purpose: print the column header of the simulation grid from given width boundary
-//Parameters: 
-    //width: int
-        //width of enviroment boundary
-//Last edit:
-/*
-BP 10/1/19
+/*Name: grid::print_cols
+Purpose: print the column header of the simulation grid from given width boundary
+Parameters: 
+    width: int
+        width of enviroment boundary
+Last edit:
+    BP 10/1/19
 */
 void grid::print_cols()
 {

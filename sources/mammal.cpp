@@ -1,3 +1,8 @@
+/*Name: mammal.cpp
+Purpose: Defines the structure for creating mammal objects and their functions: move ,reproduce, & gain_energy
+Last edit: 10-27-19/
+Last editor: BP*/
+
 #include "mammal.h"
 
 mammal::mammal(int init_energy)
@@ -5,9 +10,27 @@ mammal::mammal(int init_energy)
     this->energy = init_energy;
 }
 
+mammal::mammal()
+{
+
+}
+
 mammal::~mammal()
 {
     
+}
+
+/*Name: gain_energy(int)
+Purpose: generic way for mammals gain energy 
+Parameters: 
+    energy: int
+        number of energy units to add to a mammal objects energy level
+Last edit:
+    BP 10/27/19
+*/
+void mammal::gain_energy(int energy)
+{
+    this-> energy += energy;
 }
 
 void mammal::move(direction dir, int speed)

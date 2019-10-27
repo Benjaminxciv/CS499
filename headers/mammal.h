@@ -1,3 +1,10 @@
+/*
+Name: mammal.h
+Purpose: Header file for mammal.cpp.
+Last edit: 10-27-2019
+Last editor: BP
+*/
+
 #ifndef MAMMAL_H
 #define MAMMAL_H
 
@@ -12,7 +19,9 @@ class mammal : public environment_object
         int e_output;
     public:
         mammal(int);
+        mammal();
         ~mammal();
+        void gain_energy(int);
         void move(direction, int);
         void reproduce();
 };
