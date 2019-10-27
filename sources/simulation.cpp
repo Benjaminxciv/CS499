@@ -51,6 +51,68 @@ void simulation::increase_tick_speed()
 	}
 }
 
+std::vector<environment_object*> simulation::iterate_cells()
+{
+	grid& sim_grid = grid::get_instance(world_height,world_width);
+	std::vector<environment_object*> cells;
+	for(int x = 0; x < sim_grid.get_width(); x++)
+	{
+		for(int y = 0; y < sim_grid.get_height(); y++)
+		{
+			environment_object* cell = sim_grid.get_cell_contents(x, y);
+			if(cell != nullptr)
+			{
+				cell->act();
+				cells.push_back(cell);
+			}
+		}
+	}
+	return cells;
+}
+
+void simulation::init_sim()
+{
+	int iVal;
+	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
+	double dVal;
+	int xPos, yPos;
+	int diameter;
+	int energy;
+	char genotype[16];
+	int height;
+
+	int world_height;
+	int world_width;
+
+	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
+	lsdp->initDataParser(DATAFILE);
+
+    // Call all the simple get functions and test the results
+	// World info functions
+	this->world_height = lsdp->getWorldWidth();
+	this->world_width = lsdp->getWorldHeight();
+	grid& sim_grid = grid::get_instance(this->world_height,this->world_width);
+
+	// Obstacle info data
+	iVal = lsdp->getObstacleCount();						// Number of obstacles
+
+	iObstacleCount = iVal;
+
+	for(int i=0; i< iObstacleCount; i++)
+	{
+		if(lsdp->getObstacleData(&xPos, &yPos, &diameter, &height))
+		{
+			//cout << "Obstacle " << i << " (" << xPos << ", " << yPos << ") diameter = " << diameter << ", height = " << height << endl;
+			boulder* bold = new boulder(xPos, yPos);
+			sim_grid.set_cell_contents(xPos, yPos, bold);
+		}
+		else
+		{
+			//cout << "Failed to read data for obstacle " << i << endl;
+		}
+	}
+}
+
 /*Name: run_sim
 Purpose: Runs the simulation, including reading the data file and calling all grid cells
 Parameters: NA

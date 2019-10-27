@@ -13,6 +13,8 @@
 #include <dwrite.h>
 #include <wincodec.h>
 
+#include "simulation.h"
+
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "Ole32.lib")
 #pragma comment(lib, "d2d1.lib")
@@ -71,6 +73,8 @@ class SimulationApp
         // Draw content.
         HRESULT OnRender();
 
+        void DrawObject(environment_object*);
+
         // Resize the render target.
         void OnResize(
             UINT width,
@@ -102,4 +106,6 @@ class SimulationApp
         ID2D1SolidColorBrush* m_pOrangeBrush;
         ID2D1SolidColorBrush* m_pRedBrush;
         ID2D1SolidColorBrush* m_pMaroonBrush;
+        
+        simulation sim;
 };

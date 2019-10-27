@@ -12,7 +12,8 @@ SimulationApp::SimulationApp() :
         m_pNavyBrush(NULL),
         m_pOrangeBrush(NULL),
         m_pRedBrush(NULL),
-        m_pMaroonBrush(NULL)
+        m_pMaroonBrush(NULL),
+        sim()
 {
 
 }
@@ -47,6 +48,8 @@ void SimulationApp::RunMessageLoop()
 HRESULT SimulationApp::Initialize()
 {
     HRESULT hr;
+
+    this->sim.init_sim();
 
     // Initialize device-indpendent resources, such
     // as the Direct2D factory.
@@ -195,10 +198,10 @@ HRESULT SimulationApp::CreateDeviceResources()
                 &m_pOrangeBrush
             );
             m_pRenderTarget->CreateSolidColorBrush(
-                D2D1::ColorF(255,0,1),
+                D2D1::ColorF(255,0,0,1),
                 &m_pRedBrush
             );
-            m_pRenderTarget->CreateSolidColorBrush(
+            hr = m_pRenderTarget->CreateSolidColorBrush(
                 D2D1::ColorF(128,0,0,1),
                 &m_pMaroonBrush
             );
@@ -299,6 +302,21 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
     return result;
 }
 
+void SimulationApp::DrawObject(environment_object* target)
+{
+    HRESULT hr = S_OK;
+    point* target_loc = target->get_loc();
+    D2D1_RECT_F rectangle2 = D2D1::RectF(
+        target_loc->x_loc-10.0f,
+        target_loc->y_loc-10.0f,
+        target_loc->x_loc+10.0f,
+        target_loc->y_loc+10.0f
+    );
+
+    // Draw the outline of a rectangle.
+    m_pRenderTarget->DrawRectangle(&rectangle2, m_pBlackBrush);
+}
+
 HRESULT SimulationApp::OnRender()
 {
     HRESULT hr = S_OK;
@@ -337,27 +355,19 @@ HRESULT SimulationApp::OnRender()
                 0.5f
                 );
         }
-
-        // Draw two rectangles.
-        D2D1_RECT_F rectangle1 = D2D1::RectF(
-            rtSize.width/2 - 50.0f,
-            rtSize.height/2 - 50.0f,
-            rtSize.width/2 + 50.0f,
-            rtSize.height/2 + 50.0f
-            );
-
-        D2D1_RECT_F rectangle2 = D2D1::RectF(
-            rtSize.width/2 - 100.0f,
-            rtSize.height/2 - 100.0f,
-            rtSize.width/2 + 100.0f,
-            rtSize.height/2 + 100.0f
-            );
-
-        // Draw a filled rectangle.
-        m_pRenderTarget->FillRectangle(&rectangle1, m_pRedBrush);
-
-        // Draw the outline of a rectangle.
-        m_pRenderTarget->DrawRectangle(&rectangle2, m_pGreenBrush);
+        std::vector<environment_object*> cells = sim.iterate_cells();
+        for(int i = 0; i < cells.size(); i++)
+        {
+            DrawObject(cells[i]);
+        }
+        /*
+        for(int x = 0; x < world_width; x++)
+		{
+			for(int y = 0; y < world_height; y++)
+			{
+				sim_grid.get_cell_contents(x, y)->act();
+			}
+		}*/
 
         hr = m_pRenderTarget->EndDraw();
     }

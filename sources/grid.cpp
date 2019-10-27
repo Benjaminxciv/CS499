@@ -139,3 +139,13 @@ void grid::print_rows()
         std::cout << std::endl;
     }      
 }
+
+int grid::get_height()
+{
+    return this->height;
+}
+
+int grid::get_width()
+{
+    return this->width;
+}

@@ -31,6 +31,8 @@ class grid
 		void print_grid();
 		void print_cols();
 		void print_rows();
+		int get_height();
+		int get_width();
 };
 
 #endif
