@@ -39,7 +39,7 @@ Purpose: Allow access to the simulation_clock by 1 tick speed.
 Trace: Epic 1 Acceptance Criteria 3
 Parameters: N/A
 Returns: NA*/
-time simulation::get_simulation_time()
+time_container simulation::get_simulation_time()
 {
 	return this->simulation_clock->get_time();
 }

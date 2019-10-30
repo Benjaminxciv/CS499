@@ -43,7 +43,7 @@ void clock::add_milli_sec()
     }           
 }
 
-time clock::get_time()
+time_container clock::get_time()
 {
     return this->current_time;
 }
