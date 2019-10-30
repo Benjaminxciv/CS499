@@ -8,7 +8,7 @@ Last editor: MG
 #ifndef CLOCK_H
 #define CLOCK_H
 
-struct time
+struct time_container
 {
     int time_pence_sec = 0;
     int time_sec = 0;
@@ -20,12 +20,12 @@ struct time
 class clock
 {
     private:
-        time current_time;
+        time_container current_time;
         
     public:
         void add_sec();
         void add_milli_sec();
         void add_pence_sec();
-        time get_time();
+        time_container get_time();
 };
 #endif 
