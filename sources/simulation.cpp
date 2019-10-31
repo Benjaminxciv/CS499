@@ -39,7 +39,7 @@ Purpose: Allow access to the simulation_clock by 1 tick speed.
 Trace: Epic 1 Acceptance Criteria 3
 Parameters: N/A
 Returns: NA*/
-time simulation::get_simulation_time()
+time_container simulation::get_simulation_time()
 {
 	return this->simulation_clock->get_time();
 }
@@ -86,6 +86,14 @@ Parameters: NA
 Returns: NA*/
 void simulation::run_sim()
 {
+
+	grazer* grazy = new grazer(1,1,50,5);
+
+	for(int x = 0; x < 62; x++)
+	{
+		grazy->act();
+	}
+
 	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
 	double dVal;
