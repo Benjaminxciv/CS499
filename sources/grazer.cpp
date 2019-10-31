@@ -12,7 +12,7 @@ grazer::grazer(int init_x_loc, int init_y_loc, int init_energy, int energy_input
 {
     this->energy_input      = energy_input;
     this->danger            = false;
-    this->food_available    = true;
+    this->food_available    = false;
     this->eat_timer         = 0;
 }
 
@@ -37,13 +37,12 @@ int grazer::print_self()
 {
     std::cout << "@";
     return 0;
-
 }
 
 /*Name: eat()
 Purpose: gain energy per minute. Amount gained is determined by enenergy input
 Parameters: N/A
-    BP 10/30/19
+BP 10/30/19
 */
 void grazer::eat()
 {
@@ -58,40 +57,71 @@ void grazer::eat()
     
     else if(this->eat_timer >= 60)
     {
-        this->gain_energy(this->energy_input);
+      this->gain_energy(energy_input);
     }
 
+    else
+    {
+        std::cout << "Moving" <<std::endl;
+    }
 }
+
 
 void grazer::act()
 {
     //Add function call to check if grazer if predator or food is nearby 
-
     if(this->danger)
     {
         reset_eat_timer();
-        //Predator should evade here
+        std::cout << "Evade" << std::endl;
+        this->movement_timer--;
     }
 
     else if(this->food_available)
     {
+        reset_movement_timer();
         eat();
-
     }
     
     else 
     {
-        std::cout << "Moving" << std::endl;
+        std::cout << "Move" << std::endl;
+        this->movement_timer--;
     }
-
 }
 
-/*Name: reset_timer()
-Purpose: reset seconds_timer member variable to zero
+
+/*Name: reset_eat_timer()
+Purpose: reset eat_timer member variable to zero
 Parameters: N/A
-    BP 10/30/19
+BP 10/31/19
 */
 void grazer::reset_eat_timer()
 {
     this->eat_timer = 0;
+}
+
+
+/*Name: reset_movement_timer()
+Purpose: reset movement_timer member variable to the time a grzer can maintain max speed
+Parameters: N/A
+BP 10/31/19
+*/
+void grazer::reset_movement_timer()
+{
+    this->movement_timer = (this->maintain_time)*60;
+    std::cout<<this->movement_timer;
+}
+
+
+/*Name: set_maintain_gime(int maintain_time)
+Purpose: set how long a grazer can run at maxspeed
+Parameters: 
+	maintain_time: int
+		The value in minutes that a grazer can run at maxspeed
+BP 10/31/19
+*/
+void grazer::set_maintain_time(int maintain_time)
+{
+    this->maintain_time = maintain_time;
 }
