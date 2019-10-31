@@ -13,7 +13,7 @@ grazer::grazer(int init_x_loc, int init_y_loc, int init_energy, int energy_input
     this->energy_input      = energy_input;
     this->danger            = false;
     this->food_available    = true;
-    this->seconds_timer     = 0;
+    this->eat_timer         = 0;
 }
 
 grazer::~grazer()
@@ -47,17 +47,17 @@ Parameters: N/A
 */
 void grazer::eat()
 {
-    this->seconds_timer++;
+    this->eat_timer++;
 
-    if(this->seconds_timer >= 600)
+    if(this->eat_timer >= 600)
     {
-        reset_timer();
+        reset_eat_timer();
+        std::cout << "Moving" << std::endl;
         return;
     }
     
-    else if(this->seconds_timer >= 60)
+    else if(this->eat_timer >= 60)
     {
-        reset_timer();
         this->gain_energy(this->energy_input);
     }
 
@@ -69,7 +69,7 @@ void grazer::act()
 
     if(this->danger)
     {
-        reset_timer();
+        reset_eat_timer();
         //Predator should evade here
     }
 
@@ -77,6 +77,11 @@ void grazer::act()
     {
         eat();
 
+    }
+    
+    else 
+    {
+        std::cout << "Moving" << std::endl;
     }
 
 }
@@ -86,8 +91,7 @@ Purpose: reset seconds_timer member variable to zero
 Parameters: N/A
     BP 10/30/19
 */
-void grazer::reset_timer()
+void grazer::reset_eat_timer()
 {
-    this->seconds_timer = 0;
-
+    this->eat_timer = 0;
 }

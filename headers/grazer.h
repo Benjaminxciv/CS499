@@ -16,7 +16,7 @@ class grazer : public environment_object, public mammal
 {
     private:
     int energy_input;
-    int seconds_timer;
+    int eat_timer;
     bool danger;
     bool food_available;
 
@@ -27,7 +27,7 @@ class grazer : public environment_object, public mammal
         void set_energy(int);
         int print_self();
         void eat();
-        void reset_timer();
+        void reset_eat_timer();
         void act() override;
 };
 
