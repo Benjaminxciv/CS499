@@ -12,7 +12,7 @@ grazer::grazer(int init_x_loc, int init_y_loc, int init_energy, int energy_input
 {
     this->energy_input      = energy_input;
     this->danger            = false;
-    this->food_available    = true;
+    this->food_available    = false;
     this->eat_timer         = 0;
 }
 
