@@ -16,13 +16,19 @@ class grazer : public environment_object, public mammal
 {
     private:
     int energy_input;
+    int seconds_timer;
+    bool danger;
+    bool food_available;
+
     public:
         grazer(int, int, int, int);
         ~grazer();
         std::string  get_type() override;
         void set_energy(int);
         int print_self();
-        void eat(int);
+        void eat();
+        void reset_timer();
+        void act() override;
 };
 
 #endif

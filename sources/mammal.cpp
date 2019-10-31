@@ -30,7 +30,7 @@ Last edit:
 */
 void mammal::gain_energy(int energy)
 {
-    this-> energy += energy;
+    this->energy += energy;
 }
 
 void mammal::move(direction dir, int speed)

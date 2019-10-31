@@ -86,6 +86,14 @@ Parameters: NA
 Returns: NA*/
 void simulation::run_sim()
 {
+
+	grazer* grazy = new grazer(1,1,50,5);
+
+	for(int x = 0; x < 62; x++)
+	{
+		grazy->act();
+	}
+
 	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
 	double dVal;

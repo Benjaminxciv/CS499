@@ -10,7 +10,10 @@ Last editor: BP
 grazer::grazer(int init_x_loc, int init_y_loc, int init_energy, int energy_input)
     : environment_object(init_x_loc, init_y_loc), mammal(init_energy)
 {
-    this -> energy_input = energy_input;
+    this->energy_input      = energy_input;
+    this->danger            = false;
+    this->food_available    = true;
+    this->seconds_timer     = 0;
 }
 
 grazer::~grazer()
@@ -37,22 +40,54 @@ int grazer::print_self()
 
 }
 
-/*Name: eat(int)
-Purpose: gain energy per minute of eating at the rate of energy input 
-Parameters: 
-    time_eating: int
-        time in minutes a grazer object has been consectutively eating 
-Last edit:
-    BP 10/27/19
+/*Name: eat()
+Purpose: gain energy per minute. Amount gained is determined by enenergy input
+Parameters: N/A
+    BP 10/30/19
 */
-void grazer::eat(int time_eating)
-{  
-    int energy = this -> energy_input  * time_eating;
+void grazer::eat()
+{
+    this->seconds_timer++;
 
-    if(time_eating >= 10)
+    if(this->seconds_timer >= 600)
     {
+        reset_timer();
         return;
     }
+    
+    else if(this->seconds_timer >= 60)
+    {
+        reset_timer();
+        this->gain_energy(this->energy_input);
+    }
 
-    this->gain_energy(energy);
+}
+
+void grazer::act()
+{
+    //Add function call to check if grazer if predator or food is nearby 
+
+    if(this->danger)
+    {
+        reset_timer();
+        //Predator should evade here
+    }
+
+    else if(this->food_available)
+    {
+        eat();
+
+    }
+
+}
+
+/*Name: reset_timer()
+Purpose: reset seconds_timer member variable to zero
+Parameters: N/A
+    BP 10/30/19
+*/
+void grazer::reset_timer()
+{
+    this->seconds_timer = 0;
+
 }
