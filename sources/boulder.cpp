@@ -6,7 +6,6 @@ Last editor: MG
 */
 
 #include "boulder.h"
-#include "LifeSimDataParser.h"
 
 /*
 Name: boulder(int, int, int, int)
