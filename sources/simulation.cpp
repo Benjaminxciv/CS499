@@ -1,8 +1,8 @@
 
 /*Name: simulation.cpp
 Purpose: Runs the actual simulation, including calling all cell residents and passing their messages
-Last edit: 10-01-19
-Last editor: AW*/
+Last edit: 10-22-20
+Last editor: MG*/
 #include <iostream>
 #include "grid.h"
 #include "boulder.h"
@@ -15,14 +15,37 @@ Last editor: AW*/
 
 simulation::simulation()
 {
+	this->simulation_clock = new clock();
 	this->tick_speed = 1000;
 }
 
 simulation::~simulation()
-
 {
 
 }
+
+/*Name: increment_simulation_clock()
+Purpose: Increment the simulation_clock by 1 tick speed.
+Trace: Epic 1 Acceptance Criteria 3
+Parameters: N/A
+Returns: NA*/
+void simulation::increment_simulation_clock()
+{
+	this->simulation_clock->add_sec();
+}
+
+/*Name: get_simulation_time()
+Purpose: Allow access to the simulation_clock by 1 tick speed.
+Trace: Epic 1 Acceptance Criteria 3
+Parameters: N/A
+Returns: NA*/
+time_container simulation::get_simulation_time()
+{
+	return this->simulation_clock->get_time();
+}
+
+
+
 
 /*Name: set_tick_speed
 Purpose: Set the refresh speed of the simulation
@@ -63,6 +86,14 @@ Parameters: NA
 Returns: NA*/
 void simulation::run_sim()
 {
+
+	grazer* grazy = new grazer(1,1,50,5);
+
+	for(int x = 0; x < 62; x++)
+	{
+		grazy->act();
+	}
+
 	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
 	double dVal;
@@ -191,38 +222,6 @@ void simulation::run_sim()
 		}
 	}
 
-
-
-
-/*
-Purpose: test code used to prove that the virtual print_self() fx works.
-Trace: Traces to Epic 2, acceptance criteria 2
-*/
-/*  grid& sim_grid = grid::get_instance(10,10);
-    predator* plan = new predator(5,5);
-    sim_grid.set_cell_contents(5, 5, plan);
-    environment_object* empty_obj = sim_grid.get_cell_contents(5,5);
-	for(int i=0; i< iPredatorCount; i++)
-    boulder* bould = new boulder(1,1);
-    sim_grid.set_cell_contents(1, 1, bould);
-    environment_object* empty_obj = sim_grid.get_cell_contents(1,1);
-	if(empty_obj->get_type() == "boulder")
-
-	{
-		if(empty_obj->get_type() == "predator" && empty_obj->print_self() == "*")
-		{
-			std::cout << "Got a predator!" << endl;
-			lsdp->getPredatorData(&xPos, &yPos, &energy, genotype);
-			cout << "Predator " << i << " (" << xPos << ", " << yPos << ") energy level = " << energy << ", genotype = " << genotype << endl;
-			std::cout << "* : " << xPos << ", " << yPos << endl;
-		}
-	}
-*/
-
-    //point* p = bould2->get_loc();
-    //std::cout << p->x_loc << std::endl << p->y_loc << std::endl;
-
-  
   
 	while(1)
 	{

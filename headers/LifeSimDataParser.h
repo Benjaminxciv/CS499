@@ -5,7 +5,6 @@
 // Author: Dr. Rick Coleman
 // Date: January 2017
 //===================================================================================
-
 #ifndef LIFESIMDATAPARSER_H
 #define LIFESIMDATAPARSER_H
 

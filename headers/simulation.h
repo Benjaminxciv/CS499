@@ -16,6 +16,7 @@ Last editor:
 #include "plant.h"
 #include "predator.h"
 #include "grazer.h"
+#include "clock.h"
 
 enum tick_speeds {x1 = 1, x10 = 10, x50 = 50, x100 = 100};
 
@@ -23,12 +24,15 @@ class simulation
 {
     private:
         int tick_speed;
+        clock* simulation_clock;
     public:
         simulation();
         ~simulation();
         void run_sim();
         void set_tick_speed(int);
         void increase_tick_speed();
+        void increment_simulation_clock();
+        time_container get_simulation_time();
 };
 
 #endif
