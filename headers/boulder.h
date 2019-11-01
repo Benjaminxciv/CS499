@@ -15,8 +15,13 @@ Last editor: MG
 class boulder : public environment_object
 {
     private:
+        int height;
+        int diameter;
+        int x_pos;
+        int y_pos;
+
     public:
-        boulder(int, int);
+        boulder(int, int, int, int);
         ~boulder();
         std::string get_type();
         int print_self();

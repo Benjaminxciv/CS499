@@ -100,4 +100,5 @@ class LifeSimDataParser
 		int getObstacleCount();						// Number of obstacles
 		bool getObstacleData(int *X, int *Y, int *diameter, int *height);
 };
+
 #endif
