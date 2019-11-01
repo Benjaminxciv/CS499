@@ -124,4 +124,5 @@ BP 10/31/19
 void grazer::set_maintain_time(int maintain_time)
 {
     this->maintain_time = maintain_time;
+    reset_movement_timer();
 }
