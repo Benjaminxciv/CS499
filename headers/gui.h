@@ -1,3 +1,9 @@
+/*Name: gui.h
+Purpose: Definition of SimulationApp class for the GUI
+Last edit: 10-27-19
+Last editor: AW
+Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-quickstart*/
+
 // Windows Header Files:
 #include <windows.h>
 
@@ -102,9 +108,9 @@ class SimulationApp
         ID2D1SolidColorBrush* m_pCyanBrush;
         ID2D1SolidColorBrush* m_pTealBrush;
         ID2D1SolidColorBrush* m_pNavyBrush;
-        //Orange, red, and maroon brushes for predators
-        ID2D1SolidColorBrush* m_pOrangeBrush;
+        //Red, orange, and maroon brushes for predators
         ID2D1SolidColorBrush* m_pRedBrush;
+        ID2D1SolidColorBrush* m_pOrangeBrush;
         ID2D1SolidColorBrush* m_pMaroonBrush;
         
         simulation sim;
