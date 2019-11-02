@@ -12,7 +12,7 @@ Last editor: BP
 #include "environment_object.h"
 #include "mammal.h"
 
-class grazer : public environment_object, public mammal
+class grazer : public mammal
 {
     private:
     int energy_input;

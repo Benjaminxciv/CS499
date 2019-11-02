@@ -18,7 +18,7 @@ class mammal : public environment_object
         int energy;
         int e_output;
     public:
-        mammal(int);
+        mammal(int, int, int);
         mammal();
         ~mammal();
         void gain_energy(int);

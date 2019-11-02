@@ -11,7 +11,7 @@ Last editor: MG
 #include "environment_object.h"
 #include "mammal.h"
 
-class predator : public environment_object, public mammal
+class predator : public mammal
 {
     private:
     public:
