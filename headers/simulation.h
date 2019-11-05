@@ -17,6 +17,7 @@ Last editor:
 #include "predator.h"
 #include "grazer.h"
 #include "clock.h"
+#include "sim_message.h"
 
 enum tick_speeds {x1 = 1, x10 = 10, x50 = 50, x100 = 100};
 
@@ -33,7 +34,7 @@ class simulation
         void increase_tick_speed();
         void increment_simulation_clock();
         time_container get_simulation_time();
-        void process_sim_message();
+        bool process_sim_message();
 };
 
 #endif

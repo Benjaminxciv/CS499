@@ -80,6 +80,22 @@ void simulation::increase_tick_speed()
 	}
 }
 
+bool simulation::process_sim_message()
+{
+	sim_message& message = sim_message::get_instance();
+	if(message.get_action_requested() == "get curr_time")
+	{
+		message.set_time_info(&(this->get_simulation_time()));
+	}
+	if(message.get_action_requested() == "get future_time")
+	{
+		clock* future_clock = this->simulation_clock;
+		future_clock->add_sec(message.get_time_offset());
+		message.set_time_info(&(future_clock->get_time()));
+	}
+	return true;
+}
+
 /*Name: run_sim
 Purpose: Runs the simulation, including reading the data file and calling all grid cells
 Parameters: NA
