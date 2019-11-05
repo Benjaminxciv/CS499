@@ -85,13 +85,13 @@ bool simulation::process_sim_message()
 	sim_message& message = sim_message::get_instance();
 	if(message.get_action_requested() == "get curr_time")
 	{
-		message.set_time_info(&(this->get_simulation_time()));
+		message.set_time_info(&(get_simulation_time()));
 	}
 	if(message.get_action_requested() == "get future_time")
 	{
-		clock* future_clock = this->simulation_clock;
-		future_clock->add_sec(message.get_time_offset());
-		message.set_time_info(&(future_clock->get_time()));
+		clock future_clock = *(simulation_clock);
+		future_clock.add_sec(message.get_time_offset());
+		message.set_time_info(&(future_clock.get_time()));
 	}
 	return true;
 }
@@ -102,13 +102,8 @@ Parameters: NA
 Returns: NA*/
 void simulation::run_sim()
 {
-
-	grazer* grazy = new grazer(1,1,50,5);
-
-	for(int x = 0; x < 62; x++)
-	{
-		grazy->act();
-	}
+	sim_message& message = sim_message::get_instance();
+	message.set_sim(this);
 
 	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
@@ -151,6 +146,8 @@ void simulation::run_sim()
 	{
 		if(lsdp->getPlantData(&xPos, &yPos, &diameter))
 		{
+			plant* p = new plant(xPos, yPos);
+			sim_grid.set_cell_contents(xPos, yPos, p);
 			cout << "Plant " << i << " (" << xPos << ", " << yPos << ") diameter = " << diameter << endl;
 		}
 		else
@@ -245,7 +242,11 @@ void simulation::run_sim()
 		{
 			for(int y = 0; y < world_height; y++)
 			{
-				sim_grid.get_cell_contents(x, y)->act();
+				environment_object* actor = sim_grid.get_cell_contents(x, y);
+				if(actor != nullptr)
+				{
+					actor->act();
+				}
 			}
 		}
 		_sleep(this->tick_speed);
@@ -257,7 +258,7 @@ void simulation::run_sim()
 int main()
 {
 
- simulation* sim = new simulation();
+ 	simulation* sim = new simulation();
 	sim->run_sim();
   
     return 0;

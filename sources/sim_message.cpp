@@ -16,14 +16,24 @@ sim_message& sim_message::get_instance()
     return sim_message_instance;
 }
 
-bool sim_message::request_action(std::string action_requested, int x_loc, int y_loc)
+void sim_message::set_sim(simulation* sim)
 {
-    return false;
+    this->sim = sim;
 }
 
-bool sim_message::request_action(std::string action_request, int x_loc, int y_loc, environment_object* organism)
+bool sim_message::process_message()
 {
-    return false;
+    return this->sim->process_sim_message();
+}
+
+void sim_message::request_action(std::string action_requested, int x_loc, int y_loc)
+{
+    
+}
+
+void sim_message::request_action(std::string action_request, int x_loc, int y_loc, environment_object* organism)
+{
+    
 }
 
 std::string sim_message::get_action_requested()
