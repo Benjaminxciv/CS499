@@ -23,7 +23,7 @@ class clock
         time_container current_time;
         
     public:
-        void add_sec();
+        void add_sec(int num_secs = 1);
         void add_milli_sec();
         void add_pence_sec();
         time_container get_time();

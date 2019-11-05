@@ -15,7 +15,7 @@ class sim_message
         std::string action_requested;
         //things returned from simulation:
         std::string simulation_response;
-        clock time_info;
+        clock* time_info;
         sim_message();
         ~sim_message();
     public:
@@ -24,9 +24,9 @@ class sim_message
         bool request_action(std::string, int, int, environment_object*);
         void set_simulation_response(std::string);
         std::string get_simulation_response();
-        void set_time_info(clock);
-        clock get_current_time();
-        clock get_future_time(int);
+        void set_time_info(clock*);
+        clock* get_current_time();
+        clock* get_future_time(int);
 };
 
 

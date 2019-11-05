@@ -33,6 +33,7 @@ class simulation
         void increase_tick_speed();
         void increment_simulation_clock();
         time_container get_simulation_time();
+        void process_sim_message();
 };
 
 #endif
