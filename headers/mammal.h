@@ -17,6 +17,7 @@ class mammal : public environment_object
     private:
         int energy;
         int e_output;
+        double movement_speed;
     public:
         mammal(int, int, int);
         mammal();
