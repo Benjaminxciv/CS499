@@ -5,7 +5,7 @@ Last editor: BP*/
 
 #include "mammal.h"
 
-mammal::mammal(int init_energy)
+mammal::mammal(int init_x_loc, int init_y_loc, int init_energy) : environment_object(init_x_loc, init_y_loc)
 {
     this->energy = init_energy;
 }

@@ -8,7 +8,7 @@ Last editor: BP
 #include "grazer.h"
 
 grazer::grazer(int init_x_loc, int init_y_loc, int init_energy, int energy_input)
-    : environment_object(init_x_loc, init_y_loc), mammal(init_energy)
+    : mammal(init_x_loc, init_y_loc, init_energy)
 {
     this->energy_input      = energy_input;
     this->danger            = false;
@@ -100,7 +100,6 @@ void grazer::reset_eat_timer()
 {
     this->eat_timer = 0;
 }
-
 
 /*Name: reset_movement_timer()
 Purpose: reset movement_timer member variable to the time a grzer can maintain max speed
