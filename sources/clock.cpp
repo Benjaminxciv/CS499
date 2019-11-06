@@ -15,36 +15,31 @@ void clock::add_sec(int num_secs)
         if (this->current_time.time_sec >= 60)
         {
             this->current_time.time_sec = 0;
-            this->current_time.time_min++;
-
-            if (this->current_time.time_min >= 60)
-            {
-                this->current_time.time_min = 0; 
-                this->current_time.time_hor++;
-            }
+            this->add_min();
         }
     }
 }
 
-void clock::add_pence_sec()
+void clock::add_min(int num_mins)
 {
-    this->current_time.time_pence_sec++;
-
-    if(this->current_time.time_pence_sec >= 50)
+    for(int i = 0; i < num_mins; i++)
     {
-        this->add_sec();
-        this->current_time.time_pence_sec = 0;
+        this->current_time.time_min++;
+
+        if(this->current_time.time_min >= 60)
+        {
+           this->current_time.time_min = 0;
+           this->add_hour();
+        }
     }
 }
 
-void clock::add_milli_sec()
+void clock::add_hour(int num_hours)
 {
-    this->current_time.time_milli_sec++;
-
-    if (this->current_time.time_milli_sec >= 1000)
-    {      
-        this->add_sec();
-    }           
+    for(int i = 0; i < num_hours; i++)
+    {
+        this->current_time.time_hour++;
+    }         
 }
 
 time_container clock::get_time()

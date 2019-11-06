@@ -90,7 +90,9 @@ bool simulation::process_sim_message()
 	if(message.get_action_requested() == "get future_time")
 	{
 		clock future_clock = *(simulation_clock);
-		future_clock.add_sec(message.get_time_offset());
+		future_clock.add_sec(message.get_time_offset_secs());
+		future_clock.add_min(message.get_time_offset_mins());
+		future_clock.add_hour(message.get_time_offset_hours());
 		message.set_time_info(&(future_clock.get_time()));
 	}
 	return true;

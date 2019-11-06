@@ -11,7 +11,9 @@ class sim_message
     private:
         //things being sent to simulation:
         environment_object* organism;
-        int time_offset;
+        int time_offset_secs;
+        int time_offset_mins;
+        int time_offset_hours;
         int x_loc;
         int y_loc;
         std::string action_requested;
@@ -30,11 +32,13 @@ class sim_message
         std::string get_action_requested();
         void set_simulation_response(std::string);
         std::string get_simulation_response();
-        int get_time_offset();
+        int get_time_offset_secs();
+        int get_time_offset_mins();
+        int get_time_offset_hours();
         void set_time_info(time_container*);
         time_container* get_time_info();
         void get_current_time();
-        void get_future_time(int);
+        void get_future_time(int future_secs = 0, int future_mins = 0, int future_hours = 0);
 };
 
 

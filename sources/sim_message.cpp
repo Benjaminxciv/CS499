@@ -51,9 +51,19 @@ std::string sim_message::get_simulation_response()
     return this->simulation_response;
 }
 
-int sim_message::get_time_offset()
+int sim_message::get_time_offset_secs()
 {
-    return this->time_offset;
+    return this->time_offset_secs;
+}
+
+int sim_message::get_time_offset_mins()
+{
+    return this->time_offset_mins;
+}
+
+int sim_message::get_time_offset_hours()
+{
+    return this->time_offset_hours;
 }
 
 void sim_message::set_time_info(time_container* time_info)
@@ -69,11 +79,15 @@ time_container* sim_message::get_time_info()
 void sim_message::get_current_time()
 {
     this->action_requested = "get curr_time";
-    this->time_offset = 0;
+    this->time_offset_secs = 0;
+    this->time_offset_mins = 0;
+    this->time_offset_hours = 0;
 }
 
-void sim_message::get_future_time(int future_time)
+void sim_message::get_future_time(int future_secs, int future_mins, int future_hours)
 {
     this->action_requested = "get future_time";
-    this->time_offset = future_time;
+    this->time_offset_secs = future_secs;
+    this->time_offset_mins = future_mins;
+    this->time_offset_hours = future_hours;
 }
