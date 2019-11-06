@@ -85,7 +85,7 @@ bool simulation::process_sim_message()
 	sim_message& message = sim_message::get_instance();
 	if(message.get_action_requested() == "get curr_time")
 	{
-		message.set_time_info(&(get_simulation_time()));
+		message.set_time_info(get_simulation_time());
 	}
 	if(message.get_action_requested() == "get future_time")
 	{
@@ -93,7 +93,7 @@ bool simulation::process_sim_message()
 		future_clock.add_sec(message.get_time_offset_secs());
 		future_clock.add_min(message.get_time_offset_mins());
 		future_clock.add_hour(message.get_time_offset_hours());
-		message.set_time_info(&(future_clock.get_time()));
+		message.set_time_info(future_clock.get_time());
 	}
 	return true;
 }

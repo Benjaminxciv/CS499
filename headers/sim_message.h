@@ -19,7 +19,7 @@ class sim_message
         std::string action_requested;
         //things returned from simulation:
         std::string simulation_response;
-        time_container* time_info;
+        time_container time_info;
         simulation* sim;
         sim_message();
         ~sim_message();
@@ -35,8 +35,8 @@ class sim_message
         int get_time_offset_secs();
         int get_time_offset_mins();
         int get_time_offset_hours();
-        void set_time_info(time_container*);
-        time_container* get_time_info();
+        void set_time_info(time_container);
+        time_container get_time_info();
         void get_current_time();
         void get_future_time(int future_secs = 0, int future_mins = 0, int future_hours = 0);
 };

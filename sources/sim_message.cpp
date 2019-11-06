@@ -66,12 +66,12 @@ int sim_message::get_time_offset_hours()
     return this->time_offset_hours;
 }
 
-void sim_message::set_time_info(time_container* time_info)
+void sim_message::set_time_info(time_container time_info)
 {
     this->time_info = time_info;
 }
 
-time_container* sim_message::get_time_info()
+time_container sim_message::get_time_info()
 {
     return this->time_info;
 }
