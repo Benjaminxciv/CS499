@@ -5,42 +5,41 @@ Last editor: MG*/
 
 #include "clock.h"
 
-void clock::add_sec()
+//TODO: Add method comment block
+void clock::add_sec(int num_secs)
 {
-    this->current_time.time_sec++;
-
-    if (this->current_time.time_sec >= 60)
+    for(int i = 0; i < num_secs; i++)
     {
-        this->current_time.time_sec = 0;
-        this->current_time.time_min++;
+        this->current_time.time_sec++;
 
-        if (this->current_time.time_min >= 60)
+        if (this->current_time.time_sec >= 60)
         {
-            this->current_time.time_min = 0; 
-            this->current_time.time_hor++;
+            this->current_time.time_sec = 0;
+            this->add_min();
         }
-    }                
-}
-
-void clock::add_pence_sec()
-{
-    this->current_time.time_pence_sec++;
-
-    if(this->current_time.time_pence_sec >= 50)
-    {
-        this->add_sec();
-        this->current_time.time_pence_sec = 0;
     }
 }
 
-void clock::add_milli_sec()
+void clock::add_min(int num_mins)
 {
-    this->current_time.time_milli_sec++;
+    for(int i = 0; i < num_mins; i++)
+    {
+        this->current_time.time_min++;
 
-    if (this->current_time.time_milli_sec >= 1000)
-    {      
-        this->add_sec();
-    }           
+        if(this->current_time.time_min >= 60)
+        {
+           this->current_time.time_min = 0;
+           this->add_hour();
+        }
+    }
+}
+
+void clock::add_hour(int num_hours)
+{
+    for(int i = 0; i < num_hours; i++)
+    {
+        this->current_time.time_hour++;
+    }         
 }
 
 time_container clock::get_time()

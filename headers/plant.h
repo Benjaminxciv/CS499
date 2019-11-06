@@ -13,6 +13,7 @@ Last editor: AW
 #include <iostream>
 #include "environment_object.h"
 #include <stdlib.h>
+#include "sim_message.h"
 
 
 class plant : public environment_object
@@ -25,6 +26,7 @@ class plant : public environment_object
         int print_self();
         void set_seed_pod_values();
         void seed_grow();
+        void act();
 };
 
 #endif

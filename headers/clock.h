@@ -10,11 +10,9 @@ Last editor: MG
 
 struct time_container
 {
-    int time_pence_sec = 0;
     int time_sec = 0;
     int time_min = 0;
-    int time_hor = 0;
-    int time_milli_sec = 0;
+    int time_hour = 0;
 };
 
 class clock
@@ -23,9 +21,9 @@ class clock
         time_container current_time;
         
     public:
-        void add_sec();
-        void add_milli_sec();
-        void add_pence_sec();
+        void add_sec(int num_secs = 1);
+        void add_min(int num_mins = 1);
+        void add_hour(int num_hours = 1);
         time_container get_time();
 };
 #endif 
