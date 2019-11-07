@@ -39,6 +39,10 @@ class sim_message
         time_container get_time_info();
         void get_current_time();
         void get_future_time(int future_secs = 0, int future_mins = 0, int future_hours = 0);
+        void move_organism(int, int, environment_object*);
+        void place_organism(int, int, environment_object*);
+        void eat_organism(int, int, environment_object*);
+        void look_at_cell(int, int);
 };
 
 
