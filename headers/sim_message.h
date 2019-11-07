@@ -43,6 +43,7 @@ class sim_message
         void place_organism(int, int, environment_object*);
         void eat_organism(int, int, environment_object*);
         void look_at_cell(int, int);
+        void request_reproduce(int, int, environment_object*);
 };
 
 
