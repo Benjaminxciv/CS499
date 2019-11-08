@@ -13,7 +13,7 @@ Last editor: BP
 #include "mammal.h"
 #include "sim_message.h"
 
-class grazer : public environment_object, public mammal
+class grazer : public mammal
 {
     private:
         int energy_input;
