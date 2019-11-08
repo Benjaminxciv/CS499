@@ -30,7 +30,7 @@ class grazer : public environment_object, public mammal
         ~grazer();
         std::string  get_type() override;
         int print_self();
-        void set_energy(int, int, int);
+        void set_energy(int);
         void act() override;
         void eat();
         void reset_eat_timer();
