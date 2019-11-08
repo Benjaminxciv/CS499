@@ -107,6 +107,14 @@ void simulation::run_sim()
 	sim_message& message = sim_message::get_instance();
 	message.set_sim(this);
 
+	grazer* graze = new grazer(1,1,20,25);
+
+	for(int x = 0; x < 180; x++)
+	{
+		increment_simulation_clock();
+		graze->act();
+	}
+
 	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
 	double dVal;
