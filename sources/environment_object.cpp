@@ -47,7 +47,7 @@ Returns: NA*/
 void environment_object::set_location(int set_x_loc, int set_y_loc)
 {
     location.x_loc = set_x_loc;
-    >location.y_loc = set_y_loc;
+    location.y_loc = set_y_loc;
 }
 
 void environment_object::act()

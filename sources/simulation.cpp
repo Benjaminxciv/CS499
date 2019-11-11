@@ -143,9 +143,14 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents != nullptr)
 		{
-			
+			std::string cell_contents_type = target_cell_contents->get_type();
+			message.set_simulation_response(cell_contents_type);
+			return true;
 		}
-		return true;
+		else
+		{
+			return false;
+		}
 	}
 	else if(message.get_action_requested() == "eat organism")
 	{
