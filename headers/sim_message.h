@@ -9,6 +9,7 @@
 class sim_message
 {
     private:
+    class simulation;
         //things being sent to simulation:
         environment_object* organism;
         int time_offset_secs;

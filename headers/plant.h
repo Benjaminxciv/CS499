@@ -20,6 +20,7 @@ class plant : public environment_object
 {
     private:
     public:
+        plant();
         plant(int, int);
         ~plant();
         std::string get_type();
