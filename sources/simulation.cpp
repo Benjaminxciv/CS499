@@ -97,31 +97,54 @@ bool simulation::process_sim_message()
 		message.set_time_info(future_clock.get_time());
 		return true;
 	}
-	else if(message.get_action_requested() == "move organism")
+	point location = message.get_location();
+	environment_object* target_cell_contents = sim_grid->get_cell_contents(location);
+	if(message.get_action_requested() == "move organism")
 	{
-		point location = message.get_location();
-		if(sim_grid->get_cell_contents(location) == nullptr)
+		if(target_cell_contents == nullptr)
 		{
 			environment_object* organism = message.get_organism();
 			sim_grid->set_cell_contents(location, organism);
 			sim_grid->set_cell_contents(organism->get_loc(), nullptr);
+			return true;
 		}
 		else
 		{
 			return false;
 		}
-		return true;
 	}
 	else if(message.get_action_requested() == "place organism")
 	{
-		return true;
+		if(target_cell_contents == nullptr)
+		{
+			environment_object* organism = message.get_organism();
+			sim_grid->set_cell_contents(location, organism);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
+	//This will need to be fixed up for predators & grazers
 	else if(message.get_action_requested() == "eat organism")
 	{
-		return true;
+		if(target_cell_contents != nullptr)
+		{
+			sim_grid->set_cell_contents(location, nullptr);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else if(message.get_action_requested() == "look cell")
 	{
+		if(target_cell_contents != nullptr)
+		{
+			
+		}
 		return true;
 	}
 	else if(message.get_action_requested() == "eat organism")
@@ -187,7 +210,10 @@ void simulation::run_sim()
 		if(lsdp->getPlantData(&xPos, &yPos, &diameter))
 		{
 			plant* p = new plant(xPos, yPos);
-			sim_grid->set_cell_contents(xPos, yPos, p);
+			point pt;
+			pt.x_loc = xPos;
+			pt.y_loc = yPos;
+			sim_grid->set_cell_contents(pt, p);
 			cout << "Plant " << i << " (" << xPos << ", " << yPos << ") diameter = " << diameter << endl;
 		}
 		else
@@ -282,7 +308,10 @@ void simulation::run_sim()
 		{
 			for(int y = 0; y < world_height; y++)
 			{
-				environment_object* actor = sim_grid->get_cell_contents(x, y);
+				point pt;
+				pt.x_loc = x;
+				pt.y_loc = y;
+				environment_object* actor = sim_grid->get_cell_contents(pt);
 				if(actor != nullptr)
 				{
 					actor->act();

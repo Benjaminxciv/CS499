@@ -21,7 +21,7 @@ struct point
 class environment_object
 {
     private:
-        point* location;
+        point location;
     public:
         environment_object();
         environment_object(int, int);
