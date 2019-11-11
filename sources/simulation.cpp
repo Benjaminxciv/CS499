@@ -15,7 +15,7 @@ Last editor: MG*/
 
 simulation::simulation()
 {
-	this->simulation_clock = new clock();
+	this->simulation_clock = new sim_ns::clock();
 	this->tick_speed = 1000;
 }
 
@@ -89,7 +89,7 @@ bool simulation::process_sim_message()
 	}
 	if(message.get_action_requested() == "get future_time")
 	{
-		clock future_clock = *(simulation_clock);
+		sim_ns::clock future_clock = *(simulation_clock);
 		future_clock.add_sec(message.get_time_offset_secs());
 		future_clock.add_min(message.get_time_offset_mins());
 		future_clock.add_hour(message.get_time_offset_hours());
@@ -104,6 +104,7 @@ Parameters: NA
 Returns: NA*/
 void simulation::run_sim()
 {
+	srand(time(NULL));
 	sim_message& message = sim_message::get_instance();
 	message.set_sim(this);
 

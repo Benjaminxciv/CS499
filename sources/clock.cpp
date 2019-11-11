@@ -4,6 +4,7 @@ Last edit: 10-22-20
 Last editor: MG*/
 
 #include "clock.h"
+using namespace sim_ns;
 
 //TODO: Add method comment block
 void clock::add_sec(int num_secs)

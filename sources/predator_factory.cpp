@@ -29,7 +29,6 @@ char predator_factory::punnett_square(char gene_one, char gene_two)
 {
     if (gene_one != gene_two)
     {
-        srand(time(NULL));
         int i = rand() % 2 + 1;
 
         if ((i % 2) == 0)
