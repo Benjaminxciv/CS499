@@ -26,6 +26,7 @@ class simulation
     private:
         int tick_speed;
         clock* simulation_clock;
+        grid* sim_grid;
     public:
         simulation();
         ~simulation();

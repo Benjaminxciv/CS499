@@ -27,7 +27,7 @@ class environment_object
         environment_object(int, int);
         ~environment_object();
         
-        point* get_loc();
+        point get_loc();
         void set_location(int, int); 
         virtual void act();
         virtual std::string get_type();
