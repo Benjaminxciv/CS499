@@ -130,6 +130,7 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents != nullptr)
 		{
+			delete target_cell_contents;
 			sim_grid->set_cell_contents(location, nullptr);
 			return true;
 		}
@@ -142,6 +143,7 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents != nullptr)
 		{
+			delete target_cell_contents;
 			sim_grid->set_cell_contents(location, organism);
 			return true;
 		}
