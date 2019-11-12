@@ -92,7 +92,8 @@ void plant::radially_disperse_seed()
         message.process_message();
         // check if cell is empty
         // need to check in to see if this would be correct way to test logic. 
-        if (message.request_action("occupied", target_center_x, target_center_y == false)
+        //if (message.request_action("occupied", target_center_x, target_center_y == false)
+        
         {
             message.request_action("create new", target_center_x, target_center_y, *seed);
         }
