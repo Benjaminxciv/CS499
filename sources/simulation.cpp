@@ -99,11 +99,11 @@ bool simulation::process_sim_message()
 	}
 	point location = message.get_location();
 	environment_object* target_cell_contents = sim_grid->get_cell_contents(location);
+	environment_object* organism = message.get_organism();
 	if(message.get_action_requested() == "move organism")
 	{
 		if(target_cell_contents == nullptr)
 		{
-			environment_object* organism = message.get_organism();
 			sim_grid->set_cell_contents(location, organism);
 			sim_grid->set_cell_contents(organism->get_loc(), nullptr);
 			return true;
@@ -117,7 +117,6 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents == nullptr)
 		{
-			environment_object* organism = message.get_organism();
 			sim_grid->set_cell_contents(location, organism);
 			return true;
 		}
@@ -139,6 +138,18 @@ bool simulation::process_sim_message()
 			return false;
 		}
 	}
+	else if(message.get_action_requested() == "replace organism")
+	{
+		if(target_cell_contents != nullptr)
+		{
+			sim_grid->set_cell_contents(location, organism);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 	else if(message.get_action_requested() == "look cell")
 	{
 		if(target_cell_contents != nullptr)
@@ -152,7 +163,7 @@ bool simulation::process_sim_message()
 			return false;
 		}
 	}
-	else if(message.get_action_requested() == "eat organism")
+	else if(message.get_action_requested() == "request reproduction")
 	{
 		return true;
 	}
