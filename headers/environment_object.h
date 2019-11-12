@@ -16,6 +16,8 @@ struct point
 {
     int x_loc;
     int y_loc;
+    point() {}
+    point(int x, int y) : x_loc(x), y_loc(y) {}
 };
 
 class environment_object
