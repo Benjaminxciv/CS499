@@ -16,25 +16,21 @@ Last editor: BP
 class grazer : public mammal
 {
     private:
-        int energy_level;
         int energy_input;
-        int energy_output;
-        int energy_reproduce_min;
         time_container current_time;
         time_container eat_timer;
         time_container gain_energy_timer;
         time_container movement_timer;
-        int max_speed;
         int maintain_time;
         bool danger;
         bool food_available;
-        int eat_reach;
-        int plant_sight_dist;
-        int pred_sight_dist;
+        const int eat_reach = 5;
+        const int plant_sight_dist = 150;
+        const int pred_sight_dist = 25;
 
 
     public:
-        grazer(point, int, int);
+        grazer(point, int, int, int, int, double, double);
         ~grazer();
         std::string  get_type() override;
         int print_self();

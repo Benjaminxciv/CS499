@@ -139,18 +139,18 @@ void simulation::init_sim()
 
 	//Plant info data
 	//These values are consistent for every plant
-	double growth_rate = lsdp->getPlantGrowthRate();
-	int max_size = lsdp->getMaxPlantSize();
-	int max_seed_cast_dist = lsdp->getMaxSeedCastDistance();
-	int max_seed_num = lsdp->getMaxSeedNumber();
-	double seed_viability = lsdp->getSeedViability();
+	double plt_growth_rate = lsdp->getPlantGrowthRate();
+	int plt_max_size = lsdp->getMaxPlantSize();
+	int plt_max_seed_cast_dist = lsdp->getMaxSeedCastDistance();
+	int plt_max_seed_num = lsdp->getMaxSeedNumber();
+	double plt_seed_viability = lsdp->getSeedViability();
 	for(int i = 0; i < lsdp->getInitialPlantCount(); i++)
 	{
 		int diameter;
 		if(lsdp->getPlantData(&x_pos, &y_pos, &diameter))
 		{
 			point plant_pt(x_pos, y_pos);
-			plant* plt = new plant(plant_pt, growth_rate, max_size, max_seed_cast_dist, max_seed_num, seed_viability);
+			plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability);
 			sim_grid->set_cell_contents(plant_pt, plt);
 		}
 		else
@@ -160,52 +160,38 @@ void simulation::init_sim()
 	}
 
 	//Grazer info data
-	iVal = lsdp->getGrazerEnergyInputRate();				// Energy input per minute when grazing
-
-	iVal = lsdp->getGrazerEnergyOutputRate();			// Energy output when moving each 5 DU
-
-	iVal = lsdp->getGrazerEnergyToReproduce();			// Energy level needed to reproduce
-
-	dVal = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
-
-	dVal = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
-
+	int grz_energy_input = lsdp->getGrazerEnergyInputRate();				// Energy input per minute when grazing
+	int grz_energy_output = lsdp->getGrazerEnergyOutputRate();			// Energy output when moving each 5 DU
+	int grz_energy_reprod = lsdp->getGrazerEnergyToReproduce();			// Energy level needed to reproduce
+	double grz_max_speed = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
+	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
 	for(int i = 0; i < lsdp->getInitialGrazerCount(); i++)
 	{
+		int energy;
 		if(lsdp->getGrazerData(&x_pos, &y_pos, &energy))
 		{
-			cout << "Grazer " << i << " (" << x_pos << ", " << y_pos << ") energy level = " << energy << endl;
+			point grazer_pt(x_pos, y_pos);
+			grazer* grz = new grazer(grazer_pt, energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
+			sim_grid->set_cell_contents(grazer_pt, grz);
 		}
 		else
 		{
-			cout << "Failed to read data for grazer " << i << endl;
+			//Add error checking during testing phase
 		}
 	}
 
 	// Predator info functions
-	iVal = lsdp->getInitialPredatorCount();
-
-	iPredatorCount = iVal;
-
 	dVal = lsdp->getPredatorMaxSpeedHOD();			// Get max speed for Homozygous Dominant FF
-
 	dVal = lsdp->getPredatorMaxSpeedHED();			// Get max speed for Heterozygous Dominant Ff
-
 	dVal = lsdp->getPredatorMaxSpeedHOR();			// Get max speed for Homozygous Recessive ff
-
 	iVal = lsdp->getPredatorEnergyOutputRate();			// Energy output when moving each 5 DU
-
 	iVal = lsdp->getPredatorEnergyToReproduce();			// Energy level needed to reproduce
-
 	dVal = lsdp->getPredatorMaintainSpeedTime();		// Minutes of simulation to maintain max speed
-
 	iVal = lsdp->getPredatorMaxOffspring();				// Maximum number of offspring when reproducing
-
 	dVal = lsdp->getPredatorGestationPeriod();		// Gestation period in simulation days 
-
 	iVal = lsdp->getPredatorOffspringEnergyLevel();		// Energy level of offspring at birth
 
-	for(int i=0; i< iPredatorCount; i++)
+	for(int i = 0; i < lsdp->getInitialPredatorCount(); i++)
 	{
 		if(lsdp->getPredatorData(&x_pos, &y_pos, &energy, genotype))
 		{
@@ -213,25 +199,25 @@ void simulation::init_sim()
 		}
 		else
 		{
-			cout << "Failed to read data for predator " << i << endl;
+			//Add error checking during testing phase
 		}
 	}
 
 	// Obstacle info data
-	iVal = lsdp->getObstacleCount();						// Number of obstacles
 
-	iObstacleCount = iVal;
-
-	for(int i=0; i< iObstacleCount; i++)
+	for(int i = 0; i < lsdp->getObstacleCount(); i++)
 	{
+		int diameter;
+		int height;
 		if(lsdp->getObstacleData(&x_pos, &y_pos, &diameter, &height))
 		{
-			point pt(x_pos, y_pos);
-			boulder* b = new boulder(pt, diameter, height);
+			point boulder_pt(x_pos, y_pos);
+			boulder* bld = new boulder(boulder_pt, diameter, height);
+			sim_grid->set_cell_contents(boulder_pt, bld);
 		}
 		else
 		{
-			cout << "Failed to read data for obstacle " << i << endl;
+			//Add error checking during testing phase
 		}
 	}
 

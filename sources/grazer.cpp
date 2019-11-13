@@ -7,9 +7,10 @@ Last editor: BP
 
 #include "grazer.h"
 
-grazer::grazer(point init_loc, int init_energy, int energy_input) : mammal(init_loc, init_energy)
+grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_reprod_min, double m_spd, double maintain_spd) :
+    energy_input(e_input),
+    mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
-    this->energy_input      = energy_input;
     this->danger            = false;
     this->food_available    = false;
 }

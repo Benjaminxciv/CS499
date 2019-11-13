@@ -5,9 +5,15 @@ Last editor: BP*/
 
 #include "mammal.h"
 
-mammal::mammal(point init_loc, int init_energy) : environment_object(init_loc)
+mammal::mammal(point init_loc, int init_e, int e_output, int e_reprod_min, double m_spd, double maintain_spd) :
+    energy(init_e),
+    energy_output(e_output),
+    energy_reproduce_min(e_reprod_min),
+    max_speed(m_spd),
+    maintain_speed(maintain_spd),
+    environment_object(init_loc)
 {
-    this->energy = init_energy;
+
 }
 
 mammal::mammal()
@@ -66,7 +72,7 @@ void mammal::move(direction dir, int speed)
             location.y_loc++;
             break;
     }
-    this->energy -= this->e_output * (speed / 5);
+    this->energy -= this->energy_output * (speed / 5);
 }
 
 void mammal::reproduce()
