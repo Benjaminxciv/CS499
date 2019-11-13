@@ -1,7 +1,7 @@
 /*
 Name: grazer.h
 Purpose: Header file for grazers.
-Last edit: 10-27-2019
+Last edit: 11-7-2019
 Last editor: BP
 */
 
@@ -11,16 +11,20 @@ Last editor: BP
 #include <string>
 #include "environment_object.h"
 #include "mammal.h"
+#include "sim_message.h"
 
 class grazer : public mammal
 {
     private:
         int energy_input;
-        int eat_timer;
-        int movement_timer;
-        double movement_count;
+        double move_count;
         double init_speed;
         double curr_speed;
+        time_container current_time;
+        time_container eat_timer;
+        time_container gain_energy_timer;
+        time_container movement_timer;
+        time_container speed_timer;
         int maintain_time;
         bool danger;
         bool food_available;

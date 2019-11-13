@@ -1,7 +1,7 @@
 /*
 Name: grazer.cpp
 Purpose: Grazer's class that defines their EU consumption and reproduction information.
-Last edit: 10-27-2019
+Last edit: 11-7-2019
 Last editor: BP
 */
 
@@ -13,7 +13,6 @@ grazer::grazer(int init_x_loc, int init_y_loc, int init_energy, int energy_input
     this->energy_input      = energy_input;
     this->danger            = false;
     this->food_available    = false;
-    this->eat_timer         = 0;
 }
 
 grazer::~grazer()
@@ -40,60 +39,85 @@ int grazer::print_self()
 }
 
 /*Name: eat()
-Purpose: gain energy per minute. Amount gained is determined by enenergy input
+Purpose: gain energy per minute. Amount gained is determined by energy input
+Trace: Traces to Epic 3, Acceptance Criteria 2
 Parameters: N/A
 BP 10/30/19
 */
 void grazer::eat()
 {
-    this->eat_timer++;
-
-    if(this->eat_timer >= 600)
-    {
+     if(current_time.time_min >= eat_timer.time_min )
+     {
         reset_eat_timer();
-        std::cout << "Moving" << std::endl;
+        cout << "Moving" << endl;
         return;
-    }
+     }
     
-    else if(this->eat_timer >= 60)
+    else if(current_time.time_sec == gain_energy_timer.time_sec)
     {
-      this->gain_energy(energy_input);
+        this->gain_energy(energy_input);
     }
 
     else
     {
-        std::cout << "Moving" <<std::endl;
-    }
+         std::cout << "Moving" <<std::endl;
+    }   
 }
 
 
 void grazer::act()
 {
-    //Add function call to check if grazer if predator or food is nearby 
+    sim_message& message = sim_message::get_instance();
+    message.get_current_time();
+    message.process_message();
+    current_time = message.get_time_info();
+
     if(this->danger)
     {
         reset_eat_timer();
-        std::cout << "Evade" << std::endl;
-        this->movement_timer--;
+        if(movement_timer.time_min == 0)
+        {
+            message.get_future_time(0,this->maintain_time);
+            message.process_message();
+            movement_timer = message.get_time_info();
+        }   
     }
 
     else if(this->food_available)
     {
         reset_movement_timer();
-        reset_movement_timer();
+        
         reset_speed();
+        if(gain_energy_timer.time_sec == 0)
+        {
+            message.get_future_time(58);
+            message.process_message();
+            gain_energy_timer = message.get_time_info();
+        }
+
+        if(eat_timer.time_sec == 0)
+        {
+            message.get_future_time(0, 1);
+            message.process_message();
+            eat_timer = message.get_time_info();
+        }
+
         eat();
     }
 
     else 
     {
-        std::cout << "Move" << std::endl;
-        this->movement_timer--;
+        cout << "Move" << endl;
     }
 
-    if(current_time.time_min = get_future_time(0,3))
+    if (speed_timer.time_min == 3)
     {
         this->curr_speed *= .75;
+        message.get_future_time(0, 3, 0);
+        message.process_message();
+        speed_timer = message.get_time_info();
+        this->curr_speed *= .75;
+
     }
 
     this->set_speed(this->curr_speed);
@@ -140,46 +164,49 @@ void grazer::check_energy()
 {
     if(this->get_energy() < 25)
     {
-        this->move_count += this->move_count + (1/3)
+        this->move_count += this->move_count + (1/3);
     }
 
     if(this->move_count > 10)
-        //kill
+    {
+        cout << "Kill Grazer" << endl;
+    }
 }
-
 
 /*Name: reset_eat_timer()
 Purpose: reset eat_timer member variable to zero
 Parameters: N/A
-BP 10/31/19
+Traces to Epic 3, Acceptance Criteria 2
+BP 11/7/19
 */
 void grazer::reset_eat_timer()
 {
-    this->eat_timer = 0;
-    //reset movement speed
+    eat_timer.time_sec = 0;
+    eat_timer.time_min = 0;
 }
 
 /*Name: reset_movement_timer()
 Purpose: reset movement_timer member variable to the time a grzer can maintain max speed
+Traces to Epic 3, Acceptance Criteria 2
 Parameters: N/A
-BP 10/31/19
+BP 11/7/19
 */
 void grazer::reset_movement_timer()
 {
-    this->movement_timer = (this->maintain_time)*60;
-    std::cout<<this->movement_timer;
+    movement_timer.time_sec = 0;
+    movement_timer.time_min = 0;
 }
 
 
-/*Name: set_maintain_gime(int maintain_time)
+/*Name: set_maintain_time(int maintain_time)
 Purpose: set how long a grazer can run at maxspeed
+Traces to Epic 3, Acceptance Criteria 2
 Parameters: 
 	maintain_time: int
 		The value in minutes that a grazer can run at maxspeed
-BP 10/31/19
+BP 11/7/19
 */
 void grazer::set_maintain_time(int maintain_time)
 {
     this->maintain_time = maintain_time;
-    reset_movement_timer();
 }
