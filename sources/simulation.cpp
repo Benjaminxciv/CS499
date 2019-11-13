@@ -103,106 +103,63 @@ void simulation::init_sim()
 {
 	sim_message& message = sim_message::get_instance();
 	message.set_sim(this);
-	int iVal;
-	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
-	double dVal;
-	int xPos, yPos;
-	int diameter;
-	int energy;
-	char genotype[16];
-	int height;
-
-	int world_height;
-	int world_width;
 
 	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
 	lsdp->initDataParser(DATAFILE);
 
     // Call all the simple get functions and test the results
 	// World info functions
-	this->world_height = lsdp->getWorldWidth();
-	this->world_width = lsdp->getWorldHeight();
+	this->world_width = lsdp->getWorldWidth();
+	this->world_height = lsdp->getWorldHeight();
 	this->sim_grid = new grid(world_width, world_height);
 
-	// Obstacle info data
-	iVal = lsdp->getObstacleCount();						// Number of obstacles
+	//Data parser requires references to integers to pass info
+	//Every environment_object will requre an X and Y position
+	//So go ahead and create those integers to be re-used
+	int x_pos;
+	int y_pos;
 
-	iObstacleCount = iVal;
-
-	for(int i=0; i< iObstacleCount; i++)
+	//Obstacle info data
+	for(int i = 0; i < lsdp->getObstacleCount(); i++)
 	{
-		if(lsdp->getObstacleData(&xPos, &yPos, &diameter, &height))
+		int diameter;
+		int height;
+		if(lsdp->getObstacleData(&x_pos, &y_pos, &diameter, &height))
 		{
-			//cout << "Obstacle " << i << " (" << xPos << ", " << yPos << ") diameter = " << diameter << ", height = " << height << endl;
-			point bldpt(xPos, yPos);
-			boulder* bold = new boulder(bldpt, 1, 1);
-			sim_grid->set_cell_contents(bldpt, bold);
+			//cout << "Obstacle " << i << " (" << x_pos << ", " << y_pos << ") diameter = " << diameter << ", height = " << height << endl;
+			point boulder_pt(x_pos, y_pos);
+			boulder* bold = new boulder(boulder_pt, diameter, height);
+			sim_grid->set_cell_contents(boulder_pt, bold);
 		}
 		else
 		{
-			//cout << "Failed to read data for obstacle " << i << endl;
+			//Add error checking during testing phase
 		}
 	}
 
-
-	int iVal;
-	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
-	double dVal;
-	int xPos, yPos;
-	int diameter;
-	int energy;
-	char genotype[16];
-	int height;
-
-	int world_height;
-	int world_width;
-
-	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
-	lsdp->initDataParser(DATAFILE);
-
-    // Call all the simple get functions and test the results
-	// World info functions
-	world_height = lsdp->getWorldWidth();
-	world_width = lsdp->getWorldHeight();
-
-	sim_grid = new grid(world_width, world_height);
-	
-	sim_grid->print_grid();
-
-	// Plant info functions
-	iVal = lsdp->getInitialPlantCount();
-	iPlantCount = iVal;
-
-	dVal = lsdp->getPlantGrowthRate();
-
-	iVal = lsdp->getMaxPlantSize();
-
-	iVal = lsdp->getMaxSeedCastDistance();
-
-	iVal = lsdp->getMaxSeedNumber();
-
-	dVal = lsdp->getSeedViability();
-
-	for(int i=0; i< iPlantCount; i++)
+	//Plant info data
+	//These values are consistent for every plant
+	double growth_rate = lsdp->getPlantGrowthRate();
+	int max_size = lsdp->getMaxPlantSize();
+	int max_seed_cast_dist = lsdp->getMaxSeedCastDistance();
+	int max_seed_num = lsdp->getMaxSeedNumber();
+	double seed_viability = lsdp->getSeedViability();
+	for(int i = 0; i < lsdp->getInitialPlantCount(); i++)
 	{
-		if(lsdp->getPlantData(&xPos, &yPos, &diameter))
+		int diameter;
+		if(lsdp->getPlantData(&x_pos, &y_pos, &diameter))
 		{
-			point pt(xPos, yPos);
-			plant* p = new plant(pt);
-			sim_grid->set_cell_contents(pt, p);
-			cout << "Plant " << i << " (" << xPos << ", " << yPos << ") diameter = " << diameter << endl;
+			point plant_pt(x_pos, y_pos);
+			plant* plt = new plant(plant_pt, growth_rate, max_size, max_seed_cast_dist, max_seed_num, seed_viability);
+			sim_grid->set_cell_contents(plant_pt, plt);
 		}
 		else
 		{
-			cout << "Failed to read data for plant " << i << endl;
+			//Add error checking during testing phase
 		}
 	}
 
-	// Grazer info functions
-	iVal = lsdp->getInitialGrazerCount();
-
-	iGrazerCount = iVal;
-
+	//Grazer info data
 	iVal = lsdp->getGrazerEnergyInputRate();				// Energy input per minute when grazing
 
 	iVal = lsdp->getGrazerEnergyOutputRate();			// Energy output when moving each 5 DU
@@ -213,11 +170,11 @@ void simulation::init_sim()
 
 	dVal = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
 
-	for(int i=0; i< iGrazerCount; i++)
+	for(int i = 0; i < lsdp->getInitialGrazerCount(); i++)
 	{
-		if(lsdp->getGrazerData(&xPos, &yPos, &energy))
+		if(lsdp->getGrazerData(&x_pos, &y_pos, &energy))
 		{
-			cout << "Grazer " << i << " (" << xPos << ", " << yPos << ") energy level = " << energy << endl;
+			cout << "Grazer " << i << " (" << x_pos << ", " << y_pos << ") energy level = " << energy << endl;
 		}
 		else
 		{
@@ -250,9 +207,9 @@ void simulation::init_sim()
 
 	for(int i=0; i< iPredatorCount; i++)
 	{
-		if(lsdp->getPredatorData(&xPos, &yPos, &energy, genotype))
+		if(lsdp->getPredatorData(&x_pos, &y_pos, &energy, genotype))
 		{
-			cout << "Predator " << i << " (" << xPos << ", " << yPos << ") energy level = " << energy << ", genotype = " << genotype << endl;
+			cout << "Predator " << i << " (" << x_pos << ", " << y_pos << ") energy level = " << energy << ", genotype = " << genotype << endl;
 		}
 		else
 		{
@@ -267,9 +224,9 @@ void simulation::init_sim()
 
 	for(int i=0; i< iObstacleCount; i++)
 	{
-		if(lsdp->getObstacleData(&xPos, &yPos, &diameter, &height))
+		if(lsdp->getObstacleData(&x_pos, &y_pos, &diameter, &height))
 		{
-			point pt(xPos, yPos);
+			point pt(x_pos, y_pos);
 			boulder* b = new boulder(pt, diameter, height);
 		}
 		else
