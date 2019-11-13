@@ -16,18 +16,20 @@ struct point
 {
     int x_loc;
     int y_loc;
+    point() {}
+    point(int x, int y) : x_loc(x), y_loc(y) {}
 };
 
 class environment_object
 {
     private:
-        point* location;
+        point location;
     public:
         environment_object();
         environment_object(int, int);
         ~environment_object();
         
-        point* get_loc();
+        point get_loc();
         void set_location(int, int); 
         virtual void act();
         virtual std::string get_type();
