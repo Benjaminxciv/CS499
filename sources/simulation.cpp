@@ -99,6 +99,22 @@ std::vector<environment_object*> simulation::iterate_cells()
 	return cells;
 }
 
+
+//Helper function from https://stackoverflow.com/questions/25345598/c-implementation-to-trim-char-array-of-leading-trailing-white-space-not-workin
+void strtrim(char* str)
+{
+    int start = 0; // number of leading spaces
+    char* buffer = str;
+    while (*str && *str++ == ' ') ++start;
+    while (*str++); // move to end of string
+    int end = str - buffer - 1; 
+    while (end > 0 && buffer[end - 1] == ' ') --end; // backup over trailing spaces
+    buffer[end] = 0; // remove trailing spaces
+    if (end <= start || start == 0) return; // exit if no leading spaces or string is now empty
+    str = buffer + start;
+    while ((*buffer++ = *str++));  // remove leading spaces: K&R
+}
+
 void simulation::init_sim()
 {
 	sim_message& message = sim_message::get_instance();
@@ -201,7 +217,10 @@ void simulation::init_sim()
 		if(lsdp->getPredatorData(&x_pos, &y_pos, &energy, genotype))
 		{
 			point predator_pt(x_pos, y_pos);
-			predator* pred = new predator(predator_pt, energy, pred_energy_output, pred_energy_reprod, pred_maintain_speed);
+			if(genotype[6])
+			predator* pred = new predator(predator_pt, energy, pred_energy_output, pred_energy_reprod, pred_maintain_speed,
+											pred_max_speed_hod, pred_max_speed_hed, pred_max_speed_hor, pred_max_offspring,
+											pred_gestation_period, pred_offspring_energy_level);
 			sim_grid->set_cell_contents(predator_pt, pred);
 		}
 		else
