@@ -22,12 +22,12 @@ class grid
 		int width;
 		int height;
 		grid_cell* cells;
+	public:
 		grid(int, int);
 		~grid();
 	public:
 		environment_object* get_cell_contents(point);
 		void set_cell_contents(point, environment_object*);
-		static grid& get_instance(int, int);
 		void print_grid();
 		void print_cols();
 		void print_rows();

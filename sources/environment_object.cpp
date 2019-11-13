@@ -18,7 +18,7 @@ environment_object::environment_object(point init_loc) : location (init_loc)
 
 environment_object::~environment_object()
 {
-  
+
 }
 
 /*Name: get_loc

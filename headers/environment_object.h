@@ -17,7 +17,7 @@ struct point
     int x_loc;
     int y_loc;
     point() {}
-    point(int init_x, int init_y) : x_loc(init_x), y_loc(init_y) {}
+    point(int x, int y) : x_loc(x), y_loc(y) {}
 };
 
 class environment_object

@@ -86,16 +86,93 @@ bool simulation::process_sim_message()
 	if(message.get_action_requested() == "get curr_time")
 	{
 		message.set_time_info(get_simulation_time());
+		return true;
 	}
-	if(message.get_action_requested() == "get future_time")
+	else if(message.get_action_requested() == "get future_time")
 	{
 		clock future_clock = *(simulation_clock);
 		future_clock.add_sec(message.get_time_offset_secs());
 		future_clock.add_min(message.get_time_offset_mins());
 		future_clock.add_hour(message.get_time_offset_hours());
 		message.set_time_info(future_clock.get_time());
+		return true;
 	}
-	return true;
+	point location = message.get_location();
+	environment_object* target_cell_contents = sim_grid->get_cell_contents(location);
+	environment_object* organism = message.get_organism();
+	if(message.get_action_requested() == "move organism")
+	{
+		if(target_cell_contents == nullptr)
+		{
+			sim_grid->set_cell_contents(location, organism);
+			sim_grid->set_cell_contents(organism->get_loc(), nullptr);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if(message.get_action_requested() == "place organism")
+	{
+		if(target_cell_contents == nullptr)
+		{
+			sim_grid->set_cell_contents(location, organism);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	//This will need to be fixed up for predators & grazers
+	else if(message.get_action_requested() == "eat organism")
+	{
+		if(target_cell_contents != nullptr)
+		{
+			delete target_cell_contents;
+			sim_grid->set_cell_contents(location, nullptr);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if(message.get_action_requested() == "replace organism")
+	{
+		if(target_cell_contents != nullptr)
+		{
+			delete target_cell_contents;
+			sim_grid->set_cell_contents(location, organism);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if(message.get_action_requested() == "look cell")
+	{
+		if(target_cell_contents != nullptr)
+		{
+			std::string cell_contents_type = target_cell_contents->get_type();
+			message.set_simulation_response(cell_contents_type);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if(message.get_action_requested() == "request reproduction")
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 /*Name: run_sim
@@ -106,6 +183,7 @@ void simulation::run_sim()
 {
 	sim_message& message = sim_message::get_instance();
 	message.set_sim(this);
+
 
 	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
@@ -126,9 +204,10 @@ void simulation::run_sim()
 	// World info functions
 	world_height = lsdp->getWorldWidth();
 	world_width = lsdp->getWorldHeight();
-	grid& sim_grid = grid::get_instance(world_height,world_width);
+
+	sim_grid = new grid(world_width, world_height);
 	
-	sim_grid.print_grid();
+	sim_grid->print_grid();
 
 	// Plant info functions
 	iVal = lsdp->getInitialPlantCount();
