@@ -26,8 +26,7 @@ class plant : public environment_object
         time_container current_time;
         time_container future_time;
     public:
-        plant();
-        plant(int, int);
+        plant(point);
         ~plant();
         std::string get_type();
         int print_self();

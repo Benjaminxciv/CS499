@@ -14,7 +14,7 @@ plant::plant()
 
 }
 
-plant::plant(int init_x_loc, int init_y_loc) : environment_object(init_x_loc, init_y_loc)
+plant::plant(point init_loc) : environment_object(init_loc)
 {
     int plant_x = init_x_loc;
     int plant_y = init_y_loc;
