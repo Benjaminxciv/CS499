@@ -22,11 +22,11 @@ class seed : public environment_object
 {
     private:
         int seed_x, seed_y;
-        seed *current_seed;
+        point location;
+        time_container retained_future_time;
 
     public:
-        seed();
-        seed(int, int);
+        seed(point);
         ~seed();
         void seed_grow();
         void act();
