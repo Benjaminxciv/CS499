@@ -229,7 +229,7 @@ void simulation::run_sim()
 		{
 			point pt(xPos, yPos);
 			plant* p = new plant(pt);
-			sim_grid.set_cell_contents(pt, p);
+			sim_grid->set_cell_contents(pt, p);
 			cout << "Plant " << i << " (" << xPos << ", " << yPos << ") diameter = " << diameter << endl;
 		}
 		else
@@ -326,7 +326,7 @@ void simulation::run_sim()
 			for(int y = 0; y < world_height; y++)
 			{
 				point pt(x, y);
-				environment_object* actor = sim_grid.get_cell_contents(pt);
+				environment_object* actor = sim_grid->get_cell_contents(pt);
 				if(actor != nullptr)
 				{
 					actor->act();
