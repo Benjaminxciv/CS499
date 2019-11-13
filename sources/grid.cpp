@@ -27,20 +27,6 @@ grid::~grid()
     delete [] this->cells;
 }
 
-/*Name: get_instance
-Purpose: Get reference to singleton grid object
-Parameters: 
-    x_size: int
-        Defines width of grid
-    y_size: int
-        Defines height of grid
-Returns: Reference to singleton grid object*/
-grid& grid::get_instance(int x_size, int y_size)
-{
-    static grid grid_instance(x_size, y_size);
-    return grid_instance;
-}
-
 
 /*Name: get_cell_contents
 Purpose: Get pointer to the resident of some cell at X and Y location
@@ -50,9 +36,9 @@ Parameters:
     y_loc: int
         Y location of cell to access
 Returns: Pointer to resident of cell*/
-environment_object* grid::get_cell_contents(int x_loc, int y_loc)
+environment_object* grid::get_cell_contents(point location)
 {
-    grid_cell* cell = &(this->cells[x_loc*this->height+y_loc]);
+    grid_cell* cell = &(this->cells[location.x_loc*this->height+location.y_loc]);
     return cell->environ_obj;
 }
 
@@ -66,22 +52,22 @@ Parameters:
     environ_obj: environment_object*
         Resident to place in the cell
 Returns: NA*/
-void grid::set_cell_contents(int x_loc, int y_loc, environment_object* environ_obj)
+void grid::set_cell_contents(point location, environment_object* environ_obj)
 {
-    grid_cell* cell = &(this->cells[x_loc*this->height+y_loc]);
+    grid_cell* cell = &(this->cells[location.x_loc*this->height+location.y_loc]);
     cell->environ_obj = environ_obj;
 }
 
-//Name: grid::print_grid
-//Purpose: calls print_cols and print_rows functions 
-//Parameters: 
-    //width: int
-        //width of enviroment boundary
-    //height: int
-        //height of enviroment boundary
-//Last edit:
-/*
-BP 10/1/19
+/*Name: grid::print_grid
+Purpose: calls print_cols and print_rows functions 
+Parameters: 
+    width: int
+    width of enviroment boundary
+    height: int
+    height of enviroment boundary
+Returns: N/A
+Last edit:
+    BP 10/1/19
 */
 void grid::print_grid()
 {
@@ -90,14 +76,13 @@ void grid::print_grid()
     print_cols();  
 }
 
-//Name: grid::print_cols
-//Purpose: print the column header of the simulation grid from given width boundary
-//Parameters: 
-    //width: int
-        //width of enviroment boundary
-//Last edit:
-/*
-BP 10/1/19
+/*Name: grid::print_cols
+Purpose: print the column header of the simulation grid from given width boundary
+Parameters: 
+    width: int
+        width of enviroment boundary
+Last edit:
+    BP 10/1/19
 */
 void grid::print_cols()
 {
