@@ -181,21 +181,28 @@ void simulation::init_sim()
 	}
 
 	// Predator info functions
-	dVal = lsdp->getPredatorMaxSpeedHOD();			// Get max speed for Homozygous Dominant FF
-	dVal = lsdp->getPredatorMaxSpeedHED();			// Get max speed for Heterozygous Dominant Ff
-	dVal = lsdp->getPredatorMaxSpeedHOR();			// Get max speed for Homozygous Recessive ff
-	iVal = lsdp->getPredatorEnergyOutputRate();			// Energy output when moving each 5 DU
-	iVal = lsdp->getPredatorEnergyToReproduce();			// Energy level needed to reproduce
-	dVal = lsdp->getPredatorMaintainSpeedTime();		// Minutes of simulation to maintain max speed
-	iVal = lsdp->getPredatorMaxOffspring();				// Maximum number of offspring when reproducing
-	dVal = lsdp->getPredatorGestationPeriod();		// Gestation period in simulation days 
-	iVal = lsdp->getPredatorOffspringEnergyLevel();		// Energy level of offspring at birth
+	double pred_max_speed_hod = lsdp->getPredatorMaxSpeedHOD();			// Get max speed for Homozygous Dominant FF
+	double pred_max_speed_hed = lsdp->getPredatorMaxSpeedHED();			// Get max speed for Heterozygous Dominant Ff
+	double pred_max_speed_hor = lsdp->getPredatorMaxSpeedHOR();			// Get max speed for Homozygous Recessive ff
+	int pred_energy_output = lsdp->getPredatorEnergyOutputRate();			// Energy output when moving each 5 DU
+	int pred_energy_reprod = lsdp->getPredatorEnergyToReproduce();			// Energy level needed to reproduce
+	double pred_maintain_speed = lsdp->getPredatorMaintainSpeedTime();		// Minutes of simulation to maintain max speed
+	int pred_max_offspring = lsdp->getPredatorMaxOffspring();				// Maximum number of offspring when reproducing
+	double pred_gestation_period = lsdp->getPredatorGestationPeriod();		// Gestation period in simulation days 
+	int pred_offspring_energy_level = lsdp->getPredatorOffspringEnergyLevel();		// Energy level of offspring at birth
+
+//point init_loc, int init_e, int e_output, int e_reprod_min, double m_spd, double maintain_spd,
+//                    double m_spd_hod, double m_spd_hed, double m_spd_hor, int m_offsprg, int gest_prd, int offsprg_e_lvl
 
 	for(int i = 0; i < lsdp->getInitialPredatorCount(); i++)
 	{
+		int energy;
+		char genotype[16];
 		if(lsdp->getPredatorData(&x_pos, &y_pos, &energy, genotype))
 		{
-			cout << "Predator " << i << " (" << x_pos << ", " << y_pos << ") energy level = " << energy << ", genotype = " << genotype << endl;
+			point predator_pt(x_pos, y_pos);
+			predator* pred = new predator(predator_pt, energy, pred_energy_output, pred_energy_reprod, pred_maintain_speed);
+			sim_grid->set_cell_contents(predator_pt, pred);
 		}
 		else
 		{
