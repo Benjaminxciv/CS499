@@ -15,7 +15,7 @@ class predator : public mammal
 {
     private:
     public:
-        predator(int, int, int);
+        predator(point, int);
         ~predator();
         std::string get_type();
         int print_self();

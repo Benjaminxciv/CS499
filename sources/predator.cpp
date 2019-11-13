@@ -8,7 +8,7 @@ Last editor: MG
 
 #include "predator.h"
 
-predator::predator(int init_x_loc, int init_y_loc, int init_energy) : mammal(init_x_loc, init_y_loc, init_energy)
+predator::predator(point init_loc, int init_energy) : mammal(init_loc, init_energy)
 {
 
 }

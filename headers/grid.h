@@ -25,6 +25,7 @@ class grid
 	public:
 		grid(int, int);
 		~grid();
+	public:
 		environment_object* get_cell_contents(point);
 		void set_cell_contents(point, environment_object*);
 		void print_grid();

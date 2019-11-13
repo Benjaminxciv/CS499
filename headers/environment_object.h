@@ -1,8 +1,8 @@
 /*
 Name: environment_object.h
 Purpose: Header file for environment_object. 
-Last edit: 
-Last editor: 
+Last edit: 11-12-2019
+Last editor: MG
 */
 
 
@@ -22,15 +22,15 @@ struct point
 
 class environment_object
 {
-    private:
+    protected:
         point location;
     public:
         environment_object();
-        environment_object(int, int);
+        environment_object(point);
         ~environment_object();
         
         point get_loc();
-        void set_location(int, int); 
+        void set_location(point); 
         virtual void act();
         virtual std::string get_type();
         virtual int print_self();

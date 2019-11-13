@@ -1,8 +1,8 @@
 
 /*Name: environment_object.cpp
 Purpose: Defines the basic object for the simulation, which holds any shared attributes for all objects
-Last edit: 10-01-19
-Last editor: AW*/
+Last edit: 11-12-19
+Last editor: MG*/
 
 #include "environment_object.h"
 
@@ -11,12 +11,9 @@ environment_object::environment_object()
     
 }
 
-environment_object::environment_object(int init_x_loc, int init_y_loc)
+environment_object::environment_object(point init_loc) : location (init_loc)
 {
-    point init_point;
-    init_point.x_loc = init_x_loc;
-    init_point.y_loc = init_y_loc;
-    this->location = init_point;
+
 }
 
 environment_object::~environment_object()
@@ -44,10 +41,9 @@ Parameters:
     environ_obj: environment_object*
         Resident to place in the cell
 Returns: NA*/
-void environment_object::set_location(int set_x_loc, int set_y_loc)
+void environment_object::set_location(point loc)
 {
-    location.x_loc = set_x_loc;
-    location.y_loc = set_y_loc;
+    location = loc;
 }
 
 void environment_object::act()

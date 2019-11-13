@@ -7,8 +7,7 @@ Last editor: BP
 
 #include "grazer.h"
 
-grazer::grazer(int init_x_loc, int init_y_loc, int init_energy, int energy_input)
-    : mammal(init_x_loc, init_y_loc, init_energy)
+grazer::grazer(point init_loc, int init_energy, int energy_input) : mammal(init_loc, init_energy)
 {
     this->energy_input      = energy_input;
     this->danger            = false;
