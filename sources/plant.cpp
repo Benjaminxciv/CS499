@@ -71,6 +71,7 @@ void plant::set_seed_pod_values()
 /*
 Name: radially_disperse_seeds()
 Purpose: uses the viable seeds set in set_seed_pod_values() to disperse radially from the plant. 
+        1 collision resolution. If it fails to place seed after 1 time, it loses that seed. 
 Trace: Traces to Epic 3, acceptance criteria 1 
 Parameters: N/A
 Returns: N/A
@@ -80,19 +81,19 @@ void plant::radially_disperse_seed()
     int theta = 0;
     for (int i = seed_pod_seed_number; i >= 0; i--)
     {
-        int target_center_x = (cos (theta) * seed_pod_distance) + plant_x; //check maths
-        int target_center_y = (sin (theta) * seed_pod_distance) + plant_y; //check maths
+        int target_center_x = (cos (theta) * seed_pod_distance) + plant_x;
+        int target_center_y = (sin (theta) * seed_pod_distance) + plant_y;
+        point pt(target_center_x, target_center_y);
         theta = theta + rand() % (360/seed_pod_seed_number) + 0;
         
         sim_message& message = sim_message::get_instance();
-        message.look_at_cell()
-        message.request_action("occupied", target_center_x, target_center_y);
-        // check if cell is empty
-        // need to check in to see if this would be correct way to test logic. 
-        //if (message.request_action("occupied", target_center_x, target_center_y == false)
-        
+        if(!message.place_organism(pt, *seed))
         {
-            message.request_action("create new", target_center_x, target_center_y, *seed);
+            target_center_x = (cos (theta) * seed_pod_distance) + plant_x;
+            target_center_y = (sin (theta) * seed_pod_distance) + plant_y;
+            point pt2(target_center_x,target_center_y;)
+            theta = theta + rand() % (360/41) + 0;
+            message.place_organism(pt2, *seed);
         }
    }
 }
