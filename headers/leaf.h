@@ -1,7 +1,7 @@
 /*
 Name: leaf.h
 Purpose: Class containing definitions for leaf environment_object.
-Last edit: 11-11-2019
+Last edit: 11-12-2019
 Last editor: MG
 */
 
@@ -18,7 +18,7 @@ class leaf : public environment_object
 private:
 public:
     leaf();
-    leaf(int, int);
+    leaf(point);
     ~leaf();
     std::string get_type();
     void act();

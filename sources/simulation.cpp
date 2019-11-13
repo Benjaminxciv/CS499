@@ -148,8 +148,9 @@ void simulation::run_sim()
 	{
 		if(lsdp->getPlantData(&xPos, &yPos, &diameter))
 		{
-			plant* p = new plant(xPos, yPos);
-			sim_grid.set_cell_contents(xPos, yPos, p);
+			point pt(xPos, yPos);
+			plant* p = new plant(pt);
+			sim_grid.set_cell_contents(pt, p);
 			cout << "Plant " << i << " (" << xPos << ", " << yPos << ") diameter = " << diameter << endl;
 		}
 		else
@@ -229,7 +230,8 @@ void simulation::run_sim()
 	{
 		if(lsdp->getObstacleData(&xPos, &yPos, &diameter, &height))
 		{
-			boulder* b = new boulder(xPos, yPos, diameter, height);
+			point pt(xPos, yPos);
+			boulder* b = new boulder(pt, diameter, height);
 		}
 		else
 		{
@@ -244,7 +246,8 @@ void simulation::run_sim()
 		{
 			for(int y = 0; y < world_height; y++)
 			{
-				environment_object* actor = sim_grid.get_cell_contents(x, y);
+				point pt(x, y);
+				environment_object* actor = sim_grid.get_cell_contents(pt);
 				if(actor != nullptr)
 				{
 					actor->act();

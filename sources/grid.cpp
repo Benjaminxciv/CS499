@@ -50,9 +50,9 @@ Parameters:
     y_loc: int
         Y location of cell to access
 Returns: Pointer to resident of cell*/
-environment_object* grid::get_cell_contents(int x_loc, int y_loc)
+environment_object* grid::get_cell_contents(point loc)
 {
-    grid_cell* cell = &(this->cells[x_loc*this->height+y_loc]);
+    grid_cell* cell = &(this->cells[loc.x_loc*this->height+loc.y_loc]);
     return cell->environ_obj;
 }
 
@@ -66,9 +66,9 @@ Parameters:
     environ_obj: environment_object*
         Resident to place in the cell
 Returns: NA*/
-void grid::set_cell_contents(int x_loc, int y_loc, environment_object* environ_obj)
+void grid::set_cell_contents(point loc, environment_object* environ_obj)
 {
-    grid_cell* cell = &(this->cells[x_loc*this->height+y_loc]);
+    grid_cell* cell = &(this->cells[loc.x_loc*this->height+loc.y_loc]);
     cell->environ_obj = environ_obj;
 }
 

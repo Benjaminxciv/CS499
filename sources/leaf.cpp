@@ -1,7 +1,7 @@
 /*
 Name: leaf.cpp
 Purpose: Class containing definitions for leaf environment_object.
-Last edit: 11-11-2019
+Last edit: 11-12-2019
 Last editor: MG
 */
 
@@ -12,7 +12,7 @@ leaf::leaf()
 
 }
 
-leaf::leaf(int init_x_loc, int init_y_loc) : environment_object(init_x_loc, init_y_loc)
+leaf::leaf(point location) : environment_object(location)
 {
 
 }

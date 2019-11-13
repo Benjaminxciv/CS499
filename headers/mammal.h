@@ -19,7 +19,7 @@ class mammal : public environment_object
         int e_output;
         double movement_speed;
     public:
-        mammal(int, int, int);
+        mammal(point, int);
         mammal();
         ~mammal();
         void gain_energy(int);

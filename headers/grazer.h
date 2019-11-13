@@ -26,7 +26,7 @@ class grazer : public mammal
         bool food_available;
 
     public:
-        grazer(int, int, int, int);
+        grazer(point, int, int);
         ~grazer();
         std::string  get_type() override;
         int print_self();
