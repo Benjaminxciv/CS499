@@ -17,11 +17,15 @@ class mammal : public environment_object
     private:
         int energy;
         int e_output;
-        double movement_speed;
+        double init_speed;
+        double curr_speed;
     public:
         mammal(int, int, int);
         mammal();
         ~mammal();
+        int get_energy();
+        void set_speed(double);
+        int get_speed();
         void gain_energy(int);
         void move(direction, int);
         void reproduce();

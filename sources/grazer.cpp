@@ -80,14 +80,71 @@ void grazer::act()
     else if(this->food_available)
     {
         reset_movement_timer();
+        reset_movement_timer();
+        reset_speed();
         eat();
     }
-    
+
     else 
     {
         std::cout << "Move" << std::endl;
         this->movement_timer--;
     }
+
+    if(current_time.time_min = get_future_time(0,3))
+    {
+        this->curr_speed *= .75;
+    }
+
+    this->set_speed(this->curr_speed);
+    check_energy();
+}
+
+
+/*
+Name: store_speed()
+Purpose: Creates an init speed and curr speed to allow the
+MAINTAIN_SPEED to be manipulated
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: N/A
+*/
+void grazer::store_speed()
+{
+    this->init_speed = this->get_speed();
+    this->curr_speed = this->get_speed();
+}
+
+/*
+Name: reset_speed()
+Purpose: Resets the current speed with the initial speed given
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: N/A
+*/
+void grazer::reset_speed()
+{   
+    this->curr_speed = this->init_speed;
+}
+
+
+/*
+Name: check_energy()
+Purpose: Add function that ensures after the grazer's energy unit drops below the defined level, 
+therefore the grazer cannot move more than 10 Distance Unit.
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: N/A
+*/
+void grazer::check_energy()
+{
+    if(this->get_energy() < 25)
+    {
+        this->move_count += this->move_count + (1/3)
+    }
+
+    if(this->move_count > 10)
+        //kill
 }
 
 
@@ -99,6 +156,7 @@ BP 10/31/19
 void grazer::reset_eat_timer()
 {
     this->eat_timer = 0;
+    //reset movement speed
 }
 
 /*Name: reset_movement_timer()

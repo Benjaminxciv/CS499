@@ -70,3 +70,42 @@ void mammal::reproduce()
 {
 
 }
+
+
+/*
+Name: get_energy()
+Purpose: return the energy of the mammal
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: energy
+*/
+int mammal::get_energy()
+{
+    return this->energy;
+}
+
+
+/*
+Name: get_speed()
+Purpose: returns the movement speed
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: movement_speed
+*/
+int mammal::get_speed()
+{
+    return this->movement_speed;
+}
+
+
+/*
+Name: set_speed()
+Purpose: sets a speed that is passed in to the current speed of mammal
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: max_speed
+Returns: N/A
+*/
+void mammal::set_speed(double max_speed)
+{
+    this->movement_speed = max_speed;
+}
