@@ -100,20 +100,14 @@ std::vector<environment_object*> simulation::iterate_cells()
 }
 
 
-//Helper function from https://stackoverflow.com/questions/25345598/c-implementation-to-trim-char-array-of-leading-trailing-white-space-not-workin
-void strtrim(char* str)
+//Helper function for stripping leading whitespace from string
+char* trim_lead_whitespace(char* str)
 {
-    int start = 0; // number of leading spaces
-    char* buffer = str;
-    while (*str && *str++ == ' ') ++start;
-    while (*str++); // move to end of string
-    int end = str - buffer - 1; 
-    while (end > 0 && buffer[end - 1] == ' ') --end; // backup over trailing spaces
-    buffer[end] = 0; // remove trailing spaces
-    if (end <= start || start == 0) return; // exit if no leading spaces or string is now empty
-    str = buffer + start;
-    while ((*buffer++ = *str++));  // remove leading spaces: K&R
+    int str_idx = 0; // number of leading spaces
+	while(str[str_idx] != '\0' && (str[str_idx] == ' ' || str[str_idx++] == '\t'));
+	return str+str_idx-1;
 }
+
 
 void simulation::init_sim()
 {
@@ -216,9 +210,26 @@ void simulation::init_sim()
 		char genotype[16];
 		if(lsdp->getPredatorData(&x_pos, &y_pos, &energy, genotype))
 		{
+			char* genotype_trimmed = trim_lead_whitespace(genotype);
 			point predator_pt(x_pos, y_pos);
-			if(genotype[6])
-			predator* pred = new predator(predator_pt, energy, pred_energy_output, pred_energy_reprod, pred_maintain_speed,
+			double pred_max_speed;
+			if(genotype[6] == 'F')
+			{
+				if(genotype[7] == 'F')
+				{
+					pred_max_speed = pred_max_speed_hod;
+				}
+				else
+				{
+					pred_max_speed = pred_max_speed_hed;
+				}
+			}
+			else
+			{
+				pred_max_speed = pred_max_speed_hor;
+			}
+			
+			predator* pred = new predator(predator_pt, energy, pred_energy_output, pred_energy_reprod, pred_max_speed, pred_maintain_speed,
 											pred_max_speed_hod, pred_max_speed_hed, pred_max_speed_hor, pred_max_offspring,
 											pred_gestation_period, pred_offspring_energy_level);
 			sim_grid->set_cell_contents(predator_pt, pred);
