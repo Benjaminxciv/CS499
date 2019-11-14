@@ -25,8 +25,10 @@ class mammal : public environment_object
         mammal();
         ~mammal();
         void gain_energy(int);
+        int get_energy();
         void move(direction, int);
         void reproduce();
+        bool ready_to_reproduce();
 };
 
 #endif

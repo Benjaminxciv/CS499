@@ -39,6 +39,11 @@ void mammal::gain_energy(int energy)
     this->energy += energy;
 }
 
+int mammal::get_energy()
+{
+    return energy;
+}
+
 void mammal::move(direction dir, int speed)
 {
     switch(dir)
@@ -78,4 +83,9 @@ void mammal::move(direction dir, int speed)
 void mammal::reproduce()
 {
 
+}
+
+bool mammal::ready_to_reproduce()
+{
+    return energy >= energy_reproduce_min;
 }

@@ -105,6 +105,7 @@ void grazer::act()
     
     else 
     {
+        move(up, 1);
         cout << "Move" << endl;
     }
 }

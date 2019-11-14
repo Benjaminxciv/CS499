@@ -180,35 +180,35 @@ HRESULT SimulationApp::CreateDeviceResources()
                 &m_pBlackBrush
             );
             m_pRenderTarget->CreateSolidColorBrush(
-                D2D1::ColorF(105,105,105,1),
+                D2D1::ColorF(0.5,0.5,0.5,1),
                 &m_pGreyBrush
             );
             m_pRenderTarget->CreateSolidColorBrush(
-                D2D1::ColorF(0,128,0,1),
+                D2D1::ColorF(0,1,0,1),
                 &m_pGreenBrush
             );
             m_pRenderTarget->CreateSolidColorBrush(
-                D2D1::ColorF(0,255,255,1),
+                D2D1::ColorF(0,1,1,1),
                 &m_pCyanBrush
             );
             m_pRenderTarget->CreateSolidColorBrush(
-                D2D1::ColorF(0,128,128,1),
+                D2D1::ColorF(0,0.5,1,1),
                 &m_pTealBrush
             );
             m_pRenderTarget->CreateSolidColorBrush(
-                D2D1::ColorF(0,0,128,1),
+                D2D1::ColorF(0,0,1,1),
                 &m_pNavyBrush
             );
             m_pRenderTarget->CreateSolidColorBrush(
-                D2D1::ColorF(255,165,0,1),
+                D2D1::ColorF(1,0.5,0,1),
                 &m_pOrangeBrush
             );
             m_pRenderTarget->CreateSolidColorBrush(
-                D2D1::ColorF(255,0,0,1),
+                D2D1::ColorF(1,0,0,1),
                 &m_pRedBrush
             );
             hr = m_pRenderTarget->CreateSolidColorBrush(
-                D2D1::ColorF(128,0,0,1),
+                D2D1::ColorF(0.5,0,0,1),
                 &m_pMaroonBrush
             );
         }
@@ -247,6 +247,20 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             );
 
         result = 1;
+        SetTimer(hwnd, 1, 1, NULL); 
+    }
+    else if (message == WM_TIMER)
+    {
+        SimulationApp *pSimulationApp = reinterpret_cast<SimulationApp*>(static_cast<LONG_PTR>(
+            ::GetWindowLongPtrW(
+                hwnd,
+                GWLP_USERDATA
+                )));
+
+        if (pSimulationApp)
+        {
+            pSimulationApp->OnRender();
+        }
     }
     else
     {
@@ -311,16 +325,58 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 void SimulationApp::DrawObject(environment_object* target)
 {
     HRESULT hr = S_OK;
-    point* target_loc = target->get_loc();
+    point target_loc = target->get_loc();
     D2D1_RECT_F rectangle2 = D2D1::RectF(
-        target_loc->x_loc-10.0f,
-        target_loc->y_loc-10.0f,
-        target_loc->x_loc+10.0f,
-        target_loc->y_loc+10.0f
+        target_loc.x_loc-5.0f,
+        target_loc.y_loc-5.0f,
+        target_loc.x_loc+5.0f,
+        target_loc.y_loc+5.0f
     );
 
     // Draw the outline of a rectangle.
-    m_pRenderTarget->DrawRectangle(&rectangle2, m_pBlackBrush);
+    ID2D1SolidColorBrush* brush;
+    std::string target_type = target->get_type();
+    if(target_type == "plant")
+    {
+        brush = m_pGreenBrush;
+    }
+    else if(target_type == "boulder")
+    {
+        brush = m_pGreyBrush;
+    }
+    else if(target_type == "predator")
+    {
+        predator* p_target = reinterpret_cast<predator*>(target);
+        if(p_target->ready_to_reproduce())
+        {
+            brush = m_pRedBrush;
+        }
+        else if(p_target->get_energy() <= 25)
+        {
+            brush = m_pMaroonBrush;
+        }
+        else
+        {
+            brush = m_pOrangeBrush;
+        }
+    }
+    else if(target_type == "grazer")
+    {
+        grazer* g_target = reinterpret_cast<grazer*>(target);
+        if(g_target->ready_to_reproduce())
+        {
+            brush = m_pCyanBrush;
+        }
+        else if(g_target->get_energy() <= 25)
+        {
+            brush = m_pNavyBrush;
+        }
+        else
+        {
+            brush = m_pTealBrush;
+        }
+    }
+    m_pRenderTarget->FillRectangle(&rectangle2, brush);
 }
 
 HRESULT SimulationApp::OnRender()
@@ -336,44 +392,39 @@ HRESULT SimulationApp::OnRender()
 
         m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
-        D2D1_SIZE_F rtSize = m_pRenderTarget->GetSize();
+        //D2D1_SIZE_F rtSize = m_pRenderTarget->GetSize();
 
         // Draw a grid background.
-        int width = static_cast<int>(rtSize.width);
-        int height = static_cast<int>(rtSize.height);
+        //int width = static_cast<int>(rtSize.width);
+        //int height = static_cast<int>(rtSize.height);
 
-        for (int x = 0; x < width; x += 10)
+        int world_width = sim.get_world_width();
+        int world_height = sim.get_world_height();
+        for (int x = 0; x <= world_width; x+=10)
         {
             m_pRenderTarget->DrawLine(
                 D2D1::Point2F(static_cast<FLOAT>(x), 0.0f),
-                D2D1::Point2F(static_cast<FLOAT>(x), rtSize.height),
+                //D2D1::Point2F(static_cast<FLOAT>(x), rtSize.height),
+                D2D1::Point2F(static_cast<FLOAT>(x), world_height),
                 m_pBlackBrush,
                 0.5f
             );
         }
 
-        for (int y = 0; y < height; y += 10)
+        for (int y = 0; y <= world_height; y+=10)
         {
             m_pRenderTarget->DrawLine(
                 D2D1::Point2F(0.0f, static_cast<FLOAT>(y)),
-                D2D1::Point2F(rtSize.width, static_cast<FLOAT>(y)),
+                D2D1::Point2F(world_width, static_cast<FLOAT>(y)),
                 m_pBlackBrush,
                 0.5f
-                );
+            );
         }
         std::vector<environment_object*> cells = sim.iterate_cells();
         for(int i = 0; i < cells.size(); i++)
         {
             DrawObject(cells[i]);
         }
-        /*
-        for(int x = 0; x < world_width; x++)
-		{
-			for(int y = 0; y < world_height; y++)
-			{
-				sim_grid.get_cell_contents(x, y)->act();
-			}
-		}*/
 
         hr = m_pRenderTarget->EndDraw();
     }

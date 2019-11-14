@@ -24,6 +24,16 @@ simulation::~simulation()
 
 }
 
+int simulation::get_world_width()
+{
+	return world_width;
+}
+
+int simulation::get_world_height()
+{
+	return world_height;
+}
+
 /*Name: increment_simulation_clock()
 Purpose: Increment the simulation_clock by 1 tick speed.
 Trace: Epic 1 Acceptance Criteria 3
@@ -201,9 +211,6 @@ void simulation::init_sim()
 	double pred_gestation_period = lsdp->getPredatorGestationPeriod();		// Gestation period in simulation days 
 	int pred_offspring_energy_level = lsdp->getPredatorOffspringEnergyLevel();		// Energy level of offspring at birth
 
-//point init_loc, int init_e, int e_output, int e_reprod_min, double m_spd, double maintain_spd,
-//                    double m_spd_hod, double m_spd_hed, double m_spd_hor, int m_offsprg, int gest_prd, int offsprg_e_lvl
-
 	for(int i = 0; i < lsdp->getInitialPredatorCount(); i++)
 	{
 		int energy;
@@ -241,7 +248,6 @@ void simulation::init_sim()
 	}
 
 	// Obstacle info data
-
 	for(int i = 0; i < lsdp->getObstacleCount(); i++)
 	{
 		int diameter;
@@ -257,26 +263,6 @@ void simulation::init_sim()
 			//Add error checking during testing phase
 		}
 	}
-
-  
-	while(1)
-	{
-    	for(int x = 0; x < world_width; x++)
-		{
-			for(int y = 0; y < world_height; y++)
-			{
-				point pt(x, y);
-				environment_object* actor = sim_grid->get_cell_contents(pt);
-				if(actor != nullptr)
-				{
-					actor->act();
-				}
-			}
-		}
-		_sleep(this->tick_speed);
-	}
-
-    std::cin.get();
 }
 
 bool simulation::process_sim_message()

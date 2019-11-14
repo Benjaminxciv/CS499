@@ -33,6 +33,8 @@ class simulation
     public:
         simulation();
         ~simulation();
+        int get_world_height();
+        int get_world_width();
         void init_sim();
         void run_sim();
         void set_tick_speed(int);
