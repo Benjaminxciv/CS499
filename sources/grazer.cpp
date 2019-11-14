@@ -110,14 +110,9 @@ void grazer::act()
         cout << "Move" << endl;
     }
 
-    if (speed_timer.time_min == 3)
+    if (movement_timer.time_min == current_time.time_min)
     {
-        this->curr_speed *= .75;
-        message.get_future_time(0, 3, 0);
-        message.process_message();
-        speed_timer = message.get_time_info();
-        this->curr_speed *= .75;
-
+        this->curr_speed *= .75;       
     }
 
     this->set_speed(this->curr_speed);
