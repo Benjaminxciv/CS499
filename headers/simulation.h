@@ -19,6 +19,7 @@ Last editor:
 #include "grazer.h"
 #include "clock.h"
 #include "sim_message.h"
+#include "time.h"
 
 enum tick_speeds {x1 = 1, x10 = 10, x50 = 50, x100 = 100};
 
@@ -26,9 +27,9 @@ class simulation
 {
     private:
         int tick_speed;
+        sim_ns::clock* simulation_clock;
         int world_height;
         int world_width;
-        clock* simulation_clock;
         grid* sim_grid;
     public:
         simulation();

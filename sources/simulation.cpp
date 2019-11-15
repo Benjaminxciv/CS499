@@ -15,7 +15,7 @@ Last editor: MG*/
 
 simulation::simulation()
 {
-	this->simulation_clock = new clock();
+	this->simulation_clock = new sim_ns::clock();
 	this->tick_speed = 1000;
 }
 
@@ -159,13 +159,14 @@ plant* create_plant(point plant_pt, int diameter)
 
 void simulation::init_sim()
 {
+	srand(time(NULL));
 	sim_message& message = sim_message::get_instance();
 	message.set_sim(this);
 
 	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
 	lsdp->initDataParser(DATAFILE);
 
-	simulation_clock = new clock();
+	simulation_clock = new sim_ns::clock();
 
     // Call all the simple get functions and test the results
 	// World info functions
@@ -297,7 +298,7 @@ bool simulation::process_sim_message()
 	}
 	else if(message.get_action_requested() == "get future_time")
 	{
-		clock future_clock = *(simulation_clock);
+		sim_ns::clock future_clock = *(simulation_clock);
 		future_clock.add_sec(message.get_time_offset_secs());
 		future_clock.add_min(message.get_time_offset_mins());
 		future_clock.add_hour(message.get_time_offset_hours());

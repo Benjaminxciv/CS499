@@ -19,15 +19,18 @@ struct time_container
     }
 };
 
-class clock
+namespace sim_ns
 {
-    private:
-        time_container current_time;
-        
-    public:
-        void add_sec(int num_secs = 1);
-        void add_min(int num_mins = 1);
-        void add_hour(int num_hours = 1);
-        time_container get_time();
-};
+    class clock
+    {
+        private:
+            time_container current_time;
+            
+        public:
+            void add_sec(int num_secs = 1);
+            void add_min(int num_mins = 1);
+            void add_hour(int num_hours = 1);
+            time_container get_time();
+    };
+}
 #endif 
