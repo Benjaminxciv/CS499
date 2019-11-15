@@ -66,6 +66,11 @@ environment_object* sim_message::get_organism()
     return organism;
 }
 
+std::string sim_message::get_environment_obj_type()
+{
+    return environment_obj_type;
+}
+
 void sim_message::set_time_info(time_container new_time_info)
 {
     time_info = new_time_info;
@@ -100,14 +105,21 @@ bool sim_message::move_organism(point target_loc, environment_object* organism_t
     location = target_loc;
     organism = organism_to_move;
     return sim->process_sim_message();
-
 }
 
-bool sim_message::place_organism(point target_loc, environment_object* organism_to_move)
+bool sim_message::place_organism(point target_loc, std::string organism_to_create)
 {
     action_requested = "place organism";
     location = target_loc;
-    organism = organism_to_move;
+    environment_obj_type = organism_to_create;
+    return sim->process_sim_message();
+}
+
+bool sim_message::replace_organism(point target_loc, std::string organism_to_create)
+{
+    action_requested = "replace organism";
+    location = target_loc;
+    environment_obj_type = organism_to_create;
     return sim->process_sim_message();
 }
 

@@ -102,10 +102,29 @@ std::vector<environment_object*> simulation::iterate_cells()
 			if(cell != nullptr)
 			{
 				cell->act();
+				sim_message& message = sim_message::get_instance();
+				//How do I explain this...
+				//If an environment_object gets deleted during the middle of act
+					//Such as dying or getting replaced
+				//It's inherited type (such as plant, grazer) gets reset to the base class
+					//Thus losing get_type()'s info
+				//So if get_type()'s info is gone
+					//Evidenced by an empty string
+				//Get what currently exists at the cell that the object previously existed at
+					//And if it died, the cell will be empty, so make sure to check for that
+				if(cell->get_type() == "")
+				{
+					cell = sim_grid->get_cell_contents(cell->get_loc());
+					if(cell == nullptr)
+					{
+						continue;
+					}
+				}
 				cells.push_back(cell);
 			}
 		}
 	}
+	simulation_clock->add_sec();
 	return cells;
 }
 
@@ -118,6 +137,25 @@ char* trim_lead_whitespace(char* str)
 	return str+str_idx-1;
 }
 
+//boulder* create_boulder(point bld_pt)
+//{
+//	;
+//}
+
+plant* create_plant(point plant_pt, int diameter)
+{
+	plant* plt = nullptr;
+	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();
+	//Plant info data
+	//These values are consistent for every plant
+	double plt_growth_rate = lsdp->getPlantGrowthRate();
+	int plt_max_size = lsdp->getMaxPlantSize();
+	int plt_max_seed_cast_dist = lsdp->getMaxSeedCastDistance();
+	int plt_max_seed_num = lsdp->getMaxSeedNumber();
+	double plt_seed_viability = lsdp->getSeedViability();
+	plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability);
+	return plt;
+}
 
 void simulation::init_sim()
 {
@@ -126,6 +164,8 @@ void simulation::init_sim()
 
 	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
 	lsdp->initDataParser(DATAFILE);
+
+	simulation_clock = new clock();
 
     // Call all the simple get functions and test the results
 	// World info functions
@@ -158,19 +198,14 @@ void simulation::init_sim()
 	}
 
 	//Plant info data
-	//These values are consistent for every plant
-	double plt_growth_rate = lsdp->getPlantGrowthRate();
-	int plt_max_size = lsdp->getMaxPlantSize();
-	int plt_max_seed_cast_dist = lsdp->getMaxSeedCastDistance();
-	int plt_max_seed_num = lsdp->getMaxSeedNumber();
-	double plt_seed_viability = lsdp->getSeedViability();
 	for(int i = 0; i < lsdp->getInitialPlantCount(); i++)
 	{
+		plant* plt = nullptr;
 		int diameter;
 		if(lsdp->getPlantData(&x_pos, &y_pos, &diameter))
 		{
 			point plant_pt(x_pos, y_pos);
-			plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability);
+			plt = create_plant(plant_pt, diameter);
 			sim_grid->set_cell_contents(plant_pt, plt);
 		}
 		else
@@ -246,23 +281,10 @@ void simulation::init_sim()
 			//Add error checking during testing phase
 		}
 	}
-
-	// Obstacle info data
-	for(int i = 0; i < lsdp->getObstacleCount(); i++)
-	{
-		int diameter;
-		int height;
-		if(lsdp->getObstacleData(&x_pos, &y_pos, &diameter, &height))
-		{
-			point boulder_pt(x_pos, y_pos);
-			boulder* bld = new boulder(boulder_pt, diameter, height);
-			sim_grid->set_cell_contents(boulder_pt, bld);
-		}
-		else
-		{
-			//Add error checking during testing phase
-		}
-	}
+	//Use this for testing replacing / removing objects
+	//point pt(0,0);
+	//seed* sd = new seed(pt);
+	//sim_grid->set_cell_contents(pt, sd);
 }
 
 bool simulation::process_sim_message()
@@ -285,6 +307,8 @@ bool simulation::process_sim_message()
 	point location = message.get_location();
 	environment_object* target_cell_contents = sim_grid->get_cell_contents(location);
 	environment_object* organism = message.get_organism();
+	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
+	int diameter = lsdp->getMaxPlantSize() / 10;
 	if(message.get_action_requested() == "move organism")
 	{
 		if(target_cell_contents == nullptr)
@@ -302,6 +326,27 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents == nullptr)
 		{
+			if( message.get_environment_obj_type() == "plant")
+			{
+				organism = create_plant(message.get_location(), diameter);
+			}
+			sim_grid->set_cell_contents(location, organism);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if(message.get_action_requested() == "replace organism")
+	{
+		if(target_cell_contents != nullptr)
+		{
+			delete target_cell_contents;
+			if( message.get_environment_obj_type() == "plant")
+			{
+				organism = create_plant(message.get_location(), diameter);	
+			}
 			sim_grid->set_cell_contents(location, organism);
 			return true;
 		}
@@ -317,19 +362,6 @@ bool simulation::process_sim_message()
 		{
 			delete target_cell_contents;
 			sim_grid->set_cell_contents(location, nullptr);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else if(message.get_action_requested() == "replace organism")
-	{
-		if(target_cell_contents != nullptr)
-		{
-			delete target_cell_contents;
-			sim_grid->set_cell_contents(location, organism);
 			return true;
 		}
 		else

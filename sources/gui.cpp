@@ -13,6 +13,7 @@ SimulationApp::SimulationApp() :
         m_pBlackBrush(NULL),
         m_pGreyBrush(NULL),
         m_pGreenBrush(NULL),
+        m_pYellowBrush(NULL),
         m_pCyanBrush(NULL),
         m_pTealBrush(NULL),
         m_pNavyBrush(NULL),
@@ -32,6 +33,7 @@ SimulationApp::~SimulationApp()
     SafeRelease(&m_pBlackBrush);
     SafeRelease(&m_pGreyBrush);
     SafeRelease(&m_pGreenBrush);
+    SafeRelease(&m_pYellowBrush);
     SafeRelease(&m_pCyanBrush);
     SafeRelease(&m_pTealBrush);
     SafeRelease(&m_pNavyBrush);
@@ -188,6 +190,10 @@ HRESULT SimulationApp::CreateDeviceResources()
                 &m_pGreenBrush
             );
             m_pRenderTarget->CreateSolidColorBrush(
+                D2D1::ColorF(1,1,0,1),
+                &m_pYellowBrush
+            );
+            m_pRenderTarget->CreateSolidColorBrush(
                 D2D1::ColorF(0,1,1,1),
                 &m_pCyanBrush
             );
@@ -223,6 +229,7 @@ void SimulationApp::DiscardDeviceResources()
     SafeRelease(&m_pBlackBrush);
     SafeRelease(&m_pGreyBrush);
     SafeRelease(&m_pGreenBrush);
+    SafeRelease(&m_pYellowBrush);
     SafeRelease(&m_pCyanBrush);
     SafeRelease(&m_pTealBrush);
     SafeRelease(&m_pNavyBrush);
@@ -339,6 +346,17 @@ void SimulationApp::DrawObject(environment_object* target)
     if(target_type == "plant")
     {
         brush = m_pGreenBrush;
+    }
+    else if(target_type == "seed")
+    {
+        brush = m_pYellowBrush;
+    }
+    //How do I explain this...
+    //Seeds take 2 ticks to grow into a plant
+    //This no longer happens, but leaving just in case
+    else if(target_type == "")
+    {
+        brush = m_pBlackBrush;
     }
     else if(target_type == "boulder")
     {
