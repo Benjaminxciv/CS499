@@ -166,7 +166,7 @@ void simulation::init_sim()
 	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
 	lsdp->initDataParser(DATAFILE);
 
-	simulation_clock = new clock();
+	simulation_clock = new sim_ns::clock();
 
     // Call all the simple get functions and test the results
 	// World info functions
@@ -298,7 +298,7 @@ bool simulation::process_sim_message()
 	}
 	else if(message.get_action_requested() == "get future_time")
 	{
-		clock future_clock = *(simulation_clock);
+		sim_ns::clock future_clock = *(simulation_clock);
 		future_clock.add_sec(message.get_time_offset_secs());
 		future_clock.add_min(message.get_time_offset_mins());
 		future_clock.add_hour(message.get_time_offset_hours());
