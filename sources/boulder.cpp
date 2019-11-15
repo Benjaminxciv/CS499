@@ -15,10 +15,8 @@ Parameters: x location, y location, diameter, height
 Returns: N/A
 */
 
-boulder::boulder(int init_x_loc, int init_y_loc, int diameter, int height) : environment_object(init_x_loc, init_y_loc)
+boulder::boulder(point init_loc, int diameter, int height) : environment_object(init_loc)
 {
-    this->x_pos = init_x_loc;
-    this->y_pos = init_y_loc;
     this->diameter = diameter;
     this->height = height;
 }

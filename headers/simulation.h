@@ -13,6 +13,7 @@ Last editor:
 #include "grid.h"
 #include "boulder.h"
 #include "LifeSimDataParser.h"
+#include <vector>
 #include "plant.h"
 #include "predator.h"
 #include "grazer.h"
@@ -27,12 +28,19 @@ class simulation
     private:
         int tick_speed;
         sim_ns::clock* simulation_clock;
+        int world_height;
+        int world_width;
+        grid* sim_grid;
     public:
         simulation();
         ~simulation();
+        int get_world_height();
+        int get_world_width();
+        void init_sim();
         void run_sim();
         void set_tick_speed(int);
         void increase_tick_speed();
+        std::vector<environment_object*> iterate_cells();
         void increment_simulation_clock();
         time_container get_simulation_time();
         bool process_sim_message();

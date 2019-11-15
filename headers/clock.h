@@ -13,6 +13,10 @@ struct time_container
     int time_sec = 0;
     int time_min = 0;
     int time_hour = 0;
+    bool operator==(const time_container& t1)
+    {
+        return (time_sec == t1.time_sec && time_min == t1.time_min && time_hour == t1.time_hour);
+    }
 };
 
 namespace sim_ns
