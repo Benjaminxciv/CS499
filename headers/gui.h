@@ -104,6 +104,8 @@ class SimulationApp
         ID2D1SolidColorBrush* m_pGreyBrush;
         //Green brush for plants
         ID2D1SolidColorBrush* m_pGreenBrush;
+        //Yellow brush for seeds
+        ID2D1SolidColorBrush* m_pYellowBrush;
         //Cyan, teal, and navy brushes for grazers
         ID2D1SolidColorBrush* m_pCyanBrush;
         ID2D1SolidColorBrush* m_pTealBrush;

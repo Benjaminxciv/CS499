@@ -13,21 +13,9 @@ struct time_container
     int time_sec = 0;
     int time_min = 0;
     int time_hour = 0;
-    bool operator==(const time_container& t1, const time_container& t2)
+    bool operator==(const time_container& t1)
     {
-        if (t1.time_sec != t2.time_sec)
-        {
-            return false;
-        }
-        else if (t1.time_min != t2.time_min)
-        {
-            return false;
-        }
-        else if (t1.time_hour != t2.time_hour)
-        {
-            return false;
-        }
-        return true;
+        return (time_sec == t1.time_sec && time_min == t1.time_min && time_hour == t1.time_hour);
     }
 };
 

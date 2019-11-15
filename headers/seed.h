@@ -22,8 +22,8 @@ class seed : public environment_object
 {
     private:
         int seed_x, seed_y;
-        point location;
         time_container retained_future_time;
+        bool retained_future_time_set;
 
     public:
         seed(point);

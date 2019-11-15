@@ -10,7 +10,7 @@ Last editor: MG
 
 seed::seed(point loc) : environment_object(loc)
 {
-    retained_future_time = NULL;
+    retained_future_time_set = false;
 }
 
 seed::~seed()
@@ -49,18 +49,19 @@ Returns: N/A
 void seed::seed_grow()
 {
     sim_message& message = sim_message::get_instance();
-    message.place_organism(location, nullptr); //nullptr needs to be a plant later. 
+    message.replace_organism(location, "plant");
 }
 
 void seed::act()
 {
-    if (retained_future_time == NULL)
+    sim_message& message = sim_message::get_instance();
+    if (!retained_future_time_set)
     {
         message.get_future_time(10, 0, 0);
         retained_future_time = message.get_time_info();
+        retained_future_time_set = true;
     }
     
-    sim_message& message = sim_message::get_instance();
     message.get_current_time();
     time_container current_time = message.get_time_info();
 

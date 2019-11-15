@@ -14,6 +14,7 @@ Last editor: AW
 #include "environment_object.h"
 #include <stdlib.h>
 #include "sim_message.h"
+#include "seed.h"
 
 
 class plant : public environment_object
