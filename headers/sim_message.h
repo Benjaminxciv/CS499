@@ -7,6 +7,8 @@
 #include "simulation.h"
 class simulation;
 
+class simulation;
+
 class sim_message
 {
     private:
