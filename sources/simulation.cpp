@@ -4,12 +4,11 @@ Purpose: Runs the actual simulation, including calling all cell residents and pa
 Last edit: 10-22-20
 Last editor: MG*/
 #include <iostream>
-#include "grid.h"
-#include "boulder.h"
 #include "LifeSimDataParser.h"
-#include "plant.h"
 #include "simulation.h"
 #include "stdlib.h"
+#include "predator.h"
+#include "grazer.h"
 
 #define DATAFILE "LifeSimulation01.xml"
 
@@ -93,16 +92,20 @@ void simulation::increase_tick_speed()
 std::vector<environment_object*> simulation::iterate_cells()
 {
 	std::vector<environment_object*> cells;
+	std::vector<point> skip_cells;
 	for(int x = 0; x < sim_grid->get_width(); x++)
 	{
 		for(int y = 0; y < sim_grid->get_height(); y++)
 		{
 			point pt(x, y);
+			if(std::find(skip_cells.begin(), skip_cells.end(), pt) != skip_cells.end())
+			{
+				continue;
+			}
 			environment_object* cell = sim_grid->get_cell_contents(pt);
 			if(cell != nullptr)
 			{
 				cell->act();
-				sim_message& message = sim_message::get_instance();
 				//How do I explain this...
 				//If an environment_object gets deleted during the middle of act
 					//Such as dying or getting replaced
@@ -121,6 +124,7 @@ std::vector<environment_object*> simulation::iterate_cells()
 					}
 				}
 				cells.push_back(cell);
+				skip_cells.push_back(cell->get_loc());
 			}
 		}
 	}
@@ -137,15 +141,15 @@ char* trim_lead_whitespace(char* str)
 	return str+str_idx-1;
 }
 
-//boulder* create_boulder(point bld_pt)
-//{
-//	;
-//}
+boulder* create_boulder(point boulder_pt, int diameter, int height)
+{
+	boulder* bold = new boulder(boulder_pt, diameter, height);
+	return bold;
+}
 
 plant* create_plant(point plant_pt, int diameter)
 {
-	plant* plt = nullptr;
-	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();
+	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	//Plant info data
 	//These values are consistent for every plant
 	double plt_growth_rate = lsdp->getPlantGrowthRate();
@@ -153,8 +157,60 @@ plant* create_plant(point plant_pt, int diameter)
 	int plt_max_seed_cast_dist = lsdp->getMaxSeedCastDistance();
 	int plt_max_seed_num = lsdp->getMaxSeedNumber();
 	double plt_seed_viability = lsdp->getSeedViability();
-	plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability);
+	plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability);
 	return plt;
+}
+
+grazer* create_grazer(point grazer_pt, int init_energy)
+{
+	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
+	//Grazer info data
+	//These values are consistent for every grazer
+	int grz_energy_input = lsdp->getGrazerEnergyInputRate();				// Energy input per minute when grazing
+	int grz_energy_output = lsdp->getGrazerEnergyOutputRate();			// Energy output when moving each 5 DU
+	int grz_energy_reprod = lsdp->getGrazerEnergyToReproduce();			// Energy level needed to reproduce
+	double grz_max_speed = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
+	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
+	grazer* grz = new grazer(grazer_pt, init_energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
+	return grz;
+}
+
+predator* create_predator(point predator_pt, int init_energy, char* genotype)
+{
+	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
+	// Predator info data
+	//These values are consistent for every predator
+	double pred_max_speed_hod = lsdp->getPredatorMaxSpeedHOD();			// Get max speed for Homozygous Dominant FF
+	double pred_max_speed_hed = lsdp->getPredatorMaxSpeedHED();			// Get max speed for Heterozygous Dominant Ff
+	double pred_max_speed_hor = lsdp->getPredatorMaxSpeedHOR();			// Get max speed for Homozygous Recessive ff
+	int pred_energy_output = lsdp->getPredatorEnergyOutputRate();			// Energy output when moving each 5 DU
+	int pred_energy_reprod = lsdp->getPredatorEnergyToReproduce();			// Energy level needed to reproduce
+	double pred_maintain_speed = lsdp->getPredatorMaintainSpeedTime();		// Minutes of simulation to maintain max speed
+	int pred_max_offspring = lsdp->getPredatorMaxOffspring();				// Maximum number of offspring when reproducing
+	double pred_gestation_period = lsdp->getPredatorGestationPeriod();		// Gestation period in simulation days 
+	int pred_offspring_energy_level = lsdp->getPredatorOffspringEnergyLevel();		// Energy level of offspring at birth
+	char* genotype_trimmed = trim_lead_whitespace(genotype);
+	double pred_max_speed;
+	if(genotype[6] == 'F')
+	{
+		if(genotype[7] == 'F')
+		{
+			pred_max_speed = pred_max_speed_hod;
+		}
+		else
+		{
+			pred_max_speed = pred_max_speed_hed;
+		}
+	}
+	else
+	{
+		pred_max_speed = pred_max_speed_hor;
+	}
+	
+	predator* pred = new predator(predator_pt, init_energy, pred_energy_output, pred_energy_reprod, pred_max_speed, pred_maintain_speed,
+									pred_max_speed_hod, pred_max_speed_hed, pred_max_speed_hor, pred_max_offspring,
+									pred_gestation_period, pred_offspring_energy_level);
+	return pred;
 }
 
 void simulation::init_sim()
@@ -187,9 +243,8 @@ void simulation::init_sim()
 		int height;
 		if(lsdp->getObstacleData(&x_pos, &y_pos, &diameter, &height))
 		{
-			//cout << "Obstacle " << i << " (" << x_pos << ", " << y_pos << ") diameter = " << diameter << ", height = " << height << endl;
 			point boulder_pt(x_pos, y_pos);
-			boulder* bold = new boulder(boulder_pt, diameter, height);
+			boulder* bold = create_boulder(boulder_pt, diameter, height);
 			sim_grid->set_cell_contents(boulder_pt, bold);
 		}
 		else
@@ -201,12 +256,11 @@ void simulation::init_sim()
 	//Plant info data
 	for(int i = 0; i < lsdp->getInitialPlantCount(); i++)
 	{
-		plant* plt = nullptr;
 		int diameter;
 		if(lsdp->getPlantData(&x_pos, &y_pos, &diameter))
 		{
 			point plant_pt(x_pos, y_pos);
-			plt = create_plant(plant_pt, diameter);
+			plant* plt = create_plant(plant_pt, diameter);
 			sim_grid->set_cell_contents(plant_pt, plt);
 		}
 		else
@@ -216,18 +270,13 @@ void simulation::init_sim()
 	}
 
 	//Grazer info data
-	int grz_energy_input = lsdp->getGrazerEnergyInputRate();				// Energy input per minute when grazing
-	int grz_energy_output = lsdp->getGrazerEnergyOutputRate();			// Energy output when moving each 5 DU
-	int grz_energy_reprod = lsdp->getGrazerEnergyToReproduce();			// Energy level needed to reproduce
-	double grz_max_speed = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
-	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
 	for(int i = 0; i < lsdp->getInitialGrazerCount(); i++)
 	{
 		int energy;
 		if(lsdp->getGrazerData(&x_pos, &y_pos, &energy))
 		{
 			point grazer_pt(x_pos, y_pos);
-			grazer* grz = new grazer(grazer_pt, energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
+			grazer* grz = create_grazer(grazer_pt, energy);
 			sim_grid->set_cell_contents(grazer_pt, grz);
 		}
 		else
@@ -236,45 +285,15 @@ void simulation::init_sim()
 		}
 	}
 
-	// Predator info functions
-	double pred_max_speed_hod = lsdp->getPredatorMaxSpeedHOD();			// Get max speed for Homozygous Dominant FF
-	double pred_max_speed_hed = lsdp->getPredatorMaxSpeedHED();			// Get max speed for Heterozygous Dominant Ff
-	double pred_max_speed_hor = lsdp->getPredatorMaxSpeedHOR();			// Get max speed for Homozygous Recessive ff
-	int pred_energy_output = lsdp->getPredatorEnergyOutputRate();			// Energy output when moving each 5 DU
-	int pred_energy_reprod = lsdp->getPredatorEnergyToReproduce();			// Energy level needed to reproduce
-	double pred_maintain_speed = lsdp->getPredatorMaintainSpeedTime();		// Minutes of simulation to maintain max speed
-	int pred_max_offspring = lsdp->getPredatorMaxOffspring();				// Maximum number of offspring when reproducing
-	double pred_gestation_period = lsdp->getPredatorGestationPeriod();		// Gestation period in simulation days 
-	int pred_offspring_energy_level = lsdp->getPredatorOffspringEnergyLevel();		// Energy level of offspring at birth
-
+	//Predator info data
 	for(int i = 0; i < lsdp->getInitialPredatorCount(); i++)
 	{
 		int energy;
 		char genotype[16];
 		if(lsdp->getPredatorData(&x_pos, &y_pos, &energy, genotype))
 		{
-			char* genotype_trimmed = trim_lead_whitespace(genotype);
 			point predator_pt(x_pos, y_pos);
-			double pred_max_speed;
-			if(genotype[6] == 'F')
-			{
-				if(genotype[7] == 'F')
-				{
-					pred_max_speed = pred_max_speed_hod;
-				}
-				else
-				{
-					pred_max_speed = pred_max_speed_hed;
-				}
-			}
-			else
-			{
-				pred_max_speed = pred_max_speed_hor;
-			}
-			
-			predator* pred = new predator(predator_pt, energy, pred_energy_output, pred_energy_reprod, pred_max_speed, pred_maintain_speed,
-											pred_max_speed_hod, pred_max_speed_hed, pred_max_speed_hor, pred_max_offspring,
-											pred_gestation_period, pred_offspring_energy_level);
+			predator* pred = create_predator(predator_pt, energy, genotype);
 			sim_grid->set_cell_contents(predator_pt, pred);
 		}
 		else
@@ -283,8 +302,9 @@ void simulation::init_sim()
 		}
 	}
 	//Use this for testing replacing / removing objects
-	//point pt(0,0);
+	point pt(0,0);
 	//seed* sd = new seed(pt);
+	//grazer* gz = create_grazer(pt, 150);
 	//sim_grid->set_cell_contents(pt, sd);
 }
 
@@ -309,13 +329,12 @@ bool simulation::process_sim_message()
 	environment_object* target_cell_contents = sim_grid->get_cell_contents(location);
 	environment_object* organism = message.get_organism();
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
-	int diameter = lsdp->getMaxPlantSize() / 10;
 	if(message.get_action_requested() == "move organism")
 	{
 		if(target_cell_contents == nullptr)
 		{
-			sim_grid->set_cell_contents(location, organism);
 			sim_grid->set_cell_contents(organism->get_loc(), nullptr);
+			sim_grid->set_cell_contents(location, organism);
 			return true;
 		}
 		else
@@ -329,6 +348,7 @@ bool simulation::process_sim_message()
 		{
 			if( message.get_environment_obj_type() == "plant")
 			{
+				int diameter = lsdp->getMaxPlantSize() / 10;
 				organism = create_plant(message.get_location(), diameter);
 			}
 			sim_grid->set_cell_contents(location, organism);
@@ -346,6 +366,7 @@ bool simulation::process_sim_message()
 			delete target_cell_contents;
 			if( message.get_environment_obj_type() == "plant")
 			{
+				int diameter = lsdp->getMaxPlantSize() / 10;
 				organism = create_plant(message.get_location(), diameter);	
 			}
 			sim_grid->set_cell_contents(location, organism);
@@ -355,6 +376,12 @@ bool simulation::process_sim_message()
 		{
 			return false;
 		}
+	}
+	else if(message.get_action_requested() == "die")
+	{
+		delete organism;
+		sim_grid->set_cell_contents(location, nullptr);
+		return true;
 	}
 	//This will need to be fixed up for predators & grazers
 	else if(message.get_action_requested() == "eat organism")

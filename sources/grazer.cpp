@@ -105,7 +105,18 @@ void grazer::act()
     
     else 
     {
-        move(up, 1);
+        if(this->energy <= 0)
+        {
+            sim_message& message = sim_message::get_instance();
+            message.die(this);
+        }
+        else
+        {
+            if(move(up, 1))
+            {
+                this->energy--;
+            }
+        }
         cout << "Move" << endl;
     }
 }

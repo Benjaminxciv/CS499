@@ -44,12 +44,22 @@ int mammal::get_energy()
     return energy;
 }
 
-void mammal::move(direction dir, int speed)
+bool mammal::move(direction dir, int speed)
 {
+    sim_message& message = sim_message::get_instance();
+    point move_to = location;
     switch(dir)
     {
         case up:
-            location.y_loc++;
+            move_to.y_loc++;
+            if(message.move_organism(move_to, this))
+            {
+                location.y_loc++;
+            }
+            else
+            {
+                return false;
+            }
             break;
         case up_right:
             location.x_loc++;
@@ -77,7 +87,8 @@ void mammal::move(direction dir, int speed)
             location.y_loc++;
             break;
     }
-    this->energy -= this->energy_output * (speed / 5);
+    //this->energy -= this->energy_output * (speed / 5);
+    return true;
 }
 
 void mammal::reproduce()

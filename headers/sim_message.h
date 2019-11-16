@@ -5,7 +5,6 @@
 #include "environment_object.h"
 #include "clock.h"
 #include "simulation.h"
-class simulation;
 
 class simulation;
 
@@ -46,6 +45,7 @@ class sim_message
         bool move_organism(point, environment_object*);
         bool place_organism(point, std::string);
         bool replace_organism(point, std::string);
+        bool die(environment_object*);
         bool eat_organism(point, environment_object*);
         bool look_at_cell(point);
         bool request_reproduce(point, environment_object*);

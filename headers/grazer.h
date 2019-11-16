@@ -9,9 +9,7 @@ Last editor: BP
 #define GRAZER_H
 
 #include <string>
-#include "environment_object.h"
 #include "mammal.h"
-#include "sim_message.h"
 
 class grazer : public mammal
 {
@@ -32,10 +30,10 @@ class grazer : public mammal
     public:
         grazer(point, int, int, int, int, double, double);
         ~grazer();
-        std::string  get_type() override;
+        std::string  get_type();
         int print_self();
         void set_energy(int);
-        void act() override;
+        void act();
         void eat();
         void reset_eat_timer();
         void reset_movement_timer();

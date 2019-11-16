@@ -9,12 +9,13 @@ Last editor: BP
 #define MAMMAL_H
 
 #include "environment_object.h"
+#include "sim_message.h"
 
-enum direction {up = 1, up_right = 2, right = 3, down_right = 4, down = 5, down_left = 6, left = 7, up_left = 8};
 
 class mammal : public environment_object
 {
-    private:
+    protected:
+        enum direction {up = 1, up_right = 2, right = 3, down_right = 4, down = 5, down_left = 6, left = 7, up_left = 8};
         int energy;
         int energy_output;
         int energy_reproduce_min;
@@ -26,7 +27,7 @@ class mammal : public environment_object
         ~mammal();
         void gain_energy(int);
         int get_energy();
-        void move(direction, int);
+        bool move(direction, int);
         void reproduce();
         bool ready_to_reproduce();
 };

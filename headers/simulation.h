@@ -10,13 +10,12 @@ Last editor:
 #define SIMULATION_H
 
 #include <iostream>
+#include <vector>
+#include <algorithm>
 #include "grid.h"
 #include "boulder.h"
 #include "LifeSimDataParser.h"
-#include <vector>
 #include "plant.h"
-#include "predator.h"
-#include "grazer.h"
 #include "clock.h"
 #include "sim_message.h"
 #include "time.h"
