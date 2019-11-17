@@ -155,6 +155,12 @@ plant* create_plant(point plant_pt, int diameter)
 	return plt;
 }
 
+leaf* create_leaf(point leaf_pt)
+{
+	leaf* lf = new leaf(leaf_pt);
+	return lf;
+}
+
 grazer* create_grazer(point grazer_pt, int init_energy)
 {
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
@@ -296,7 +302,7 @@ void simulation::init_sim()
 		}
 	}
 	//Use this for testing replacing / removing objects
-	point pt(0,0);
+	//point pt(0,0);
 	//seed* sd = new seed(pt);
 	//grazer* gz = create_grazer(pt, 150);
 	//sim_grid->set_cell_contents(pt, sd);
@@ -340,10 +346,14 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents == nullptr)
 		{
-			if( message.get_environment_obj_type() == "plant")
+			if(message.get_environment_obj_type() == "plant")
 			{
 				int diameter = lsdp->getMaxPlantSize() / 10;
 				organism = create_plant(message.get_location(), diameter);
+			}
+			else if(message.get_environment_obj_type() == "leaf")
+			{
+				organism = create_leaf(message.get_location());
 			}
 			sim_grid->set_cell_contents(location, organism);
 			return true;
@@ -357,7 +367,6 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents != nullptr)
 		{
-			//delete target_cell_contents;
 			message.set_garbage(target_cell_contents);
 			if( message.get_environment_obj_type() == "plant")
 			{
@@ -374,7 +383,6 @@ bool simulation::process_sim_message()
 	}
 	else if(message.get_action_requested() == "die")
 	{
-		//delete organism;
 		message.set_garbage(organism);
 		sim_grid->set_cell_contents(location, nullptr);
 		return true;
@@ -384,7 +392,7 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents != nullptr)
 		{
-			//delete target_cell_contents;
+			message.set_organism_energy(target_cell_contents->get_energy());
 			message.set_garbage(target_cell_contents);
 			sim_grid->set_cell_contents(location, nullptr);
 			return true;

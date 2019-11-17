@@ -64,7 +64,6 @@ void grazer::eat()
     }   
 }
 
-
 void grazer::act()
 {
     sim_message& message = sim_message::get_instance();

@@ -30,7 +30,7 @@ class grazer : public mammal
     public:
         grazer(point, int, int, int, int, double, double);
         ~grazer();
-        std::string  get_type();
+        std::string get_type();
         int print_self();
         void set_energy(int);
         void act();

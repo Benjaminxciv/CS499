@@ -21,6 +21,7 @@ class sim_message
         std::string environment_obj_type;
         //things returned from simulation:
         std::string simulation_response;
+        int energy_from_organism;
         time_container time_info;
         simulation* sim;
         environment_object* garbage;
@@ -33,6 +34,8 @@ class sim_message
         std::string get_action_requested();
         void set_simulation_response(std::string);
         std::string get_simulation_response();
+        void set_organism_energy(int);
+        int get_organism_energy();
         int get_time_offset_secs();
         int get_time_offset_mins();
         int get_time_offset_hours();

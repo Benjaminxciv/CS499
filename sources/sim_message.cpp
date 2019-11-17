@@ -41,6 +41,16 @@ std::string sim_message::get_simulation_response()
     return simulation_response;
 }
 
+void sim_message::set_organism_energy(int energy)
+{
+    energy_from_organism = energy;
+}
+
+int sim_message::get_organism_energy()
+{
+    return energy_from_organism;
+}
+
 int sim_message::get_time_offset_secs()
 {
     return time_offset_secs;

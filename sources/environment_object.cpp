@@ -69,3 +69,7 @@ int environment_object::print_self()
     return 0;
 }
 
+int environment_object::get_energy()
+{
+    return 0;
+}
