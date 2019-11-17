@@ -141,11 +141,10 @@ bool sim_message::die(environment_object* organism_to_die)
     return sim->process_sim_message();
 }
 
-bool sim_message::eat_organism(point target_loc, environment_object* organism_to_move)
+bool sim_message::eat_organism(point target_loc)
 {
     action_requested = "eat organism";
     location = target_loc;
-    organism = organism_to_move;
     return sim->process_sim_message();
 }
 
