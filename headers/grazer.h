@@ -45,6 +45,8 @@ class grazer : public mammal
         void set_maintain_time(int);
         void limit_movement();
         void check_energy();
+        void sight_on_plant();
+        void sight_on_predator();
         
 };
 #endif

@@ -106,7 +106,7 @@ void simulation::run_sim()
 {
 	sim_message& message = sim_message::get_instance();
 	message.set_sim(this);
-
+	
 	int iVal;
 	int iPlantCount, iGrazerCount, iPredatorCount, iObstacleCount;
 	double dVal;
