@@ -21,12 +21,13 @@ Last editor: MG
 class plant : public environment_object
 {
     private:
-        int plant_x, plant_y, seed_pod_distance, seed_pod_seed_number;
-        LifeSimDataParser *info_gather;
-        time_container current_time;
-        time_container future_time;
+        double growth_rate;
+        int max_size;
+        int max_seed_cast_dist;
+        int max_seed_num;
+        double seed_viability;
     public:
-        plant(point);
+        plant(point, double, int, int, int, double);
         ~plant();
         std::string get_type();
         int print_self();

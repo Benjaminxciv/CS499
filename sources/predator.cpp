@@ -8,7 +8,15 @@ Last editor: MG
 
 #include "predator.h"
 
-predator::predator(point init_loc, int init_energy) : mammal(init_loc, init_energy)
+predator::predator(point init_loc, int init_e, int e_output, int e_reprod_min, double m_spd, double maintain_spd,
+                    double m_spd_hod, double m_spd_hed, double m_spd_hor, int m_offsprg, int gest_prd, int offsprg_e_lvl) :
+    max_speed_hod(m_spd_hod),
+    max_speed_hed(m_spd_hed),
+    max_speed_hor(m_spd_hor),
+    max_offspring(m_offsprg),
+    gestation_period(gest_prd),
+    offspring_energy_level(offsprg_e_lvl),
+    mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
 
 }

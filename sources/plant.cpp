@@ -14,7 +14,13 @@ plant::plant()
 
 }
 
-plant::plant(point init_loc) : environment_object(init_loc)
+plant::plant(point init_loc, double grow_rate, int m_size, int m_seed_dist, int max_seed, double seed_via) : 
+    growth_rate(grow_rate),
+    max_size(m_size),
+    max_seed_cast_dist(m_seed_dist),
+    max_seed_num(max_seed),
+    seed_viability(seed_via),
+    environment_object(init_loc)
 {
     int plant_x = init_x_loc;
     int plant_y = init_y_loc;

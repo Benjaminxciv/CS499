@@ -24,9 +24,13 @@ class grazer : public mammal
         int maintain_time;
         bool danger;
         bool food_available;
+        const int eat_reach = 5;
+        const int plant_sight_dist = 150;
+        const int pred_sight_dist = 25;
+
 
     public:
-        grazer(point, int, int);
+        grazer(point, int, int, int, int, double, double);
         ~grazer();
         std::string  get_type() override;
         int print_self();
