@@ -11,8 +11,9 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     energy_input(e_input),
     mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
-    this->danger            = false;
-    this->food_available    = false;
+    this->danger                 = false;
+    this->food_available         = false;
+    this->retained_movement_time = false;
 }
 
 grazer::~grazer()
@@ -75,12 +76,17 @@ void grazer::act()
     if(this->danger)
     {
         reset_eat_timer();
-        if(movement_timer.time_min == 0)
+        if(!retained_movement_time)
         {
-            message.get_future_time(0,this->maintain_time);
-            message.process_message();
-            movement_timer = message.get_time_info();
-        }   
+            start_movement_timer();
+        }
+        
+        if(current_time == maintain_time)
+        {
+            //check behind
+            //drop speed to 75% 
+        } 
+  
     }
 
     else if(this->food_available)
@@ -106,7 +112,15 @@ void grazer::act()
     else 
     {
         move(up, 1);
-        cout << "Move" << endl;
+        if(!retained_movement_time)
+        {
+            start_movement_timer();
+        }   
+
+        if(current_time == maintain_time)
+        {
+
+        }
     }
 }
 
@@ -120,6 +134,8 @@ void grazer::reset_eat_timer()
 {
     eat_timer.time_sec = 0;
     eat_timer.time_min = 0;
+
+    //eat_timer = NULL;
 }
 
 /*Name: reset_movement_timer()
@@ -130,8 +146,9 @@ BP 11/7/19
 */
 void grazer::reset_movement_timer()
 {
-    movement_timer.time_sec = 0;
-    movement_timer.time_min = 0;
+      movement_timer.time_sec   = 0;    
+      movement_timer.time_sec   = 0;
+      movement_timer.time_hour  = 0;
 }
 
 
@@ -146,4 +163,21 @@ BP 11/7/19
 void grazer::set_maintain_time(int maintain_time)
 {
     this->maintain_time = maintain_time;
+}
+
+
+void grazer::start_movement_timer()
+{
+    // message.get_future_time(0,maintain_time);
+    // message.process_message();
+    // movement_timer = message.get_time_info();
+    retained_movement_time = true;
+}
+
+
+void grazer::start_eat_timer()
+{
+    // message.get_future_time(0,1);
+    // message.process_message();
+    // eat_timer = message.get_time_info();
 }

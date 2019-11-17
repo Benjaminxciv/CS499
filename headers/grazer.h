@@ -22,11 +22,19 @@ class grazer : public mammal
         time_container gain_energy_timer;
         time_container movement_timer;
         int maintain_time;
+        bool retained_movement_time;
         bool danger;
         bool food_available;
         const int eat_reach = 5;
         const int plant_sight_dist = 150;
         const int pred_sight_dist = 25;
+
+        void start_movement_timer();
+        void start_eat_timer();
+        void reset_movement_timer();
+        void set_maintain_time(int);
+        void reset_eat_timer();
+        void eat();
 
 
     public:
@@ -36,10 +44,6 @@ class grazer : public mammal
         int print_self();
         void set_energy(int);
         void act() override;
-        void eat();
-        void reset_eat_timer();
-        void reset_movement_timer();
-        void set_maintain_time(int);
         
 };
 #endif
