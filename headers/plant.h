@@ -14,13 +14,19 @@ Last editor: AW
 #include "environment_object.h"
 #include <stdlib.h>
 #include "sim_message.h"
+#include "seed.h"
 
 
 class plant : public environment_object
 {
     private:
+        double growth_rate;
+        int max_size;
+        int max_seed_cast_dist;
+        int max_seed_num;
+        double seed_viability;
     public:
-        plant(int, int);
+        plant(point, double, int, int, int, double);
         ~plant();
         std::string get_type();
         int print_self();

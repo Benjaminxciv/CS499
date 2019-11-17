@@ -16,78 +16,132 @@ sim_message& sim_message::get_instance()
     return sim_message_instance;
 }
 
-void sim_message::set_sim(simulation* sim)
+void sim_message::set_sim(simulation* sim_ref)
 {
-    this->sim = sim;
+    sim = sim_ref;
 }
 
 bool sim_message::process_message()
 {
-    return this->sim->process_sim_message();
-}
-
-void sim_message::request_action(std::string action_requested, int x_loc, int y_loc)
-{
-    
-}
-
-void sim_message::request_action(std::string action_request, int x_loc, int y_loc, environment_object* organism)
-{
-    
+    return sim->process_sim_message();
 }
 
 std::string sim_message::get_action_requested()
 {
-    return this->action_requested;
+    return action_requested;
 }
 
-void sim_message::set_simulation_response(std::string simulation_response)
+void sim_message::set_simulation_response(std::string sim_response)
 {
-    this->simulation_response = simulation_response;
+    simulation_response = sim_response;
 }
 
 std::string sim_message::get_simulation_response()
 {
-    return this->simulation_response;
+    return simulation_response;
 }
 
 int sim_message::get_time_offset_secs()
 {
-    return this->time_offset_secs;
+    return time_offset_secs;
 }
 
 int sim_message::get_time_offset_mins()
 {
-    return this->time_offset_mins;
+    return time_offset_mins;
 }
 
 int sim_message::get_time_offset_hours()
 {
-    return this->time_offset_hours;
+    return time_offset_hours;
 }
 
-void sim_message::set_time_info(time_container time_info)
+point sim_message::get_location()
 {
-    this->time_info = time_info;
+    return location;
+}
+
+environment_object* sim_message::get_organism()
+{
+    return organism;
+}
+
+std::string sim_message::get_environment_obj_type()
+{
+    return environment_obj_type;
+}
+
+void sim_message::set_time_info(time_container new_time_info)
+{
+    time_info = new_time_info;
 }
 
 time_container sim_message::get_time_info()
 {
-    return this->time_info;
+    return time_info;
 }
 
-void sim_message::get_current_time()
+bool sim_message::get_current_time()
 {
-    this->action_requested = "get curr_time";
-    this->time_offset_secs = 0;
-    this->time_offset_mins = 0;
-    this->time_offset_hours = 0;
+    action_requested = "get curr_time";
+    time_offset_secs = 0;
+    time_offset_mins = 0;
+    time_offset_hours = 0;
+    return sim->process_sim_message();
 }
 
-void sim_message::get_future_time(int future_secs, int future_mins, int future_hours)
+bool sim_message::get_future_time(int future_secs, int future_mins, int future_hours)
 {
-    this->action_requested = "get future_time";
-    this->time_offset_secs = future_secs;
-    this->time_offset_mins = future_mins;
-    this->time_offset_hours = future_hours;
+    action_requested = "get future_time";
+    time_offset_secs = future_secs;
+    time_offset_mins = future_mins;
+    time_offset_hours = future_hours;
+    return sim->process_sim_message();
+}
+
+bool sim_message::move_organism(point target_loc, environment_object* organism_to_move)
+{
+    action_requested = "move organism";
+    location = target_loc;
+    organism = organism_to_move;
+    return sim->process_sim_message();
+}
+
+bool sim_message::place_organism(point target_loc, std::string organism_to_create)
+{
+    action_requested = "place organism";
+    location = target_loc;
+    environment_obj_type = organism_to_create;
+    return sim->process_sim_message();
+}
+
+bool sim_message::replace_organism(point target_loc, std::string organism_to_create)
+{
+    action_requested = "replace organism";
+    location = target_loc;
+    environment_obj_type = organism_to_create;
+    return sim->process_sim_message();
+}
+
+bool sim_message::eat_organism(point target_loc, environment_object* organism_to_move)
+{
+    action_requested = "eat organism";
+    location = target_loc;
+    organism = organism_to_move;
+    return sim->process_sim_message();
+}
+
+bool sim_message::look_at_cell(point target_loc)
+{
+    action_requested = "look cell";
+    location = target_loc;
+    return sim->process_sim_message();
+}
+
+bool sim_message::request_reproduce(point target_loc, environment_object* organism_to_move)
+{
+    action_requested = "eat organism";
+    location = target_loc;
+    organism = organism_to_move;
+    return sim->process_sim_message();
 }

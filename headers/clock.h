@@ -13,17 +13,24 @@ struct time_container
     int time_sec = 0;
     int time_min = 0;
     int time_hour = 0;
+    bool operator==(const time_container& t1)
+    {
+        return (time_sec == t1.time_sec && time_min == t1.time_min && time_hour == t1.time_hour);
+    }
 };
 
-class clock
+namespace sim_ns
 {
-    private:
-        time_container current_time;
-        
-    public:
-        void add_sec(int num_secs = 1);
-        void add_min(int num_mins = 1);
-        void add_hour(int num_hours = 1);
-        time_container get_time();
-};
+    class clock
+    {
+        private:
+            time_container current_time;
+            
+        public:
+            void add_sec(int num_secs = 1);
+            void add_min(int num_mins = 1);
+            void add_hour(int num_hours = 1);
+            time_container get_time();
+    };
+}
 #endif 
