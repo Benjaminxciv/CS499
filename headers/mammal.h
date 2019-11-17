@@ -16,10 +16,12 @@ class mammal : public environment_object
 {
     private:
         int energy;
-        int e_output;
-        double movement_speed;
+        int energy_output;
+        int energy_reproduce_min;
+        double max_speed;
+        double maintain_speed;
     public:
-        mammal(int, int, int);
+        mammal(point, int, int, int, double, double);
         mammal();
         ~mammal();
         int get_energy();
@@ -28,6 +30,7 @@ class mammal : public environment_object
         void gain_energy(int);
         void move(direction, int);
         void reproduce();
+        bool ready_to_reproduce();
 };
 
 #endif
