@@ -14,6 +14,7 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     this->danger                 = false;
     this->food_available         = false;
     this->retained_movement_time = false;
+    this->retained_eat_timer     = false;
 }
 
 grazer::~grazer()
@@ -81,7 +82,7 @@ void grazer::act()
             start_movement_timer();
         }
         
-        if(current_time == maintain_time)
+        if(current_time == movement_timer)
         {
             //check behind
             //drop speed to 75% 
@@ -117,7 +118,7 @@ void grazer::act()
             start_movement_timer();
         }   
 
-        if(current_time == maintain_time)
+        if(current_time == movement_timer)
         {
 
         }
@@ -132,10 +133,8 @@ BP 11/7/19
 */
 void grazer::reset_eat_timer()
 {
-    eat_timer.time_sec = 0;
-    eat_timer.time_min = 0;
-
-    //eat_timer = NULL;
+    retained_eat_timer = false;
+    eat_timer = {0,0,0};
 }
 
 /*Name: reset_movement_timer()
@@ -146,9 +145,8 @@ BP 11/7/19
 */
 void grazer::reset_movement_timer()
 {
-      movement_timer.time_sec   = 0;    
-      movement_timer.time_sec   = 0;
-      movement_timer.time_hour  = 0;
+    movement_timer = {0,0,0};
+    retained_movement_time = false;
 }
 
 
@@ -180,4 +178,5 @@ void grazer::start_eat_timer()
     // message.get_future_time(0,1);
     // message.process_message();
     // eat_timer = message.get_time_info();
+    retained_eat_timer = true;
 }

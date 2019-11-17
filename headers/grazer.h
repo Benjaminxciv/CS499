@@ -23,6 +23,7 @@ class grazer : public mammal
         time_container movement_timer;
         int maintain_time;
         bool retained_movement_time;
+        bool retained_eat_timer;
         bool danger;
         bool food_available;
         const int eat_reach = 5;
