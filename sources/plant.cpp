@@ -9,10 +9,6 @@ Last editor: MG
 #include "time.h"
 #include "math.h"
 
-plant::plant()
-{
-
-}
 
 plant::plant(point init_loc, double grow_rate, int m_size, int m_seed_dist, int max_seed, double seed_via) : 
     growth_rate(grow_rate),
@@ -22,11 +18,6 @@ plant::plant(point init_loc, double grow_rate, int m_size, int m_seed_dist, int 
     seed_viability(seed_via),
     environment_object(init_loc)
 {
-    int plant_x = init_x_loc;
-    int plant_y = init_y_loc;
-    LifeSimDataParser *gather = NULL;
-
-
 }
 
 plant::~plant()
@@ -64,14 +55,8 @@ Returns: N/A
 */
 void plant::set_seed_pod_values()
 {
-    //does not read from file every time. One read is done at the beginning in LifeSimDataParser
-    // thus, it is returned from local variable. it's a singleton instance.
-    int MAX_SEED_CAST_DISTANCE = info_gather ->getMaxSeedCastDistance() ;
-    int MAX_SEED_NUMBER = info_gather->getMaxSeedNumber();
-    double SEED_VIABILITY = info_gather->getSeedViability();
-
-    int seed_pod_distance = rand() %  MAX_SEED_CAST_DISTANCE + 0;
-    int seed_pod_seed_number = (rand() %  MAX_SEED_NUMBER + 0) * SEED_VIABILITY; 
+    int seed_pod_distance = rand() %  max_seed_cast_dist + 0;
+    int seed_pod_seed_number = (rand() %  max_seed_num + 0) * seed_viability; 
 }
 
 /*
@@ -85,21 +70,21 @@ Returns: N/A
 void plant::radially_disperse_seed()
 {
     int theta = 0;
-    for (int i = seed_pod_seed_number; i >= 0; i--)
+    for (int i = max_seed_num; i >= 0; i--)
     {
-        int target_center_x = (cos (theta) * seed_pod_distance) + plant_x;
-        int target_center_y = (sin (theta) * seed_pod_distance) + plant_y;
+        int target_center_x = (cos (theta) * max_seed_cast_dist) + location.x_loc;
+        int target_center_y = (sin (theta) * max_seed_cast_dist) + location.y_loc;
         point pt(target_center_x, target_center_y);
-        theta = theta + rand() % (360/seed_pod_seed_number) + 0;
+        theta = theta + rand() % (360/max_seed_num) + 0;
         
         sim_message& message = sim_message::get_instance();
-        if(!message.place_organism(pt, *seed))
+        if(!message.place_organism(pt, "seed"))
         {
-            target_center_x = (cos (theta) * seed_pod_distance) + plant_x;
-            target_center_y = (sin (theta) * seed_pod_distance) + plant_y;
-            point pt2(target_center_x,target_center_y;)
+            target_center_x = (cos (theta) * max_seed_cast_dist) + location.x_loc;
+            target_center_y = (sin (theta) * max_seed_cast_dist) + location.y_loc;
+            point pt2(target_center_x,target_center_y);
             theta = theta + rand() % (360/41) + 0;
-            message.place_organism(pt2, *seed);
+            message.place_organism(pt2, "seed");
         }
    }
 }
