@@ -2,7 +2,7 @@
 
 sim_message::sim_message()
 {
-
+    garbage = nullptr;
 }
 
 sim_message::~sim_message()
@@ -152,4 +152,14 @@ bool sim_message::request_reproduce(point target_loc, environment_object* organi
     location = target_loc;
     organism = organism_to_move;
     return sim->process_sim_message();
+}
+
+void sim_message::set_garbage(environment_object* to_be_deleted)
+{
+    garbage = to_be_deleted;
+}
+
+environment_object* sim_message::get_garbage()
+{
+    return garbage;
 }

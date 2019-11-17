@@ -87,7 +87,7 @@ bool mammal::move(direction dir, int speed)
             location.y_loc++;
             break;
     }
-    //this->energy -= this->energy_output * (speed / 5);
+    energy -= energy_output / 5;
     return true;
 }
 

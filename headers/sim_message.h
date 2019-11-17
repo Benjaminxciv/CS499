@@ -23,6 +23,7 @@ class sim_message
         std::string simulation_response;
         time_container time_info;
         simulation* sim;
+        environment_object* garbage;
         sim_message();
         ~sim_message();
     public:
@@ -49,6 +50,8 @@ class sim_message
         bool eat_organism(point, environment_object*);
         bool look_at_cell(point);
         bool request_reproduce(point, environment_object*);
+        void set_garbage(environment_object*);
+        environment_object* get_garbage();
 };
 
 

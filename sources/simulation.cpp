@@ -93,38 +93,32 @@ std::vector<environment_object*> simulation::iterate_cells()
 {
 	std::vector<environment_object*> cells;
 	std::vector<point> skip_cells;
+	std::vector<environment_object*> garbage_collection;
+	sim_message& message = sim_message::get_instance();
 	for(int x = 0; x < sim_grid->get_width(); x++)
 	{
 		for(int y = 0; y < sim_grid->get_height(); y++)
 		{
 			point pt(x, y);
-			if(std::find(skip_cells.begin(), skip_cells.end(), pt) != skip_cells.end())
-			{
-				continue;
-			}
 			environment_object* cell = sim_grid->get_cell_contents(pt);
 			if(cell != nullptr)
 			{
-				cell->act();
-				//How do I explain this...
-				//If an environment_object gets deleted during the middle of act
-					//Such as dying or getting replaced
-				//It's inherited type (such as plant, grazer) gets reset to the base class
-					//Thus losing get_type()'s info
-				//So if get_type()'s info is gone
-					//Evidenced by an empty string
-				//Get what currently exists at the cell that the object previously existed at
-					//And if it died, the cell will be empty, so make sure to check for that
-				if(cell->get_type() == "")
+				if(std::find(skip_cells.begin(), skip_cells.end(), pt) == skip_cells.end())
 				{
-					cell = sim_grid->get_cell_contents(cell->get_loc());
-					if(cell == nullptr)
-					{
-						continue;
-					}
+					cell->act();
 				}
-				cells.push_back(cell);
+				environment_object* garbage = message.get_garbage();
+				if(garbage != nullptr)
+				{
+					delete garbage;
+					message.set_garbage(nullptr);
+					continue;
+				}
 				skip_cells.push_back(cell->get_loc());
+				if(sim_grid->get_cell_contents(pt) != nullptr)
+				{
+					cells.push_back(cell);
+				}
 			}
 		}
 	}
@@ -363,7 +357,8 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents != nullptr)
 		{
-			delete target_cell_contents;
+			//delete target_cell_contents;
+			message.set_garbage(target_cell_contents);
 			if( message.get_environment_obj_type() == "plant")
 			{
 				int diameter = lsdp->getMaxPlantSize() / 10;
@@ -379,7 +374,8 @@ bool simulation::process_sim_message()
 	}
 	else if(message.get_action_requested() == "die")
 	{
-		delete organism;
+		//delete organism;
+		message.set_garbage(organism);
 		sim_grid->set_cell_contents(location, nullptr);
 		return true;
 	}
@@ -388,7 +384,8 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents != nullptr)
 		{
-			delete target_cell_contents;
+			//delete target_cell_contents;
+			message.set_garbage(target_cell_contents);
 			sim_grid->set_cell_contents(location, nullptr);
 			return true;
 		}
