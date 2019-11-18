@@ -20,13 +20,13 @@ class grazer : public mammal
         time_container current_time;
         time_container eat_time;
         time_container gain_energy_time;
-        time_container movement_time;
-        int maintain_time;        
+        time_container movement_time;      
         bool retained_movement_time;
         bool retained_gain_energy_time;
         bool retained_eat_time;
         bool danger;
         bool food_available;
+
         const int eat_reach = 5;
         const int plant_sight_dist = 150;
         const int pred_sight_dist = 25;
@@ -45,7 +45,6 @@ class grazer : public mammal
         ~grazer();
         std::string  get_type() override;
         int print_self();
-        void set_energy(int);
         void act() override;
         
 };
