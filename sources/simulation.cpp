@@ -308,6 +308,71 @@ void simulation::init_sim()
 	//sim_grid->set_cell_contents(pt, sd);
 }
 
+point simulation::find_empty_cell(point center)
+{
+	point center_buf = center;
+	//up
+	center_buf.y_loc--;
+	if(sim_grid->get_cell_contents(center_buf) == nullptr)
+	{
+		return center_buf;
+	}
+	center_buf = center;
+	//up left
+	center_buf.x_loc--;
+	center_buf.y_loc--;
+	if(sim_grid->get_cell_contents(center_buf) == nullptr)
+	{
+		return center_buf;
+	}
+	center_buf = center;
+	//up right
+	center_buf.x_loc++;
+	center_buf.y_loc--;
+	if(sim_grid->get_cell_contents(center_buf) == nullptr)
+	{
+		return center_buf;
+	}
+	center_buf = center;
+	//left
+	center_buf.x_loc--;
+	if(sim_grid->get_cell_contents(center_buf) == nullptr)
+	{
+		return center_buf;
+	}
+	center_buf = center;
+	//right
+	center_buf.x_loc++;
+	if(sim_grid->get_cell_contents(center_buf) == nullptr)
+	{
+		return center_buf;
+	}
+	center_buf = center;
+	//down left
+	center_buf.x_loc--;
+	center_buf.y_loc++;
+	if(sim_grid->get_cell_contents(center_buf) == nullptr)
+	{
+		return center_buf;
+	}
+	center_buf = center;
+	//down
+	center_buf.y_loc++;
+	if(sim_grid->get_cell_contents(center_buf) == nullptr)
+	{
+		return center_buf;
+	}
+	center_buf = center;
+	//down right
+	center_buf.x_loc++;
+	center_buf.y_loc++;
+	if(sim_grid->get_cell_contents(center_buf) == nullptr)
+	{
+		return center_buf;
+	}
+	return center;
+}
+
 bool simulation::process_sim_message()
 {
 	sim_message& message = sim_message::get_instance();
@@ -392,7 +457,12 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents != nullptr)
 		{
-			message.set_organism_energy(target_cell_contents->get_energy());
+			std::string target_type = target_cell_contents->get_type();
+			if(target_type == "grazer" || target_type == "predator")
+			{
+				mammal* target_mammal = reinterpret_cast<mammal*>(target_cell_contents);
+				message.set_organism_energy(target_mammal->get_energy());
+			}
 			message.set_garbage(target_cell_contents);
 			sim_grid->set_cell_contents(location, nullptr);
 			return true;
@@ -417,6 +487,19 @@ bool simulation::process_sim_message()
 	}
 	else if(message.get_action_requested() == "request reproduction")
 	{
+		if(organism->get_type() == "grazer")
+		{
+			point empty_spot = find_empty_cell(location);
+			if(empty_spot == location)
+			{
+				return false;
+			}
+			grazer* grz_organsim = reinterpret_cast<grazer*>(organism);
+			int init_energy = grz_organsim->get_energy() / 2;
+			grz_organsim->set_energy(init_energy);
+			grazer* grz = create_grazer(empty_spot, init_energy);
+			sim_grid->set_cell_contents(empty_spot, grz);
+		}
 		return true;
 	}
 	else

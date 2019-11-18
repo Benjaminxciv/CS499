@@ -38,7 +38,6 @@ class environment_object
         virtual void act();
         virtual std::string get_type();
         virtual int print_self();
-        virtual int get_energy();
 };
 
 #endif

@@ -34,14 +34,19 @@ Parameters:
 Last edit:
     BP 10/27/19
 */
-void mammal::gain_energy(int energy)
+void mammal::gain_energy(int added_energy)
 {
-    this->energy += energy;
+    energy += added_energy;
 }
 
 int mammal::get_energy()
 {
     return energy;
+}
+
+void mammal::set_energy(int new_energy)
+{
+    energy = new_energy;
 }
 
 bool mammal::move(direction dir, int speed)

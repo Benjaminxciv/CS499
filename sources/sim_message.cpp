@@ -155,11 +155,11 @@ bool sim_message::look_at_cell(point target_loc)
     return sim->process_sim_message();
 }
 
-bool sim_message::request_reproduce(point target_loc, environment_object* organism_to_move)
+bool sim_message::request_reproduce(point target_loc, environment_object* organism_requesting)
 {
     action_requested = "eat organism";
     location = target_loc;
-    organism = organism_to_move;
+    organism = organism_requesting;
     return sim->process_sim_message();
 }
 

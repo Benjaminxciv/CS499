@@ -32,7 +32,6 @@ class grazer : public mammal
         ~grazer();
         std::string get_type();
         int print_self();
-        void set_energy(int);
         void act();
         void eat();
         void reset_eat_timer();
