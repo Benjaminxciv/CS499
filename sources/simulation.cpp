@@ -175,7 +175,37 @@ grazer* create_grazer(point grazer_pt, int init_energy)
 	return grz;
 }
 
-predator* create_predator(point predator_pt, int init_energy, char* genotype)
+/*
+Name: punnett_square
+Purpose: everytime it is called, it returns the gene of one parent. If they're the same gene, it just returns the first.
+         If the genes are different, it has a 50/50 percent chance of which it returns. Follows Mendel's genetics.
+Trace: Traces to Epic 3, Acceptance Criteria 3
+Parameters: two characters of same genotype from one predator parent.
+Returns: one character of same genotype from one predator parent to pass on to the child.
+*/
+char pred_factory_punnett_square(char gene_one, char gene_two)
+{
+    if (gene_one != gene_two)
+    {
+        int i = rand() % 2 + 1;
+
+        if ((i % 2) == 0)
+        {
+            return gene_one;
+        }
+        else 
+        {
+            return gene_two;
+        }
+    }
+    else
+    {
+        return gene_one;   
+    }
+}
+
+predator* create_predator(point predator_pt, int init_energy, char* genotype,
+							bool is_offspring = false)
 {
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	// Predator info data
@@ -189,11 +219,16 @@ predator* create_predator(point predator_pt, int init_energy, char* genotype)
 	int pred_max_offspring = lsdp->getPredatorMaxOffspring();				// Maximum number of offspring when reproducing
 	double pred_gestation_period = lsdp->getPredatorGestationPeriod();		// Gestation period in simulation days 
 	int pred_offspring_energy_level = lsdp->getPredatorOffspringEnergyLevel();		// Energy level of offspring at birth
-	char* genotype_trimmed = trim_lead_whitespace(genotype);
-	double pred_max_speed;
-	if(genotype[6] == 'F')
+	if(is_offspring)
 	{
-		if(genotype[7] == 'F')
+		init_energy = pred_offspring_energy_level;
+	}
+	char* genotype_trimmed = trim_lead_whitespace(genotype);
+	std::string genotype_str(genotype_trimmed);
+	double pred_max_speed;
+	if(genotype_str[6] == 'F')
+	{
+		if(genotype_str[7] == 'F')
 		{
 			pred_max_speed = pred_max_speed_hod;
 		}
@@ -207,7 +242,7 @@ predator* create_predator(point predator_pt, int init_energy, char* genotype)
 		pred_max_speed = pred_max_speed_hor;
 	}
 	
-	predator* pred = new predator(predator_pt, init_energy, pred_energy_output, pred_energy_reprod, pred_max_speed, pred_maintain_speed,
+	predator* pred = new predator(predator_pt, genotype_str, init_energy, pred_energy_output, pred_energy_reprod, pred_max_speed, pred_maintain_speed,
 									pred_max_speed_hod, pred_max_speed_hed, pred_max_speed_hor, pred_max_offspring,
 									pred_gestation_period, pred_offspring_energy_level);
 	return pred;
@@ -499,8 +534,50 @@ bool simulation::process_sim_message()
 			grz_organsim->set_energy(init_energy);
 			grazer* grz = create_grazer(empty_spot, init_energy);
 			sim_grid->set_cell_contents(empty_spot, grz);
+			return true;
 		}
-		return true;
+		else if(organism->get_type() == "predator")
+		{
+			if(target_cell_contents != nullptr && target_cell_contents->get_type() == "predator")
+			{
+				predator* pred1 = reinterpret_cast<predator*>(organism);
+				predator* pred2 = reinterpret_cast<predator*>(target_cell_contents);
+				if(pred1->ready_to_reproduce() && pred2->ready_to_reproduce())
+				{
+					int max_offspring = pred1->get_max_offspring();
+					int offspring_count = rand() % max_offspring + 1;
+					for(int i = 0; i < offspring_count; i++)
+					{
+						point empty_spot = find_empty_cell(pred1->get_loc());
+						if(empty_spot == pred1->get_loc())
+						{
+							continue;
+						}
+						std::string p1_genes = pred1->get_genotype();
+						std::string p2_genes = pred2->get_genotype();
+						char agr1 = pred_factory_punnett_square(p1_genes[0], p1_genes[1]);
+						char agr2 = pred_factory_punnett_square(p2_genes[0], p2_genes[1]);
+						char str1 = pred_factory_punnett_square(p1_genes[3], p1_genes[4]);
+						char str2 = pred_factory_punnett_square(p2_genes[3], p2_genes[4]);
+						char spd1 = pred_factory_punnett_square(p1_genes[6], p1_genes[7]);
+						char spd2 = pred_factory_punnett_square(p2_genes[6], p2_genes[7]);
+						std::string new_genotype{agr1, agr2, str1, str2, spd1, spd2};
+						predator* pred = create_predator(empty_spot, 0, &new_genotype[0], true);
+						sim_grid->set_cell_contents(empty_spot, pred);
+					}
+					return true;
+				}
+				else
+				{
+					return false;
+				}	
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return false;
 	}
 	else
 	{
