@@ -24,8 +24,10 @@ class mammal : public environment_object
         mammal(point, int, int, int, double, double);
         mammal();
         ~mammal();
-        void gain_energy(int);
         int get_energy();
+        void set_speed(double);
+        int get_speed();
+        void gain_energy(int);
         void move(direction, int);
         void reproduce();
         bool ready_to_reproduce();
