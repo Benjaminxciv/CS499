@@ -1,7 +1,7 @@
 /*
 Name: grazer.h
 Purpose: Header file for grazers.
-Last edit: 11-7-2019
+Last edit: 11-18-2019
 Last editor: BP
 */
 
@@ -17,6 +17,7 @@ class grazer : public mammal
 {
     private:
         int energy_input;
+        double move_count;
         time_container current_time;
         time_container eat_time;
         time_container gain_energy_time;
@@ -39,13 +40,18 @@ class grazer : public mammal
         void reset_eat_time();
         void eat();
 
-
     public:
         grazer(point, int, int, int, int, double, double);
         ~grazer();
-        std::string  get_type() override;
+        string  get_type() override;
         int print_self();
         void act() override;
+
+        void store_speed();
+        void limit_movement();
+        void check_energy();
+        void sight_on_plant();
+        void sight_on_predator();
         
 };
 #endif

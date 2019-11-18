@@ -1,10 +1,9 @@
 /*
 Name: grazer.cpp
 Purpose: Grazer's class that defines their EU consumption and reproduction information.
-Last edit: 11-7-2019
+Last edit: 11-18-2019
 Last editor: BP
 */
-
 #include "grazer.h"
 
 grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_reprod_min, double m_spd, double maintain_spd) :
@@ -91,6 +90,7 @@ void grazer::act()
     else if(this->food_available)
     {
         reset_movement_time();
+        this->reset_speed();
         if(!retained_eat_time)
         {
             start_eat_time();
@@ -118,6 +118,28 @@ void grazer::act()
             this->set_current_speed(this->get_max_speed()*.75);
             reset_movement_time();
         }
+        check_energy();
+    }
+}
+
+/*
+Name: check_energy()
+Purpose: Add function that ensures after the grazer's energy unit drops below the defined level, 
+therefore the grazer cannot move more than 10 Distance Unit.
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: N/A
+*/
+void grazer::check_energy()
+{
+    if(this->get_energy() < 25)
+    {
+        this->move_count++;
+    }
+
+    if(this->move_count > 10)
+    {
+        //message.die(this);
     }
 }
 
@@ -201,4 +223,34 @@ void grazer::start_eat_time()
     message.process_message();
     eat_time = message.get_time_info();
     retained_eat_time = true;
+
+}
+
+/*
+Name: sight_on_plant()
+Purpose: Add aspect to Grazer's class that the grazer's can see a plant within 150DU.
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: N/A
+*/
+
+void grazer::sight_on_plant()
+{
+    //get_cell() get all the cells within 150du
+    //
+}
+
+/*
+Name: sight_on_predator()
+Purpose: Add aspect of Grazer's class that the grazer can see predators within 25 DU.
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: N/A
+*/
+
+void grazer::sight_on_predator()
+{
+    //if withing 25 du 
+    //get_cell()
+    //danger = true
 }

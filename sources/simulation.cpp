@@ -90,6 +90,7 @@ void simulation::increase_tick_speed()
 	}
 }
 
+//Put test code in here
 std::vector<environment_object*> simulation::iterate_cells()
 {
 	std::vector<environment_object*> cells;
@@ -101,6 +102,8 @@ std::vector<environment_object*> simulation::iterate_cells()
 			environment_object* cell = sim_grid->get_cell_contents(pt);
 			if(cell != nullptr)
 			{
+				//Put test code in here
+				//TODO
 				cell->act();
 				sim_message& message = sim_message::get_instance();
 				//How do I explain this...
