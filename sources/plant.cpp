@@ -45,6 +45,22 @@ int plant::print_self()
 
 }
 
+/*
+Name: plant_growth()
+Purpose: Defines how the plant grows with leaves expanding from the plant center.
+Trace: Traces to Epic 3, acceptance criteria 1
+Parameters: N/A
+Returns: N/A
+*/
+void plant_growth()
+{
+    int current_size;
+    
+    //starts intial growth
+    //grows a certain size per rate
+    //throw a leaf per DU
+    //compare size to max size.
+}
 
 /*
 Name: seed_pod_values()
@@ -86,13 +102,10 @@ void seed_grow()
 void plant::act()
 {
     sim_message& message = sim_message::get_instance();
-    message.get_current_time();
-    message.process_message();
     time_container timer = message.get_time_info();
     std::cout << timer.time_sec << std::endl;
 
     message.get_future_time(10);
-    message.process_message();
     time_container timer2 = message.get_time_info();
     std::cout << timer2.time_sec << std::endl;
 }

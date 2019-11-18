@@ -15,6 +15,7 @@ Last editor: AW
 #include <stdlib.h>
 #include "sim_message.h"
 #include "seed.h"
+#include "leaf.h"
 
 
 class plant : public environment_object
@@ -30,6 +31,7 @@ class plant : public environment_object
         ~plant();
         std::string get_type();
         int print_self();
+        void plant_growth();
         void set_seed_pod_values();
         void seed_grow();
         void act();
