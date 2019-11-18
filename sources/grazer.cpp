@@ -11,10 +11,11 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     energy_input(e_input),
     mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
-    this->danger                 = false;
-    this->food_available         = false;
-    this->retained_movement_time = false;
-    this->retained_eat_timer     = false;
+    this->danger                    = false;
+    this->food_available            = false;
+    this->retained_movement_time    = false;
+    this->retained_eat_time         = false;
+    this->retained_gain_energy_time = false;
 }
 
 grazer::~grazer()
@@ -48,16 +49,17 @@ BP 10/30/19
 */
 void grazer::eat()
 {
-     if(current_time.time_min >= eat_timer.time_min )
+     if(current_time == eat_time)
      {
         reset_eat_timer();
         cout << "Moving" << endl;
-        return;
      }
     
-    else if(current_time.time_sec == gain_energy_timer.time_sec)
+    else if(current_time == gain_energy_time)
     {
         this->gain_energy(energy_input);
+        reset_gain_energy_time();
+        //call for deletion of leaf
     }
 
     else
@@ -77,12 +79,13 @@ void grazer::act()
     if(this->danger)
     {
         reset_eat_timer();
+        reset_gain_energy_time();
         if(!retained_movement_time)
         {
             start_movement_timer();
         }
         
-        if(current_time == movement_timer)
+        if(current_time == movement_time)
         {
             //check behind
             //drop speed to 75% 
@@ -93,18 +96,9 @@ void grazer::act()
     else if(this->food_available)
     {
         reset_movement_timer();
-        if(gain_energy_timer.time_sec == 0)
+        if(!retained_eat_time)
         {
-            message.get_future_time(58);
-            message.process_message();
-            gain_energy_timer = message.get_time_info();
-        }
-
-        if(eat_timer.time_sec == 0)
-        {
-            message.get_future_time(0, 1);
-            message.process_message();
-            eat_timer = message.get_time_info();
+            start_eat_timer();
         }
 
         eat();
@@ -112,15 +106,17 @@ void grazer::act()
     
     else 
     {
+        reset_eat_timer();
+        reset_gain_energy_time();
         move(up, 1);
         if(!retained_movement_time)
         {
             start_movement_timer();
         }   
 
-        if(current_time == movement_timer)
+        if(current_time == movement_time)
         {
-
+            //Drop 75% speed
         }
     }
 }
@@ -133,8 +129,8 @@ BP 11/7/19
 */
 void grazer::reset_eat_timer()
 {
-    retained_eat_timer = false;
-    eat_timer = {0,0,0};
+    retained_eat_time = false;
+    eat_time = {0,0,0};
 }
 
 /*Name: reset_movement_timer()
@@ -145,38 +141,37 @@ BP 11/7/19
 */
 void grazer::reset_movement_timer()
 {
-    movement_timer = {0,0,0};
+    movement_time = {0,0,0};
     retained_movement_time = false;
 }
 
-
-/*Name: set_maintain_time(int maintain_time)
-Purpose: set how long a grazer can run at maxspeed
-Traces to Epic 3, Acceptance Criteria 2
-Parameters: 
-	maintain_time: int
-		The value in minutes that a grazer can run at maxspeed
-BP 11/7/19
-*/
-void grazer::set_maintain_time(int maintain_time)
+void grazer::reset_gain_energy_time()
 {
-    this->maintain_time = maintain_time;
+    gain_energy_time = {0,0,0};
 }
 
 
 void grazer::start_movement_timer()
 {
-    // message.get_future_time(0,maintain_time);
+    // message.get_future_time(0,this->get_maintain_speed);
     // message.process_message();
     // movement_timer = message.get_time_info();
     retained_movement_time = true;
 }
 
-
-void grazer::start_eat_timer()
+void grazer::start_gain_energy_time()
 {
     // message.get_future_time(0,1);
     // message.process_message();
     // eat_timer = message.get_time_info();
-    retained_eat_timer = true;
+    retained_gain_energy_time = true;
+}
+
+void grazer::start_eat_timer()
+{
+    // message.get_future_time(0,10);
+    // message.process_message();
+    // eat_timer = message.get_time_info();
+    retained_eat_time = true;
+    start_gain_energy_time();
 }

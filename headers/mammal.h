@@ -29,6 +29,7 @@ class mammal : public environment_object
         void move(direction, int);
         void reproduce();
         bool ready_to_reproduce();
+        int get_maintain_speed();
 };
 
 #endif

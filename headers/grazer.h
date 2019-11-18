@@ -18,12 +18,13 @@ class grazer : public mammal
     private:
         int energy_input;
         time_container current_time;
-        time_container eat_timer;
-        time_container gain_energy_timer;
-        time_container movement_timer;
-        int maintain_time;
+        time_container eat_time;
+        time_container gain_energy_time;
+        time_container movement_time;
+        int maintain_time;        
         bool retained_movement_time;
-        bool retained_eat_timer;
+        bool retained_gain_energy_time;
+        bool retained_eat_time;
         bool danger;
         bool food_available;
         const int eat_reach = 5;
@@ -32,8 +33,9 @@ class grazer : public mammal
 
         void start_movement_timer();
         void start_eat_timer();
+        void start_gain_energy_time();
         void reset_movement_timer();
-        void set_maintain_time(int);
+        void reset_gain_energy_time();
         void reset_eat_timer();
         void eat();
 

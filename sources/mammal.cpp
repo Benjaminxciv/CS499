@@ -89,3 +89,8 @@ bool mammal::ready_to_reproduce()
 {
     return energy >= energy_reproduce_min;
 }
+
+int mammal::get_maintain_speed()
+{
+    return this->maintain_speed;
+}
