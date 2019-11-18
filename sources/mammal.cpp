@@ -39,11 +39,6 @@ void mammal::gain_energy(int energy)
     this->energy += energy;
 }
 
-int mammal::get_energy()
-{
-    return energy;
-}
-
 void mammal::move(direction dir, int speed)
 {
     switch(dir)

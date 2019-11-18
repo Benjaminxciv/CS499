@@ -75,6 +75,7 @@ void grazer::act()
     if(this->danger)
     {
         reset_eat_timer();
+        check_energy();
         if(movement_timer.time_min == 0)
         {
             message.get_future_time(0,this->maintain_time);
@@ -104,11 +105,12 @@ void grazer::act()
 
         eat();
     }
-
+    
     else 
     {
         move(up, 1);
         cout << "Move" << endl;
+        check_energy();
     }
 
     if (movement_timer.time_min == current_time.time_min)
@@ -117,7 +119,6 @@ void grazer::act()
     }
 
     this->set_speed(this->curr_speed);
-    check_energy();
 }
 
 
@@ -160,12 +161,12 @@ void grazer::check_energy()
 {
     if(this->get_energy() < 25)
     {
-        this->move_count += this->move_count + (1/3);
+        this->move_count++;
     }
 
     if(this->move_count > 10)
     {
-        cout << "Kill Grazer" << endl;
+        //message.die(this);
     }
 }
 
