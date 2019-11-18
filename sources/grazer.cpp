@@ -45,14 +45,14 @@ int grazer::print_self()
 Purpose: gain energy per minute. Amount gained is determined by energy input
 Trace: Traces to Epic 3, Acceptance Criteria 2
 Parameters: N/A
-BP 10/30/19
+BP 11/18/19
 */
 void grazer::eat()
 {
      if(current_time == eat_time)
      {
-        reset_eat_timer();
-        cout << "Moving" << endl;
+        reset_eat_time();
+        //move: this is based on eating all plants in 5du not the grazers sight
      }
     
     if(current_time == gain_energy_time)
@@ -73,45 +73,50 @@ void grazer::act()
 
     if(this->danger)
     {
-        reset_eat_timer();
+        reset_eat_time();
         reset_gain_energy_time();
+        //request movement : if true increment number of moves
         if(!retained_movement_time)
         {
-            start_movement_timer();
+            start_movement_time();
         }
         
         if(current_time == movement_time)
         {
             //check behind
-            //drop speed to 75% 
+            this->set_current_speed(this->get_max_speed()*.75);
+            reset_movement_time(); 
         } 
-  
-    }
-
+    } 
     else if(this->food_available)
     {
-        reset_movement_timer();
+        reset_movement_time();
         if(!retained_eat_time)
         {
-            start_eat_timer();
+            start_eat_time();
         }
-
+       
+        if(!retained_gain_energy_time)
+        {
+            start_gain_energy_time();
+        }
         eat();
     }
-    
     else 
     {
-        reset_eat_timer();
+        reset_eat_time();
         reset_gain_energy_time();
+        //request movement : if true increment number of moves
         move(up, 1);
         if(!retained_movement_time)
         {
-            start_movement_timer();
+            start_movement_time();
         }   
 
         if(current_time == movement_time)
         {
-            //Drop 75% speed
+            this->set_current_speed(this->get_max_speed()*.75);
+            reset_movement_time();
         }
     }
 }
@@ -120,53 +125,80 @@ void grazer::act()
 Purpose: reset eat_timer member variable to zero
 Parameters: N/A
 Traces to Epic 3, Acceptance Criteria 2
-BP 11/7/19
+BP 11/18/19
 */
-void grazer::reset_eat_timer()
+void grazer::reset_eat_time()
 {
     retained_eat_time = false;
     eat_time = {0,0,0};
 }
 
-/*Name: reset_movement_timer()
-Purpose: reset movement_timer member variable to the time a grzer can maintain max speed
+/*Name: reset_movement_time()
+Purpose: resets time_container movement_time min, secs, & hours = 0 
 Traces to Epic 3, Acceptance Criteria 2
 Parameters: N/A
-BP 11/7/19
+BP 11/18/19
 */
-void grazer::reset_movement_timer()
+void grazer::reset_movement_time()
 {
     movement_time = {0,0,0};
     retained_movement_time = false;
 }
 
+/*Name: reset_gain_energy_time()
+Purpose: resets time_container gain_energy_time min, secs, & hours = 0 
+Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+BP 11/18/19
+*/
 void grazer::reset_gain_energy_time()
 {
     gain_energy_time = {0,0,0};
+    retained_gain_energy_time = false;
 }
 
-
-void grazer::start_movement_timer()
+/*Name: start_movement_time()
+Purpose: Sets movement_time to a future time_container. The future time created uses
+            the data file defined maintain_speed
+Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+BP 11/18/19
+*/
+void grazer::start_movement_time()
 {
-    // message.get_future_time(0,this->get_maintain_speed);
-    // message.process_message();
-    // movement_timer = message.get_time_info();
+    sim_message& message = sim_message::get_instance();
+    message.get_future_time(0,this->get_maintain_speed());
+    message.process_message();
+    movement_time = message.get_time_info();
     retained_movement_time = true;
 }
 
+/*Name: start_energy_time()
+Purpose: Sets energy_time to a future time_container 1 minute from current_time.
+Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+BP 11/18/19
+*/
 void grazer::start_gain_energy_time()
 {
-    // message.get_future_time(0,1);
-    // message.process_message();
-    // eat_timer = message.get_time_info();
+    sim_message& message = sim_message::get_instance();
+    message.get_future_time(0,1);
+    message.process_message();
+    gain_energy_time = message.get_time_info();
     retained_gain_energy_time = true;
 }
 
-void grazer::start_eat_timer()
+/*Name: start_eat_time()
+Purpose: Sets eat_time to a future time_container 10 minutes from current_time.
+Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+BP 11/18/19
+*/
+void grazer::start_eat_time()
 {
-    // message.get_future_time(0,10);
-    // message.process_message();
-    // eat_timer = message.get_time_info();
+    sim_message& message = sim_message::get_instance();
+    message.get_future_time(0,10);
+    message.process_message();
+    eat_time = message.get_time_info();
     retained_eat_time = true;
-    start_gain_energy_time();
 }

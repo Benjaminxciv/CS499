@@ -31,12 +31,12 @@ class grazer : public mammal
         const int plant_sight_dist = 150;
         const int pred_sight_dist = 25;
 
-        void start_movement_timer();
-        void start_eat_timer();
+        void start_movement_time();
+        void start_eat_time();
         void start_gain_energy_time();
-        void reset_movement_timer();
+        void reset_movement_time();
         void reset_gain_energy_time();
-        void reset_eat_timer();
+        void reset_eat_time();
         void eat();
 
 

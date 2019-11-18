@@ -19,7 +19,9 @@ class mammal : public environment_object
         int energy_output;
         int energy_reproduce_min;
         double max_speed;
+        double current_speed;
         double maintain_speed;
+
     public:
         mammal(point, int, int, int, double, double);
         mammal();
@@ -28,8 +30,11 @@ class mammal : public environment_object
         int get_energy();
         void move(direction, int);
         void reproduce();
+        void set_current_speed(double);
         bool ready_to_reproduce();
         int get_maintain_speed();
+        double get_max_speed();
+        
 };
 
 #endif

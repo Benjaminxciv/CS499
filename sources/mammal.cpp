@@ -94,3 +94,13 @@ int mammal::get_maintain_speed()
 {
     return this->maintain_speed;
 }
+
+void mammal::set_current_speed(double speed)
+{
+    this->current_speed = speed;
+}
+
+double mammal::get_max_speed()
+{
+    return this->max_speed;
+}
