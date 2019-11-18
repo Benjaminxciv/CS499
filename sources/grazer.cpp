@@ -55,17 +55,12 @@ void grazer::eat()
         cout << "Moving" << endl;
      }
     
-    else if(current_time == gain_energy_time)
+    if(current_time == gain_energy_time)
     {
         this->gain_energy(energy_input);
         reset_gain_energy_time();
         //call for deletion of leaf
     }
-
-    else
-    {
-         std::cout << "Moving" <<std::endl;
-    }   
 }
 
 
