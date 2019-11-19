@@ -157,7 +157,7 @@ bool sim_message::look_at_cell(point target_loc)
 
 bool sim_message::request_reproduce(point target_loc, environment_object* organism_requesting)
 {
-    action_requested = "eat organism";
+    action_requested = "request reproduction";
     location = target_loc;
     organism = organism_requesting;
     return sim->process_sim_message();

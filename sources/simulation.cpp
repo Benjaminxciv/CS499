@@ -531,7 +531,6 @@ bool simulation::process_sim_message()
 			}
 			grazer* grz_organsim = reinterpret_cast<grazer*>(organism);
 			int init_energy = grz_organsim->get_energy() / 2;
-			grz_organsim->set_energy(init_energy);
 			grazer* grz = create_grazer(empty_spot, init_energy);
 			sim_grid->set_cell_contents(empty_spot, grz);
 			return true;

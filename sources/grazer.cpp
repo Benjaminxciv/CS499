@@ -109,11 +109,19 @@ void grazer::act()
             sim_message& message = sim_message::get_instance();
             message.die(this);
         }
+        else if(ready_to_reproduce())
+        {
+            sim_message& message = sim_message::get_instance();
+            if(message.request_reproduce(location, this))
+            {
+                energy /= 2;
+            }
+        }
         else
         {
             if(move(up, 1))
             {
-                this->energy--;
+                
             }
         }
         cout << "Move" << endl;
