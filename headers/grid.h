@@ -33,6 +33,7 @@ class grid
 		void print_rows();
 		int get_height();
 		int get_width();
+		bool check_bounds(point);
 };
 
 #endif

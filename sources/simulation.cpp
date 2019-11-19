@@ -427,8 +427,16 @@ bool simulation::process_sim_message()
 		return true;
 	}
 	point location = message.get_location();
+	if(!sim_grid->check_bounds(location))
+	{
+		return false;
+	}
 	environment_object* target_cell_contents = sim_grid->get_cell_contents(location);
 	environment_object* organism = message.get_organism();
+	if(!sim_grid->check_bounds(organism->get_loc()))
+	{
+		return false;
+	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	if(message.get_action_requested() == "move organism")
 	{
