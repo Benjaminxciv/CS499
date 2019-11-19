@@ -89,6 +89,7 @@ void simulation::increase_tick_speed()
 	}
 }
 
+//Put test code in here
 std::vector<environment_object*> simulation::iterate_cells()
 {
 	std::vector<environment_object*> cells;
