@@ -121,7 +121,7 @@ void grazer::act()
         {
             if(move(up, 1))
             {
-                
+
             }
         }
         cout << "Move" << endl;

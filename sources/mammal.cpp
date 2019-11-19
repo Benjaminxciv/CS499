@@ -13,7 +13,7 @@ mammal::mammal(point init_loc, int init_e, int e_output, int e_reprod_min, doubl
     maintain_speed(maintain_spd),
     environment_object(init_loc)
 {
-
+    du_moved = 0;
 }
 
 mammal::mammal()
@@ -92,7 +92,12 @@ bool mammal::move(direction dir, int speed)
             location.y_loc++;
             break;
     }
-    energy -= energy_output / 5;
+    du_moved++;
+    if(du_moved >= 5)
+    {
+        du_moved = 0;
+        energy -= energy_output;
+    }
     return true;
 }
 
