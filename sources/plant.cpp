@@ -1,13 +1,14 @@
 /*
 Name: plant.cpp
 Purpose: Class defining all the plant's function, such as location and growing pattern.
-Last edit: 09-29-2019
-Last editor: AW
+Last edit: 11-12-2019
+Last editor: MG
 */
 
 #include "plant.h"
 #include "time.h"
-#include "clock.h"
+#include "math.h"
+
 
 plant::plant(point init_loc, double grow_rate, int m_size, int m_seed_dist, int max_seed, double seed_via) : 
     growth_rate(grow_rate),
@@ -17,12 +18,11 @@ plant::plant(point init_loc, double grow_rate, int m_size, int m_seed_dist, int 
     seed_viability(seed_via),
     environment_object(init_loc)
 {
-
 }
 
 plant::~plant()
 {
-
+    
 }
 
 std::string plant::get_type()
@@ -69,43 +69,56 @@ Trace: Traces to Epic 3, acceptance criteria 1
 Parameters: N/A
 Returns: N/A
 */
-void set_seed_pod_values()
+void plant::set_seed_pod_values()
 {
-
-    //used for testing purposes only - these values will be provided by the XML file.
-    int MAX_SEED_CAST_DISTANCE = 100;
-    int MAX_SEED_NUMBER = 50;
-    
-
-    srand(time(0));
-
-    int seed_pod_distance = rand() %  MAX_SEED_CAST_DISTANCE + 0;
-    int seed_pod_seed_number = rand() %  MAX_SEED_NUMBER + 0; 
-
-    std::cout << "seed pod distance: " << seed_pod_distance;
-    std::cout << "\nseed pod number: " << seed_pod_seed_number;
-
+    int seed_pod_distance = rand() %  max_seed_cast_dist + 0;
+    int seed_pod_seed_number = (rand() %  max_seed_num + 0) * seed_viability; 
 }
 
 /*
-Name: seed()
-Purpose: accounts for attributes of the plant's seeds. Viability, begin growth, and rate of growth.
+Name: radially_disperse_seeds()
+Purpose: uses the viable seeds set in set_seed_pod_values() to disperse radially from the plant. 
+        1 collision resolution. If it fails to place seed after 1 time, it loses that seed. 
 Trace: Traces to Epic 3, acceptance criteria 1 
 Parameters: N/A
 Returns: N/A
 */
-void seed_grow()
+void plant::radially_disperse_seed()
 {
-    
+    int theta = 0;
+    for (int i = max_seed_num; i >= 0; i--)
+    {
+        int target_center_x = (cos (theta) * max_seed_cast_dist) + location.x_loc;
+        int target_center_y = (sin (theta) * max_seed_cast_dist) + location.y_loc;
+        point pt(target_center_x, target_center_y);
+        theta = theta + rand() % (360/max_seed_num) + 0;
+        
+        sim_message& message = sim_message::get_instance();
+        if(!message.place_organism(pt, "seed"))
+        {
+            target_center_x = (cos (theta) * max_seed_cast_dist) + location.x_loc;
+            target_center_y = (sin (theta) * max_seed_cast_dist) + location.y_loc;
+            point pt2(target_center_x,target_center_y);
+            theta = theta + rand() % (360/41) + 0;
+            message.place_organism(pt2, "seed");
+        }
+   }
 }
+
 
 void plant::act()
 {
+    //TODO:: add if check for plant fully grown
     sim_message& message = sim_message::get_instance();
-    time_container timer = message.get_time_info();
-    std::cout << timer.time_sec << std::endl;
+    message.get_current_time();
+    time_container current_time = message.get_time_info();
 
-    message.get_future_time(10);
-    time_container timer2 = message.get_time_info();
-    std::cout << timer2.time_sec << std::endl;
+    message.get_future_time(0, 0, 1);
+    time_container future_time = message.get_time_info();
+    
+    if (current_time.time_hour == future_time.time_hour)
+    {
+        set_seed_pod_values();
+        radially_disperse_seed();
+    }
 }

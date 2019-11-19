@@ -68,4 +68,3 @@ int environment_object::print_self()
     std::cout << " ";
     return 0;
 }
-

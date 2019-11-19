@@ -13,7 +13,7 @@ mammal::mammal(point init_loc, int init_e, int e_output, int e_reprod_min, doubl
     maintain_speed(maintain_spd),
     environment_object(init_loc)
 {
-
+    du_moved = 0;
 }
 
 mammal::mammal()
@@ -34,22 +34,32 @@ Parameters:
 Last edit:
     BP 10/27/19
 */
-void mammal::gain_energy(int energy)
+void mammal::gain_energy(int added_energy)
 {
-    this->energy += energy;
+    energy += added_energy;
 }
 
-int mammal::get_energy()
+void mammal::set_energy(int new_energy)
 {
-    return energy;
+    energy = new_energy;
 }
 
-void mammal::move(direction dir, int speed)
+bool mammal::move(direction dir, int speed)
 {
+    sim_message& message = sim_message::get_instance();
+    point move_to = location;
     switch(dir)
     {
         case up:
-            location.y_loc++;
+            move_to.y_loc++;
+            if(message.move_organism(move_to, this))
+            {
+                location.y_loc++;
+            }
+            else
+            {
+                return false;
+            }
             break;
         case up_right:
             location.x_loc++;
@@ -77,7 +87,13 @@ void mammal::move(direction dir, int speed)
             location.y_loc++;
             break;
     }
-    this->energy -= this->energy_output * (speed / 5);
+    du_moved++;
+    if(du_moved >= 5)
+    {
+        du_moved = 0;
+        energy -= energy_output;
+    }
+    return true;
 }
 
 void mammal::reproduce()
@@ -85,6 +101,45 @@ void mammal::reproduce()
 
 }
 
+
+/*
+Name: get_energy()
+Purpose: return the energy of the mammal
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: energy
+*/
+int mammal::get_energy()
+{
+    return this->energy;
+}
+
+
+/*
+Name: get_speed()
+Purpose: returns the movement speed
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: movement_speed
+*/
+int mammal::get_speed()
+{
+    return this->maintain_speed;
+}
+
+
+/*
+Name: set_speed()
+Purpose: sets a speed that is passed in to the current speed of mammal
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: max_speed
+Returns: N/A
+*/
+void mammal::set_speed(double max_speed)
+{
+    this->maintain_speed = max_speed;
+
+}
 bool mammal::ready_to_reproduce()
 {
     return energy >= energy_reproduce_min;
