@@ -54,6 +54,8 @@ Returns: N/A
 */
 void plant_growth()
 {
+    //grab initial size of the plant. 
+    //set current_size == initial_size
     int current_size;
     
     //starts intial growth
