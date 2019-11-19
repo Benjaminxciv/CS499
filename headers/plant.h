@@ -17,6 +17,7 @@ Last editor: MG
 #include "clock.h"
 #include "sim_message.h"
 #include "seed.h"
+#include "leaf.h"
 
 class plant : public environment_object
 {

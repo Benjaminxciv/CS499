@@ -5,7 +5,6 @@
 #include "environment_object.h"
 #include "clock.h"
 #include "simulation.h"
-class simulation;
 
 class simulation;
 
@@ -22,8 +21,10 @@ class sim_message
         std::string environment_obj_type;
         //things returned from simulation:
         std::string simulation_response;
+        int energy_from_organism;
         time_container time_info;
         simulation* sim;
+        environment_object* garbage;
         sim_message();
         ~sim_message();
     public:
@@ -33,6 +34,8 @@ class sim_message
         std::string get_action_requested();
         void set_simulation_response(std::string);
         std::string get_simulation_response();
+        void set_organism_energy(int);
+        int get_organism_energy();
         int get_time_offset_secs();
         int get_time_offset_mins();
         int get_time_offset_hours();
@@ -46,9 +49,12 @@ class sim_message
         bool move_organism(point, environment_object*);
         bool place_organism(point, std::string);
         bool replace_organism(point, std::string);
-        bool eat_organism(point, environment_object*);
+        bool die(environment_object*);
+        bool eat_organism(point);
         bool look_at_cell(point);
         bool request_reproduce(point, environment_object*);
+        void set_garbage(environment_object*);
+        environment_object* get_garbage();
 };
 
 

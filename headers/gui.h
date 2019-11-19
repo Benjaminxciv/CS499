@@ -20,6 +20,8 @@ Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsof
 #include <wincodec.h>
 
 #include "simulation.h"
+#include "predator.h"
+#include "grazer.h"
 
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "Ole32.lib")
