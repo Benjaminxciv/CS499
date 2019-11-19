@@ -145,7 +145,7 @@ int grid::get_width()
 
 bool grid::check_bounds(point location)
 {
-    if(location.x_loc >= width || location.y_loc >= height)
+    if(location.x_loc >= width-1 || location.y_loc >= height-1)
     {
         return false;
     }

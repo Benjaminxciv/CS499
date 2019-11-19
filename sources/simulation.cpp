@@ -136,14 +136,22 @@ char* trim_lead_whitespace(char* str)
 	return str+str_idx-1;
 }
 
-boulder* create_boulder(point boulder_pt, int diameter, int height)
+boulder* simulation::create_boulder(point boulder_pt, int diameter, int height)
 {
+	if(!sim_grid->check_bounds(boulder_pt))
+	{
+		return nullptr;
+	}
 	boulder* bold = new boulder(boulder_pt, diameter, height);
 	return bold;
 }
 
-plant* create_plant(point plant_pt, int diameter)
+plant* simulation::create_plant(point plant_pt, int diameter)
 {
+	if(!sim_grid->check_bounds(plant_pt))
+	{
+		return nullptr;
+	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	//Plant info data
 	//These values are consistent for every plant
@@ -156,14 +164,22 @@ plant* create_plant(point plant_pt, int diameter)
 	return plt;
 }
 
-leaf* create_leaf(point leaf_pt)
+leaf* simulation::create_leaf(point leaf_pt)
 {
+	if(!sim_grid->check_bounds(leaf_pt))
+	{
+		return nullptr;
+	}
 	leaf* lf = new leaf(leaf_pt);
 	return lf;
 }
 
-grazer* create_grazer(point grazer_pt, int init_energy)
+grazer* simulation::create_grazer(point grazer_pt, int init_energy)
 {
+	if(!sim_grid->check_bounds(grazer_pt))
+	{
+		return nullptr;
+	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	//Grazer info data
 	//These values are consistent for every grazer
@@ -205,9 +221,13 @@ char pred_factory_punnett_square(char gene_one, char gene_two)
     }
 }
 
-predator* create_predator(point predator_pt, int init_energy, char* genotype,
+predator* simulation::create_predator(point predator_pt, int init_energy, char* genotype,
 							bool is_offspring = false)
 {
+	if(!sim_grid->check_bounds(predator_pt))
+	{
+		return nullptr;
+	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	// Predator info data
 	//These values are consistent for every predator
@@ -338,10 +358,10 @@ void simulation::init_sim()
 		}
 	}
 	//Use this for testing replacing / removing objects
-	//point pt(0,0);
+	//point pt(1000000,1000000);
 	//seed* sd = new seed(pt);
 	//grazer* gz = create_grazer(pt, 150);
-	//sim_grid->set_cell_contents(pt, sd);
+	//sim_grid->set_cell_contents(pt, gz);
 }
 
 point simulation::find_empty_cell(point center)
