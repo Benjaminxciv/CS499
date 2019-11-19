@@ -39,11 +39,6 @@ void mammal::gain_energy(int added_energy)
     energy += added_energy;
 }
 
-int mammal::get_energy()
-{
-    return energy;
-}
-
 void mammal::set_energy(int new_energy)
 {
     energy = new_energy;
