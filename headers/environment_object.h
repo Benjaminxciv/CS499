@@ -18,6 +18,10 @@ struct point
     int y_loc;
     point() {}
     point(int x, int y) : x_loc(x), y_loc(y) {}
+    bool operator==(const point& p1)
+    {
+        return (x_loc == p1.x_loc && y_loc == p1.y_loc);
+    }
 };
 
 class environment_object

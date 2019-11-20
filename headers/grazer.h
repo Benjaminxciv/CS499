@@ -9,9 +9,7 @@ Last editor: BP
 #define GRAZER_H
 
 #include <string>
-#include "environment_object.h"
 #include "mammal.h"
-#include "sim_message.h"
 
 class grazer : public mammal
 {
@@ -47,8 +45,6 @@ class grazer : public mammal
         int print_self();
         void act() override;
 
-        void store_speed();
-        void limit_movement();
         void check_energy();
         void sight_on_plant();
         void sight_on_predator();

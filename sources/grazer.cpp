@@ -62,7 +62,6 @@ void grazer::eat()
     }
 }
 
-
 void grazer::act()
 {
     sim_message& message = sim_message::get_instance();
@@ -83,7 +82,7 @@ void grazer::act()
         if(current_time == movement_time)
         {
             //check behind
-            this->set_current_speed(this->get_max_speed()*.75);
+            this->current_speed *=.75;
             reset_movement_time(); 
         } 
     } 
@@ -107,20 +106,44 @@ void grazer::act()
         reset_eat_time();
         reset_gain_energy_time();
         //request movement : if true increment number of moves
-        move(up, 1);
+        //move(up, 1);
+        
         if(!retained_movement_time)
         {
             start_movement_time();
         }   
 
+        if(this->energy <= 0)
+        {
+            sim_message& message = sim_message::get_instance();
+            message.die(this);
+        }
+        else if(ready_to_reproduce())
+        {
+            sim_message& message = sim_message::get_instance();
+            if(message.request_reproduce(location, this))
+            {
+                energy /= 2;
+            }
+        }
+        // else
+        // {
+        //     if(move(up, 1))
+        //     {
+
+        //     }
+        // }
+        check_energy();
+    }
+
         if(current_time == movement_time)
         {
-            this->set_current_speed(this->get_max_speed()*.75);
+            this->current_speed = this->max_speed*.75;
             reset_movement_time();
         }
         check_energy();
-    }
 }
+
 
 /*
 Name: check_energy()
@@ -135,6 +158,10 @@ void grazer::check_energy()
     if(this->get_energy() < 25)
     {
         this->move_count++;
+    }
+    else
+    {
+        move_count = 0;
     }
 
     if(this->move_count > 10)
@@ -151,8 +178,8 @@ BP 11/18/19
 */
 void grazer::reset_eat_time()
 {
-    retained_eat_time = false;
     eat_time = {0,0,0};
+    retained_eat_time = false;
 }
 
 /*Name: reset_movement_time()

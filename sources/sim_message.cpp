@@ -2,7 +2,7 @@
 
 sim_message::sim_message()
 {
-
+    garbage = nullptr;
 }
 
 sim_message::~sim_message()
@@ -39,6 +39,16 @@ void sim_message::set_simulation_response(std::string sim_response)
 std::string sim_message::get_simulation_response()
 {
     return simulation_response;
+}
+
+void sim_message::set_organism_energy(int energy)
+{
+    energy_from_organism = energy;
+}
+
+int sim_message::get_organism_energy()
+{
+    return energy_from_organism;
 }
 
 int sim_message::get_time_offset_secs()
@@ -123,11 +133,18 @@ bool sim_message::replace_organism(point target_loc, std::string organism_to_cre
     return sim->process_sim_message();
 }
 
-bool sim_message::eat_organism(point target_loc, environment_object* organism_to_move)
+bool sim_message::die(environment_object* organism_to_die)
+{
+    action_requested = "die";
+    location = organism_to_die->get_loc();
+    organism = organism_to_die;
+    return sim->process_sim_message();
+}
+
+bool sim_message::eat_organism(point target_loc)
 {
     action_requested = "eat organism";
     location = target_loc;
-    organism = organism_to_move;
     return sim->process_sim_message();
 }
 
@@ -138,10 +155,20 @@ bool sim_message::look_at_cell(point target_loc)
     return sim->process_sim_message();
 }
 
-bool sim_message::request_reproduce(point target_loc, environment_object* organism_to_move)
+bool sim_message::request_reproduce(point target_loc, environment_object* organism_requesting)
 {
-    action_requested = "eat organism";
+    action_requested = "request reproduction";
     location = target_loc;
-    organism = organism_to_move;
+    organism = organism_requesting;
     return sim->process_sim_message();
+}
+
+void sim_message::set_garbage(environment_object* to_be_deleted)
+{
+    garbage = to_be_deleted;
+}
+
+environment_object* sim_message::get_garbage()
+{
+    return garbage;
 }

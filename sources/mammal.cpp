@@ -14,7 +14,7 @@ mammal::mammal(point init_loc, int init_e, int e_output, int e_reprod_min, doubl
     maintain_speed(maintain_spd),
     environment_object(init_loc)
 {
-
+    du_moved = 0;
 }
 
 mammal::mammal()
@@ -35,17 +35,32 @@ Parameters:
 Last edit:
     BP 10/27/19
 */
-void mammal::gain_energy(int energy)
+void mammal::gain_energy(int added_energy)
 {
-    this->energy += energy;
+    energy += added_energy;
 }
 
-void mammal::move(direction dir, int speed)
+void mammal::set_energy(int new_energy)
 {
+    energy = new_energy;
+}
+
+bool mammal::move(direction dir, int speed)
+{
+    sim_message& message = sim_message::get_instance();
+    point move_to = location;
     switch(dir)
     {
         case up:
-            location.y_loc++;
+            move_to.y_loc++;
+            if(message.move_organism(move_to, this))
+            {
+                location.y_loc++;
+            }
+            else
+            {
+                return false;
+            }
             break;
         case up_right:
             location.x_loc++;
@@ -73,7 +88,13 @@ void mammal::move(direction dir, int speed)
             location.y_loc++;
             break;
     }
-    this->energy -= this->energy_output * (speed / 5);
+    du_moved++;
+    if(du_moved >= 5)
+    {
+        du_moved = 0;
+        energy -= energy_output;
+    }
+    return true;
 }
 
 void mammal::reproduce()
