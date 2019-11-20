@@ -5,6 +5,9 @@
 // Author: Dr. Rick Coleman
 // Date: January 2017
 //===================================================================================
+#ifndef LIFESIMDATAPARSER_H
+#define LIFESIMDATAPARSER_H
+
 #include <fstream>
 
 using namespace std;
@@ -97,3 +100,5 @@ class LifeSimDataParser
 		int getObstacleCount();						// Number of obstacles
 		bool getObstacleData(int *X, int *Y, int *diameter, int *height);
 };
+
+#endif
