@@ -26,6 +26,11 @@ mammal::~mammal()
     
 }
 
+void mammal::set_direction(int dir)
+{
+    direction = dir;
+}
+
 /*Name: gain_energy(int)
 Purpose: generic way for mammals gain energy 
 Parameters: 
@@ -44,11 +49,11 @@ void mammal::set_energy(int new_energy)
     energy = new_energy;
 }
 
-bool mammal::move(direction dir, int speed)
+bool mammal::move()
 {
     sim_message& message = sim_message::get_instance();
     point move_to = location;
-    switch(dir)
+    switch(direction)
     {
         case up:
             move_to.y_loc++;

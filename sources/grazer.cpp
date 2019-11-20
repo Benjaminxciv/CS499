@@ -122,7 +122,7 @@ void grazer::act()
         }
         else
         {
-            if(move(up, 1))
+            if(move())
             {
 
             }
