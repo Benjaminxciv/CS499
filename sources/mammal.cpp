@@ -106,60 +106,29 @@ void mammal::sense_shape(int sides, int side_size)
     
 }
 
-
-void sense_line1(int line, int count, std::vector<std::vector<bool>>& cells)
+vector<point> sense_circle()
 {
-	//Firstly we have to evaluate the offset:
-    int offset = (cells.size() - count) / 2;
-    //Then we have to fill the line
-    for (int x = offset; x < offset + count; x++)
-	{
-        cells[x][line] = true;
-	}
-}
-
-void sense_circle1(std::vector<std::vector<bool>>& cells)
-{
-	int count = 1;
-    for (int line = 0; line < cells[0].size() / 2; line++)
+    vector<point> points_to_check;
+    int diameter = 9;
+    int radius = (diameter-1)/2;
+    point center(40,40);
+    for (int y = radius; y >= 0; y--)
     {
-        sense_line1(line, count, cells);
-        count += 2;
-    }
-    sense_line1(cells[0].size() / 2, count, cells);
-    count = 1;
-    for (int line = cells[0].size() - 1; line > cells[0].size() / 2; line--)
-    {
-        sense_line1(line, count, cells);
-        count += 2;
-    }
-}
-
-void sense_cone1(std::vector<std::vector<bool>>& cells)
-{
-    int count = 1;
-    for (int line = 0; line < cells[0].size() / 2; line++)
-    {
-        sense_line1(line, count, cells);
-        count += 2;
-    }
-    sense_line1(cells[0].size() / 2, count, cells);
-}
-
-void dos1()
-{
-    std::vector<std::vector<bool>> cells(3, std::vector<bool>(3, false));
-	sense_cone1(cells);
-	for (int row = 0; row < cells.size(); row++)
-    {
-        for (int col = 0; col < cells[0].size(); col++)
+        for(int x = 0; x <= (radius-y)*2; x++)
         {
-            cells[row][col] ? std::cout << (char)219 : std::cout << " ";
+            point p(center.x_loc-x, center.y_loc-y);
+            points_to_check.push_back(p);
         }
-        std::cout << std::endl;
     }
-	int center = ((cells[0].size() * cells.size()) - 1) / 2;
-	std::cout << center << std::endl;
+    for (int y = 1; y <= radius; y++)
+    {
+        for(int x = 0; x <= (radius-y)*2; x++)
+        {
+            point p(center.x_loc+x, center.y_loc+y);
+            points_to_check.push_back(p);
+        }
+    }
+    return points_to_check;
 }
 
 void mammal::reproduce()
