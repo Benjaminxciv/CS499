@@ -12,6 +12,7 @@ Last editor: MG
 
 #include <string>
 #include <iostream>
+#include <vector>
 #include "environment_object.h"
 #include <stdlib.h>
 #include "clock.h"
@@ -28,12 +29,14 @@ class plant : public environment_object
         int max_seed_num;
         int initial_plant_size;
         double seed_viability;
+        int current_size;
+        vector<leaf> list_of_leaves;
     public:
         plant(point, double, int, int, int, double, int);
         ~plant();
         std::string get_type();
         int print_self();
-        void plant_growth();
+        void grow();
         void set_seed_pod_values();
         void radially_disperse_seed();
         void act();

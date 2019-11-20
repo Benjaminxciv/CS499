@@ -47,22 +47,30 @@ int plant::print_self()
 }
 
 /*
-Name: plant_growth()
+Name: growth()
 Purpose: Defines how the plant grows with leaves expanding from the plant center.
 Trace: Traces to Epic 3, acceptance criteria 1
 Parameters: N/A
 Returns: N/A
 */
-void plant_growth()
+void plant::grow()
 {
+
     //grab initial size of the plant. 
-    //set current_size == initial_size
-    int current_size;
-    
-    //starts intial growth
-    //grows a certain size per rate
-    //throw a leaf per DU
-    //compare size to max size.
+    current_size = initial_plant_size + list_of_leaves.size();
+    int num_total_leaves = max_size - current_size;
+    int num_leaves_possible_in_tick = num_total_leaves * growth_rate;
+
+    for (int z = num_leaves_possible_in_tick; z <= 0; z--)
+    {
+        /*if attempt to place leaf is successful
+            place leaf
+            add to vector
+        if not successful
+            try one more time error condition
+            do not add to vector
+        */
+    }
 }
 
 /*
@@ -111,17 +119,23 @@ void plant::radially_disperse_seed()
 
 void plant::act()
 {
-    //TODO:: add if check for plant fully grown
-    sim_message& message = sim_message::get_instance();
-    message.get_current_time();
-    time_container current_time = message.get_time_info();
-
-    message.get_future_time(0, 0, 1);
-    time_container future_time = message.get_time_info();
-    
-    if (current_time.time_hour == future_time.time_hour)
+    if (max_size == current_size)
     {
-        set_seed_pod_values();
-        radially_disperse_seed();
+        sim_message& message = sim_message::get_instance();
+        message.get_current_time();
+        time_container current_time = message.get_time_info();
+
+        message.get_future_time(0, 0, 1);
+        time_container future_time = message.get_time_info();
+        
+        if (current_time.time_hour == future_time.time_hour)
+        {
+            set_seed_pod_values();
+            radially_disperse_seed();
+        }
+    }
+    else
+    {
+        grow();
     }
 }
