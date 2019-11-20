@@ -26,9 +26,10 @@ class plant : public environment_object
         int max_size;
         int max_seed_cast_dist;
         int max_seed_num;
+        int initial_plant_size;
         double seed_viability;
     public:
-        plant(point, double, int, int, int, double);
+        plant(point, double, int, int, int, double, int);
         ~plant();
         std::string get_type();
         int print_self();

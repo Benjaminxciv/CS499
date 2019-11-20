@@ -152,7 +152,8 @@ plant* create_plant(point plant_pt, int diameter)
 	int plt_max_seed_cast_dist = lsdp->getMaxSeedCastDistance();
 	int plt_max_seed_num = lsdp->getMaxSeedNumber();
 	double plt_seed_viability = lsdp->getSeedViability();
-	plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability);
+	int plant_diameter = diameter;
+	plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability, diameter);
 	return plt;
 }
 
