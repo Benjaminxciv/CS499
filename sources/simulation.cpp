@@ -68,6 +68,11 @@ void simulation::set_tick_speed(int new_tick_speed)
 	this->tick_speed = new_tick_speed;
 }
 
+int simulation::get_tick_speed()
+{
+	return tick_speed;
+}
+
 void simulation::increase_tick_speed()
 {
 	switch(this->tick_speed)

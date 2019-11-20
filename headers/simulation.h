@@ -44,6 +44,7 @@ class simulation
         void init_sim();
         void run_sim();
         void set_tick_speed(int);
+        int get_tick_speed();
         void increase_tick_speed();
         std::vector<environment_object*> iterate_cells();
         boulder* create_boulder(point, int, int);

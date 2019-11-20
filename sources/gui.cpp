@@ -106,6 +106,8 @@ HRESULT SimulationApp::Initialize()
         hr = m_hwnd ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
         {
+            int tick_speed = sim.get_tick_speed();
+            SetTimer(m_hwnd, 1, tick_speed, NULL); 
             ShowWindow(m_hwnd, SW_SHOWNORMAL);
             UpdateWindow(m_hwnd);
         }
@@ -254,7 +256,6 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             );
 
         result = 1;
-        SetTimer(hwnd, 1, 1, NULL); 
     }
     else if (message == WM_TIMER)
     {
