@@ -1,14 +1,3 @@
-'''from lxml import etree
-
-tree = etree.parse('LifeSimulation01.xml')
-root = tree.getroot()
-
-for elem in root.iter('*'):
-    if elem.text is not None and elem.text.strip() != '':
-        elem.text = elem.text.strip()
-        print(elem.tag)
-        print(elem.text)'''
-
 import lxml.etree
 import lxml.builder    
 
@@ -242,6 +231,8 @@ sim_xml = LIFE_SIMULATION(
                     p_off_e, single_predators_info),
     obstacles_xml(E, o_count, single_obstacles_info)
 )
-    
-with open('test.xml', 'wb') as txml:
+
+xml_file_name = input("What is the name of the XML file you want to write out to? ")
+
+with open(xml_file_name, 'wb') as txml:
     txml.write(lxml.etree.tostring(sim_xml, pretty_print=True))
