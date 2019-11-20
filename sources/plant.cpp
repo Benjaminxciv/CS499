@@ -48,7 +48,7 @@ int plant::print_self()
 
 /*
 Name: growth()
-Purpose: Defines how the plant grows with leaves expanding from the plant center.
+Purpose: Calcualtes the number of leaves that can be placed in one simulation tick. 
 Trace: Traces to Epic 3, acceptance criteria 1
 Parameters: N/A
 Returns: N/A
@@ -63,6 +63,7 @@ void plant::grow()
 
     for (int z = num_leaves_possible_in_tick; z <= 0; z--)
     {
+        sim_message& message = sim_message::get_instance();
         /*if attempt to place leaf is successful
             place leaf
             add to vector
