@@ -3,7 +3,7 @@
 Name: plant.h
 
 Purpose: Header file for plants.
-Last edit: 11-12-2019
+Last edit: 11-19-2019
 Last editor: MG
 */
 
