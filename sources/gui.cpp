@@ -103,6 +103,9 @@ HRESULT SimulationApp::Initialize()
             HINST_THISCOMPONENT,
             this
             );
+        HWND hWnd = CreateWindowW(TEXT("button"), TEXT("Simulation speed x10"),
+                    WS_CHILD | WS_VISIBLE | WS_POPUP,
+                    10, 10, 80, 25, m_hwnd, NULL, NULL,  NULL);
         hr = m_hwnd ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
         {
