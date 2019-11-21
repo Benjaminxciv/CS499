@@ -19,6 +19,7 @@ Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsof
 #include <dwrite.h>
 #include <wincodec.h>
 
+#include "Resources.h"
 #include "simulation.h"
 #include "predator.h"
 #include "grazer.h"

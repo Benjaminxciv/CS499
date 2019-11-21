@@ -1,0 +1,1 @@
+#define IDM_MYMENURESOURCE (150)

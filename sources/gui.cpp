@@ -93,7 +93,7 @@ HRESULT SimulationApp::Initialize()
         m_hwnd = CreateWindow(
             L"D2DSimulationApp",
             L"Direct2D Simulation App",
-            WS_OVERLAPPEDWINDOW,
+            WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
             CW_USEDEFAULT,
             CW_USEDEFAULT,
             static_cast<UINT>(ceil(1600.f * dpiX / 96.f)),
@@ -102,10 +102,23 @@ HRESULT SimulationApp::Initialize()
             NULL,
             HINST_THISCOMPONENT,
             this
-            );
-        HWND hWnd = CreateWindowW(TEXT("button"), TEXT("Simulation speed x10"),
-                    WS_CHILD | WS_VISIBLE | WS_POPUP,
-                    10, 10, 80, 25, m_hwnd, NULL, NULL,  NULL);
+        );
+
+        HWND c_hWnd = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Simulation speed x10"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            10,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_MYMENURESOURCE,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+        
         hr = m_hwnd ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
         {
@@ -257,7 +270,6 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             GWLP_USERDATA,
             PtrToUlong(pSimulationApp)
             );
-
         result = 1;
     }
     else if (message == WM_TIMER)
@@ -271,6 +283,7 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
         if (pSimulationApp)
         {
             pSimulationApp->OnRender();
+            ValidateRect(hwnd, NULL);
         }
     }
     else
@@ -332,6 +345,59 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 
     return result;
 }
+
+/*LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    LRESULT result = 0;
+    //SimulationApp *pSimulationApp = reinterpret_cast<SimulationApp*>(static_cast<LONG_PTR>(
+    //        ::GetWindowLongPtrW(
+    //            hwnd,
+    //            GWLP_USERDATA
+    //            )));
+    SimulationApp *pSimulationApp;
+    LPCREATESTRUCT pcs;
+    bool wasHandled = false;
+    switch(message)
+    {
+        case WM_CREATE:
+            pcs = (LPCREATESTRUCT)lParam; 
+            pSimulationApp = (SimulationApp*)pcs->lpCreateParams;
+
+            ::SetWindowLongPtrW(
+                hwnd,
+                GWLP_USERDATA,
+                PtrToUlong(pSimulationApp)
+                );
+            result = 1;
+            break;
+        case WM_TIMER:
+            pSimulationApp->OnRender();
+            break;
+        /*case WM_PAINT:
+            {
+                pSimulationApp->OnRender();
+                ValidateRect(hwnd, NULL);
+            }
+            result = 0;
+            wasHandled = true;
+            break;
+        
+        case WM_DESTROY:
+            {
+                PostQuitMessage(0);
+            }
+            result = 1;
+            wasHandled = true;
+            break;
+    }
+
+    if (!wasHandled)
+    {
+        result = DefWindowProc(hwnd, message, wParam, lParam);
+    }
+
+    return result;
+}*/
 
 void SimulationApp::DrawObject(environment_object* target)
 {
@@ -411,7 +477,8 @@ HRESULT SimulationApp::OnRender()
         m_pRenderTarget->BeginDraw();
 
         m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-
+        int world_width = sim.get_world_width();
+        int world_height = sim.get_world_height();
         m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
         //D2D1_SIZE_F rtSize = m_pRenderTarget->GetSize();
@@ -420,8 +487,8 @@ HRESULT SimulationApp::OnRender()
         //int width = static_cast<int>(rtSize.width);
         //int height = static_cast<int>(rtSize.height);
 
-        int world_width = sim.get_world_width();
-        int world_height = sim.get_world_height();
+        //int world_width = sim.get_world_width();
+        //int world_height = sim.get_world_height();
         for (int x = 0; x <= world_width; x+=10)
         {
             m_pRenderTarget->DrawLine(
