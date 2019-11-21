@@ -32,14 +32,10 @@ class mammal : public environment_object
         void set_energy(int);
         bool move(direction, int);
         void set_speed(double);
-        int get_speed();
-        void gain_energy(int);
         void reproduce();
         void set_current_speed(double);
         void reset_speed();
         bool ready_to_reproduce();
-        int get_maintain_speed();
-        double get_max_speed();
         
 };
 

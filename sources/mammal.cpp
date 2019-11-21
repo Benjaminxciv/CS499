@@ -27,19 +27,6 @@ mammal::~mammal()
     
 }
 
-/*Name: gain_energy(int)
-Purpose: generic way for mammals gain energy 
-Parameters: 
-    energy: int
-        number of energy units to add to a mammal objects energy level
-Last edit:
-    BP 10/27/19
-*/
-void mammal::gain_energy(int added_energy)
-{
-    energy += added_energy;
-}
-
 void mammal::set_energy(int new_energy)
 {
     energy = new_energy;
@@ -117,19 +104,6 @@ int mammal::get_energy()
 
 
 /*
-Name: get_speed()
-Purpose: returns the movement speed
-Trace: Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-Returns: movement_speed
-*/
-int mammal::get_speed()
-{
-    return this->current_speed;
-}
-
-
-/*
 Name: set_speed()
 Purpose: sets a speed that is passed in to the current speed of mammal
 Trace: Traces to Epic 3, Acceptance Criteria 2
@@ -146,10 +120,6 @@ bool mammal::ready_to_reproduce()
     return energy >= energy_reproduce_min;
 }
 
-int mammal::get_maintain_speed()
-{
-    return this->maintain_speed;
-}
 
 void mammal::set_current_speed(double speed)
 {
@@ -166,9 +136,4 @@ Returns: N/A
 void mammal::reset_speed()
 {
     this->current_speed = max_speed;
-}
-
-double mammal::get_max_speed()
-{
-    return this->max_speed;
 }

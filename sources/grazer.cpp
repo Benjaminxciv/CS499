@@ -56,7 +56,7 @@ void grazer::eat()
     
     if(current_time == gain_energy_time)
     {
-        this->gain_energy(energy_input);
+        this->energy += energy_input;
         reset_gain_energy_time();
         //call for deletion of leaf
     }
@@ -155,7 +155,7 @@ Returns: N/A
 */
 void grazer::check_energy()
 {
-    if(this->get_energy() < 25)
+    if(this->energy < 25)
     {
         this->move_count++;
     }
@@ -216,7 +216,7 @@ BP 11/18/19
 void grazer::start_movement_time()
 {
     sim_message& message = sim_message::get_instance();
-    message.get_future_time(0,this->get_maintain_speed());
+    message.get_future_time(0,this->maintain_speed);
     message.process_message();
     movement_time = message.get_time_info();
     retained_movement_time = true;
