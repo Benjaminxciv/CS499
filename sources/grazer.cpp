@@ -69,10 +69,26 @@ void grazer::act()
     message.process_message();
     current_time = message.get_time_info();
 
-    sight_cone();
+    //sight_cone();
 
     if(this->danger)
     {
+        if(this->energy < 25)
+        {
+            move_count++;
+        }
+
+        else
+        {
+            move_count = 0;
+        }
+
+        if(move_count > 10)
+        {
+            message.die(this);
+            return;
+        }
+
         reset_eat_time();
         reset_gain_energy_time();
         //request movement : if true increment number of moves
@@ -106,6 +122,20 @@ void grazer::act()
     else 
     {
         if(this->energy < 25)
+        {
+            move_count++;
+        }
+
+        else
+        {
+            move_count = 0;
+        }
+
+        if(move_count > 10)
+        {
+            message.die(this);
+            return;
+        }
         reset_eat_time();
         reset_gain_energy_time();
         //request movement : if true increment number of moves
@@ -116,22 +146,6 @@ void grazer::act()
             start_movement_time();
         }   
 
-        if(this->energy <= 0)
-        {
-            move_count++;
-        }
-
-        if(move_count > 10)
-        {   
-            message.die(this); 
-            return;  
-        }
-
-       // if(this->energy <= 0)
-        //{
-            //sim_message& message = sim_message::get_instance();
-            //message.die(this);
-        //}
         if(ready_to_reproduce())
         {
             sim_message& message = sim_message::get_instance();
@@ -140,22 +154,22 @@ void grazer::act()
                 energy /= 2;
             }
         }
-        // else
-        // {
-        //     if(move(up, 1))
-        //     {
+        else
+        {
+            if(move(up, 1))
+            {
 
             }
         }
-        cout << "Move" << endl;
+
+       // cout << "Move" << endl;
     }
 
-        if(current_time == movement_time)
-        {
-            this->current_speed = this->max_speed*.75;
-            reset_movement_time();
-        }
-        check_energy();
+    if(current_time == movement_time)
+    {
+        this->current_speed = this->max_speed*.75;
+        reset_movement_time();
+    }
 }
 
 
@@ -278,10 +292,14 @@ Returns: N/A
 
 void grazer::sight_cone()
 {   
-    return;
+    vector<point> points_to_check;
+    points_to_check.reserve(22500);
     string predator_check;
     point look_point;
-    look_point = get_loc();
+    look_point = location;
+    look_point.origin_x_loc = location.x_loc;
+    look_point.origin_y_loc = location.y_loc;
+    looking_direction = 1;
 
     int test_count = 0; 
     for(int i = 0; i < plant_sight_dist; i++)
@@ -294,7 +312,11 @@ void grazer::sight_cone()
             {
                 look_point.x_loc += i;
                 look_point.y_loc += j;
-                look_check(look_point, i);
+                //if(look_message.look_at_cell(pr))
+                //{
+                //    predator_check = look_message.get_simulation_response();
+                //    look_check(look_point, i);
+                //}
             }
 
             //left
@@ -302,7 +324,7 @@ void grazer::sight_cone()
             {
                 look_point.x_loc -= i;
                 look_point.y_loc += j;
-                look_check(look_point, i);
+                //look_check(look_point, i);
             }
 
             //up
@@ -310,7 +332,7 @@ void grazer::sight_cone()
             {
                 look_point.x_loc += j;
                 look_point.y_loc += i;
-                look_check(look_point, i);
+                //look_check(look_point, i);
             }
 
             //down
@@ -318,10 +340,13 @@ void grazer::sight_cone()
             {
                 look_point.x_loc -= i;
                 look_point.y_loc -= j;
-                look_check(look_point, i);
+                //look_check(look_point, i);
             }
+            points_to_check.push_back(look_point);
         }
     }
+    sim_message& look_message = sim_message::get_instance();
+    look_message.look_at_cell(location, points_to_check);
 }
 
 void grazer::look_check(point pr, int pred_count)
@@ -329,11 +354,14 @@ void grazer::look_check(point pr, int pred_count)
     sim_message& look_message = sim_message::get_instance();
     if(look_message.look_at_cell(pr))
     {
+        //cout << "Object" << endl;
         string lookMessage = look_message.get_simulation_response();
+        
         if(pred_count > pred_sight_dist)
         {
             if(lookMessage == "predator")
             {
+                cout << "DANGER" << endl;
                 danger = true;
             }
         
@@ -345,9 +373,16 @@ void grazer::look_check(point pr, int pred_count)
 
         else
         {
-            if(lookMessage == "plant")
+            if(danger)
             {
-                //eat
+                //skip
+            }
+            else
+            {
+                if(lookMessage == "plant")
+                {
+                    //eat
+                }
             }
         }
     }
