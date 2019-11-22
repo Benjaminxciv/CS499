@@ -348,28 +348,29 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             switch (wParam)
             {
                 case SIM_TIMER_X1:
-                    if(pSimulationApp->sim.get_tick_speed() == x1)
+                    int tick_speed = pSimulationApp->sim.get_tick_speed();
+                    if(tick_speed == x1)
                     {
                         pSimulationApp->OnRender();
                         ValidateRect(hwnd, NULL);
                     }
                     break;
                 case SIM_TIMER_X10:
-                    if(pSimulationApp->sim.get_tick_speed() == x10)
+                    if(tick_speed == x10)
                     {
                         pSimulationApp->OnRender();
                         ValidateRect(hwnd, NULL);
                     }
                     break;
                 case SIM_TIMER_X50:
-                    if(pSimulationApp->sim.get_tick_speed() == x50)
+                    if(tick_speed == x50)
                     {
                         pSimulationApp->OnRender();
                         ValidateRect(hwnd, NULL);
                     }
                     break;
                 case SIM_TIMER_X100:
-                    if(pSimulationApp->sim.get_tick_speed() == x100)
+                    if(tick_speed == x100)
                     {
                         pSimulationApp->OnRender();
                         ValidateRect(hwnd, NULL);
