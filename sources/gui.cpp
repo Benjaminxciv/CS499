@@ -104,17 +104,62 @@ HRESULT SimulationApp::Initialize()
             this
         );
 
-        HWND c_hWnd = CreateWindowExW(
+        HWND c_hWndx1 = CreateWindowExW(
             NULL,
             TEXT("BUTTON"),
-            TEXT("Simulation speed x10"),
+            TEXT("Simulation speed x1"),
             WS_CHILD | WS_VISIBLE,
             1000,
             10,
             150,
             25,
             m_hwnd,
-            (HMENU)IDM_MYMENURESOURCE,
+            (HMENU)IDM_SET_TICK_X1,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
+        HWND c_hWndx10 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Simulation speed x10"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            35,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X10,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
+        HWND c_hWndx50 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Simulation speed x50"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            60,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X50,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
+        HWND c_hWndx100 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Simulation speed x100"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            85,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X100,
             (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
             NULL
         );
@@ -122,8 +167,10 @@ HRESULT SimulationApp::Initialize()
         hr = m_hwnd ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
         {
-            int tick_speed = sim.get_tick_speed();
-            SetTimer(m_hwnd, 1, tick_speed, NULL); 
+            SetTimer(m_hwnd, SIM_TIMER_X1, 1000, NULL); 
+            SetTimer(m_hwnd, SIM_TIMER_X10, 100, NULL); 
+            SetTimer(m_hwnd, SIM_TIMER_X50, 20, NULL); 
+            SetTimer(m_hwnd, SIM_TIMER_X100, 10, NULL); 
             ShowWindow(m_hwnd, SW_SHOWNORMAL);
             UpdateWindow(m_hwnd);
         }
@@ -282,8 +329,37 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 
         if (pSimulationApp)
         {
-            pSimulationApp->OnRender();
-            ValidateRect(hwnd, NULL);
+            switch (wParam)
+            {
+                case SIM_TIMER_X1:
+                    if(pSimulationApp->sim.get_tick_speed() == x1)
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    break;
+                case SIM_TIMER_X10:
+                    if(pSimulationApp->sim.get_tick_speed() == x10)
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    break;
+                case SIM_TIMER_X50:
+                    if(pSimulationApp->sim.get_tick_speed() == x50)
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    break;
+                case SIM_TIMER_X100:
+                    if(pSimulationApp->sim.get_tick_speed() == x100)
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    break;
+            }
         }
     }
     else
@@ -300,40 +376,58 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
         {
             switch (message)
             {
-            case WM_SIZE:
-                {
-                    UINT width = LOWORD(lParam);
-                    UINT height = HIWORD(lParam);
-                    pSimulationApp->OnResize(width, height);
-                }
-                result = 0;
-                wasHandled = true;
-                break;
+                case WM_COMMAND:
+                    if (LOWORD(wParam) == IDM_SET_TICK_X1)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x1);
+                    }
+                    if (LOWORD(wParam) == IDM_SET_TICK_X10)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x10);
+                    }
+                    if (LOWORD(wParam) == IDM_SET_TICK_X50)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x50);
+                    }
+                    if (LOWORD(wParam) == IDM_SET_TICK_X100)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x100);
+                    }
+                    break;
+                case WM_SIZE:
+                    {
+                        UINT width = LOWORD(lParam);
+                        UINT height = HIWORD(lParam);
+                        pSimulationApp->OnResize(width, height);
+                    }
+                    result = 0;
+                    wasHandled = true;
+                    break;
 
-            case WM_DISPLAYCHANGE:
-                {
-                    InvalidateRect(hwnd, NULL, FALSE);
-                }
-                result = 0;
-                wasHandled = true;
-                break;
+                case WM_DISPLAYCHANGE:
+                    {
+                        InvalidateRect(hwnd, NULL, FALSE);
+                    }
+                    result = 0;
+                    wasHandled = true;
+                    break;
 
-            case WM_PAINT:
-                {
-                    pSimulationApp->OnRender();
-                    ValidateRect(hwnd, NULL);
-                }
-                result = 0;
-                wasHandled = true;
-                break;
+                case WM_PAINT:
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    result = 0;
+                    wasHandled = true;
+                    break;
 
-            case WM_DESTROY:
-                {
-                    PostQuitMessage(0);
-                }
-                result = 1;
-                wasHandled = true;
-                break;
+                case WM_DESTROY:
+                    {
+                        PostQuitMessage(0);
+                    }
+                    result = 1;
+                    wasHandled = true;
+                    break;
             }
         }
 
@@ -345,59 +439,6 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 
     return result;
 }
-
-/*LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    LRESULT result = 0;
-    //SimulationApp *pSimulationApp = reinterpret_cast<SimulationApp*>(static_cast<LONG_PTR>(
-    //        ::GetWindowLongPtrW(
-    //            hwnd,
-    //            GWLP_USERDATA
-    //            )));
-    SimulationApp *pSimulationApp;
-    LPCREATESTRUCT pcs;
-    bool wasHandled = false;
-    switch(message)
-    {
-        case WM_CREATE:
-            pcs = (LPCREATESTRUCT)lParam; 
-            pSimulationApp = (SimulationApp*)pcs->lpCreateParams;
-
-            ::SetWindowLongPtrW(
-                hwnd,
-                GWLP_USERDATA,
-                PtrToUlong(pSimulationApp)
-                );
-            result = 1;
-            break;
-        case WM_TIMER:
-            pSimulationApp->OnRender();
-            break;
-        /*case WM_PAINT:
-            {
-                pSimulationApp->OnRender();
-                ValidateRect(hwnd, NULL);
-            }
-            result = 0;
-            wasHandled = true;
-            break;
-        
-        case WM_DESTROY:
-            {
-                PostQuitMessage(0);
-            }
-            result = 1;
-            wasHandled = true;
-            break;
-    }
-
-    if (!wasHandled)
-    {
-        result = DefWindowProc(hwnd, message, wParam, lParam);
-    }
-
-    return result;
-}*/
 
 void SimulationApp::DrawObject(environment_object* target)
 {
@@ -477,18 +518,10 @@ HRESULT SimulationApp::OnRender()
         m_pRenderTarget->BeginDraw();
 
         m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-        int world_width = sim.get_world_width();
-        int world_height = sim.get_world_height();
         m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
-        //D2D1_SIZE_F rtSize = m_pRenderTarget->GetSize();
-
-        // Draw a grid background.
-        //int width = static_cast<int>(rtSize.width);
-        //int height = static_cast<int>(rtSize.height);
-
-        //int world_width = sim.get_world_width();
-        //int world_height = sim.get_world_height();
+        int world_width = sim.get_world_width();
+        int world_height = sim.get_world_height();
         for (int x = 0; x <= world_width; x+=10)
         {
             m_pRenderTarget->DrawLine(

@@ -15,7 +15,7 @@ Last editor: MG*/
 simulation::simulation()
 {
 	this->simulation_clock = new sim_ns::clock();
-	this->tick_speed = 1000;
+	this->tick_speed = x1;
 }
 
 simulation::~simulation()
