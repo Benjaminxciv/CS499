@@ -46,8 +46,7 @@ class grazer : public mammal
         void limit_movement();
         void check_energy();
         void sight_cone();
-        void plant_check(point);
-        void pred_check(point);
+        void look_check(point, int);
         
 };
 #endif
