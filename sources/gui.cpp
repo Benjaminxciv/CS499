@@ -334,10 +334,10 @@ void SimulationApp::DrawObject(environment_object* target)
     HRESULT hr = S_OK;
     point target_loc = target->get_loc();
     D2D1_RECT_F rectangle2 = D2D1::RectF(
-        (target_loc.x_loc+10)-5.0f,
-        (target_loc.y_loc+10)-5.0f,
-        (target_loc.x_loc+10)+5.0f,
-        (target_loc.y_loc+10)+5.0f
+        (target_loc.x_loc+5)-5.0f,
+        (target_loc.y_loc+5)-5.0f,
+        (target_loc.x_loc+5)+5.0f,
+        (target_loc.y_loc+5)+5.0f
     );
 
     // Draw the outline of a rectangle.
@@ -412,21 +412,21 @@ HRESULT SimulationApp::OnRender()
 
         int world_width = sim.get_world_width();
         int world_height = sim.get_world_height();
-        for (int x = 10; x <= world_width+10; x+=10)
+        for (int x = 0; x <= world_width; x+=10)
         {
             m_pRenderTarget->DrawLine(
-                D2D1::Point2F(static_cast<FLOAT>(x), 0.0f),
-                D2D1::Point2F(static_cast<FLOAT>(x), world_height),
+                D2D1::Point2F(static_cast<FLOAT>(x+5), 5.0f),
+                D2D1::Point2F(static_cast<FLOAT>(x+5), world_height+5),
                 m_pBlackBrush,
                 0.5f
             );
         }
 
-        for (int y = 10; y <= world_height+10; y+=10)
+        for (int y = 0; y <= world_height; y+=10)
         {
             m_pRenderTarget->DrawLine(
-                D2D1::Point2F(0.0f, static_cast<FLOAT>(y)),
-                D2D1::Point2F(world_width, static_cast<FLOAT>(y)),
+                D2D1::Point2F(5.0f, static_cast<FLOAT>(y+5)),
+                D2D1::Point2F(world_width+5, static_cast<FLOAT>(y+5)),
                 m_pBlackBrush,
                 0.5f
             );

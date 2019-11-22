@@ -176,7 +176,6 @@ leaf* simulation::create_leaf(point leaf_pt)
 
 grazer* simulation::create_grazer(point grazer_pt, int init_energy)
 {
-	init_energy = 600;
 	if(!sim_grid->check_bounds(grazer_pt))
 	{
 		return nullptr;
@@ -328,8 +327,7 @@ void simulation::init_sim()
 	}
 
 	//Grazer info data
-	//for(int i = 0; i < lsdp->getInitialGrazerCount(); i++)
-	for(int i = 0; i < 1; i++)
+	for(int i = 0; i < lsdp->getInitialGrazerCount(); i++)
 	{
 		int energy;
 		if(lsdp->getGrazerData(&x_pos, &y_pos, &energy))
