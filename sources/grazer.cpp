@@ -71,6 +71,8 @@ void grazer::act()
     message.process_message();
     current_time = message.get_time_info();
 
+    sight_cone();
+
     if(this->danger)
     {
         reset_eat_timer();
@@ -107,12 +109,13 @@ void grazer::act()
     
     else 
     {
-        if(this->energy <= 0)
-        {
-            sim_message& message = sim_message::get_instance();
-            message.die(this);
-        }
-        else if(ready_to_reproduce())
+        check_energy();
+       // if(this->energy <= 0)
+        //{
+            //sim_message& message = sim_message::get_instance();
+            //message.die(this);
+        //}
+        if(ready_to_reproduce())
         {
             sim_message& message = sim_message::get_instance();
             if(message.request_reproduce(location, this))
@@ -128,7 +131,6 @@ void grazer::act()
             }
         }
         cout << "Move" << endl;
-        check_energy();
     }
 
     if (movement_timer.time_min == current_time.time_min)
@@ -177,14 +179,15 @@ Returns: N/A
 */
 void grazer::check_energy()
 {
-    if(this->get_energy() < 25)
+    if(this->energy < 25)
     {
-        this->move_count++;
+        move_count++;
     }
 
-    if(this->move_count > 10)
-    {
-        //message.die(this);
+    if(move_count > 10)
+    {   
+        sim_message& die_message = sim_message::get_instance();
+        die_message.die(this);   
     }
 }
 
@@ -227,20 +230,6 @@ void grazer::set_maintain_time(int maintain_time)
 }
 
 /*
-Name: sight_on_plant()
-Purpose: Add aspect to Grazer's class that the grazer's can see a plant within 150DU.
-Trace: Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-Returns: N/A
-*/
-
-void grazer::sight_on_plant()
-{
-    //get_cell() get all the cells within 150du
-    //
-}
-
-/*
 Name: sight_on_predator()
 Purpose: Add aspect of Grazer's class that the grazer can see predators within 25 DU.
 Trace: Traces to Epic 3, Acceptance Criteria 2
@@ -248,9 +237,143 @@ Parameters: N/A
 Returns: N/A
 */
 
-void grazer::sight_on_predator()
+void grazer::sight_cone()
+{   
+    string predator_check;
+    point look_point;
+    look_point = get_loc();
+
+    for(int i = 0; i < plant_sight_dist; i++)
+    {
+        for(int j = -i; j <= i; j++)
+        {
+            //right
+            if(this->looking_direction == 2)
+            {
+                look_point.x_loc += i;
+                look_point.y_loc += j;
+                if(i < pred_sight_dist)
+                {
+                    pred_check(look_point);
+                    if(danger)
+                    {
+                        //skip
+                    }
+                    else
+                        plant_check(look_point);
+                    
+                }
+
+                else
+                    if(danger)
+                    {
+                        //skip
+                    }
+                    else
+                        plant_check(look_point);
+            }
+
+            //left
+            if(this->looking_direction == 4)
+            {
+                look_point.x_loc -= i;
+                look_point.y_loc += j;
+                if(i < pred_sight_dist)
+                {
+                    pred_check(look_point);
+                    if(danger)
+                    {
+                        //skip
+                    }
+                    else
+                        plant_check(look_point);
+                    
+                }
+
+                else
+                    if(danger)
+                    {
+                        //skip
+                    }
+                    else
+                        plant_check(look_point);
+            }
+
+            //up
+            if(this->looking_direction == 1)
+            {
+                look_point.x_loc += j;
+                look_point.y_loc += i;
+                if(i < pred_sight_dist)
+                {
+                    pred_check(look_point);
+                    if(danger)
+                    {
+                        //skip
+                    }
+                    else
+                        plant_check(look_point);
+                    
+                }
+
+                else
+                    if(danger)
+                    {
+                        //skip
+                    }
+                    else
+                        plant_check(look_point);
+            }
+
+            //down
+            if (this->looking_direction == 3)
+            {
+                look_point.x_loc -= i;
+                look_point.y_loc -= j;
+                if(i < pred_sight_dist)
+                {
+                    pred_check(look_point);
+                    if(danger)
+                    {
+                        //skip
+                    }
+                    else
+                        plant_check(look_point);
+                    
+                }
+
+                else
+                    if(danger)
+                    {
+                        //skip
+                    }
+                    else
+                        plant_check(look_point);
+            }
+        }
+    }
+}
+
+void grazer::pred_check(point pr)
 {
-    //if withing 25 du 
-    //get_cell()
-    //danger = true
+    sim_message& look_message = sim_message::get_instance();
+    if(look_message.look_at_cell(pr))
+    {
+        if(look_message.get_simulation_response() == "predator")
+        {
+            danger = true;
+        }
+    }
+}
+
+void grazer::plant_check(point pl)
+{
+    sim_message& look_message = sim_message::get_instance();
+    if(look_message.look_at_cell(pl))
+    {
+        if(look_message.get_simulation_response() == "plant")
+        {
+            //eat
+        }
+    }
 }

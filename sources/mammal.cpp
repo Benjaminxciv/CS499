@@ -48,6 +48,16 @@ bool mammal::move(direction dir, int speed)
 {
     sim_message& message = sim_message::get_instance();
     point move_to = location;
+    
+    if(dir == up || up_left || up_right)
+        looking_direction = 1;
+    else if(dir == right)
+        looking_direction = 2;
+    else if(dir == down || down_left || down_right)
+        looking_direction = 3;
+    else
+        looking_direction = 4;
+
     switch(dir)
     {
         case up:
@@ -87,6 +97,7 @@ bool mammal::move(direction dir, int speed)
             location.y_loc++;
             break;
     }
+
     du_moved++;
     if(du_moved >= 5)
     {

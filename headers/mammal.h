@@ -19,9 +19,11 @@ class mammal : public environment_object
         int energy;
         int energy_output;
         int energy_reproduce_min;
+        int looking_direction;
         double max_speed;
         double maintain_speed;
         int du_moved;
+
     public:
         mammal(point, int, int, int, double, double);
         mammal();

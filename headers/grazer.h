@@ -31,7 +31,6 @@ class grazer : public mammal
         const int pred_sight_dist = 25;
 
 
-
     public:
         grazer(point, int, int, int, int, double, double);
         ~grazer();
@@ -46,8 +45,9 @@ class grazer : public mammal
         void set_maintain_time(int);
         void limit_movement();
         void check_energy();
-        void sight_on_plant();
-        void sight_on_predator();
+        void sight_cone();
+        void plant_check(point);
+        void pred_check(point);
         
 };
 #endif
