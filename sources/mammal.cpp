@@ -109,6 +109,7 @@ bool mammal::move()
         untried_dirs = untried_dirs_copy;
         return true;
     }
+    return false;
 }
 
 void mammal::reproduce()

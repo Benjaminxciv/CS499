@@ -345,10 +345,10 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 
         if (pSimulationApp)
         {
+            int tick_speed = pSimulationApp->sim.get_tick_speed();
             switch (wParam)
             {
                 case SIM_TIMER_X1:
-                    int tick_speed = pSimulationApp->sim.get_tick_speed();
                     if(tick_speed == x1)
                     {
                         pSimulationApp->OnRender();
