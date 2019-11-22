@@ -176,6 +176,7 @@ leaf* simulation::create_leaf(point leaf_pt)
 
 grazer* simulation::create_grazer(point grazer_pt, int init_energy)
 {
+	init_energy = 600;
 	if(!sim_grid->check_bounds(grazer_pt))
 	{
 		return nullptr;
@@ -186,6 +187,7 @@ grazer* simulation::create_grazer(point grazer_pt, int init_energy)
 	int grz_energy_input = lsdp->getGrazerEnergyInputRate();				// Energy input per minute when grazing
 	int grz_energy_output = lsdp->getGrazerEnergyOutputRate();			// Energy output when moving each 5 DU
 	int grz_energy_reprod = lsdp->getGrazerEnergyToReproduce();			// Energy level needed to reproduce
+	grz_energy_reprod = 800;
 	double grz_max_speed = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
 	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
 	grazer* grz = new grazer(grazer_pt, init_energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);

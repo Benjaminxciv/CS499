@@ -122,7 +122,8 @@ void grazer::act()
         }
         else
         {
-            if(move(up, 1))
+            int dir_tries = 8;
+            while(!move() && dir_tries-- >= 0)
             {
 
             }

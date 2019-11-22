@@ -44,7 +44,7 @@ void mammal::set_energy(int new_energy)
     energy = new_energy;
 }
 
-bool mammal::move(direction dir, int speed)
+bool mammal::move()
 {
     sim_message& message = sim_message::get_instance();
     point move_to = location;
@@ -52,40 +52,40 @@ bool mammal::move(direction dir, int speed)
     {
         case up:
             move_to.y_loc++;
-            if(message.move_organism(move_to, this))
-            {
-                location.y_loc++;
-            }
-            else
-            {
-                return false;
-            }
-            break;
         case up_right:
-            location.x_loc++;
-            location.y_loc++;
+            move_to.x_loc++;
+            move_to.y_loc++;
             break;
         case right:
-            location.x_loc++;
+            move_to.x_loc++;
             break;
         case down_right:
-            location.x_loc++;
-            location.y_loc--;
+            move_to.x_loc++;
+            move_to.y_loc--;
             break;
         case down:
-            location.y_loc--;
+            move_to.y_loc--;
             break;
         case down_left:
-            location.x_loc--;
-            location.y_loc--;
+            move_to.x_loc--;
+            move_to.y_loc--;
             break;
         case left:
-            location.x_loc--;
+            move_to.x_loc--;
             break;
         case up_left:
-            location.x_loc--;
-            location.y_loc++;
+            move_to.x_loc--;
+            move_to.y_loc++;
             break;
+    }
+    if(message.move_organism(move_to, this))
+    {
+        location = move_to;
+    }
+    else
+    {
+        dir = direction(rand() % 8 + 1);
+        return false;
     }
     du_moved++;
     if(du_moved >= 5)
