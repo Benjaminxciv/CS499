@@ -13,6 +13,7 @@ Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsof
 #include <memory.h>
 #include <wchar.h>
 #include <math.h>
+#include <fstream>
 
 #include <d2d1.h>
 #include <d2d1helper.h>

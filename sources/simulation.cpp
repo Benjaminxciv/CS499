@@ -95,7 +95,7 @@ void simulation::increase_tick_speed()
 }
 
 //Put test code in here
-std::vector<environment_object*> simulation::iterate_cells()
+std::vector<environment_object*> simulation::iterate_cells(bool skip_act)
 {
 	std::vector<environment_object*> cells;
 	std::vector<point> skip_cells;
@@ -111,7 +111,10 @@ std::vector<environment_object*> simulation::iterate_cells()
 			{
 				if(std::find(skip_cells.begin(), skip_cells.end(), pt) == skip_cells.end())
 				{
-					cell->act();
+					if(!skip_act)
+					{
+						cell->act();
+					}
 				}
 				environment_object* garbage = message.get_garbage();
 				if(garbage != nullptr)
@@ -128,7 +131,10 @@ std::vector<environment_object*> simulation::iterate_cells()
 			}
 		}
 	}
-	simulation_clock->add_sec();
+	if(!skip_act)
+	{
+		simulation_clock->add_sec();
+	}
 	return cells;
 }
 

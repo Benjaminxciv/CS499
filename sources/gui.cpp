@@ -5,6 +5,7 @@ Last editor: AW
 Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-quickstart*/
 
 #include "gui.h"
+#include "clock.h"
 
 SimulationApp::SimulationApp() :
         m_hwnd(NULL),
@@ -160,6 +161,21 @@ HRESULT SimulationApp::Initialize()
             25,
             m_hwnd,
             (HMENU)IDM_SET_TICK_X100,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
+        HWND c_hWndStatusReport = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Status Report"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            110,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_STATUS_REPORT,
             (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
             NULL
         );
@@ -377,21 +393,96 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             switch (message)
             {
                 case WM_COMMAND:
-                    if (LOWORD(wParam) == IDM_SET_TICK_X1)
+                    if(LOWORD(wParam) == IDM_SET_TICK_X1)
                     {
                         pSimulationApp->sim.set_tick_speed(x1);
                     }
-                    if (LOWORD(wParam) == IDM_SET_TICK_X10)
+                    if(LOWORD(wParam) == IDM_SET_TICK_X10)
                     {
                         pSimulationApp->sim.set_tick_speed(x10);
                     }
-                    if (LOWORD(wParam) == IDM_SET_TICK_X50)
+                    if(LOWORD(wParam) == IDM_SET_TICK_X50)
                     {
                         pSimulationApp->sim.set_tick_speed(x50);
                     }
-                    if (LOWORD(wParam) == IDM_SET_TICK_X100)
+                    if(LOWORD(wParam) == IDM_SET_TICK_X100)
                     {
                         pSimulationApp->sim.set_tick_speed(x100);
+                    }
+                    if(LOWORD(wParam) == IDM_STATUS_REPORT)
+                    {
+                        time_container curr_time = pSimulationApp->sim.get_simulation_time();
+
+                        ofstream status_report_file;
+                        std::string filename = "SimReport_";
+                        std::string curr_time_hour = std::to_string(curr_time.time_hour);
+                        if(curr_time_hour.size() < 2)
+                        {
+                            curr_time_hour = "0" + curr_time_hour;
+                        }
+                        std::string curr_time_min = std::to_string(curr_time.time_min);
+                        if(curr_time_min.size() < 2)
+                        {
+                            curr_time_min = "0" + curr_time_min;
+                        }
+                        std::string curr_time_sec = std::to_string(curr_time.time_sec);
+                        if(curr_time_sec.size() < 2)
+                        {
+                            curr_time_sec = "0" + curr_time_sec;
+                        }
+                        filename += curr_time_hour + "_";
+                        filename += curr_time_min + "_";
+                        filename += curr_time_sec + ".txt";
+                        status_report_file.open(filename);
+                        vector<environment_object*> cells = pSimulationApp->sim.iterate_cells(true);
+                        vector<environment_object*> plants;
+                        vector<environment_object*> grazers;
+                        vector<environment_object*> predators;
+                        for(int i = 0; i < cells.size(); i++)
+                        {
+                            if(cells[i]->get_type() == "plant")
+                            {
+                                plants.push_back(cells[i]);
+                            }
+                            else if(cells[i]->get_type() == "grazer")
+                            {
+                                grazers.push_back(cells[i]);
+                            }
+                            else if(cells[i]->get_type() == "predator")
+                            {
+                                predators.push_back(cells[i]);
+                            }
+                        }
+                        status_report_file << "=========Plant info=========\n";
+                        for(int i = 0; i < plants.size(); i++)
+                        {
+                            point p_loc = plants[i]->get_loc();
+                            status_report_file << "Plant " + std::to_string(i+1) + ":\n";
+                            status_report_file << "Location: " + std::to_string(p_loc.x_loc) + ", " + std::to_string(p_loc.y_loc) + "\n";
+                            status_report_file << "\n";
+                        }
+                        status_report_file << "=========Grazer info=========\n";
+                        for(int i = 0; i < grazers.size(); i++)
+                        {
+                            point g_loc = grazers[i]->get_loc();
+                            grazer* grz = reinterpret_cast<grazer*>(grazers[i]);
+                            int g_energy = grz->get_energy();
+                            status_report_file << "Grazer " + std::to_string(i+1) + ":\n";
+                            status_report_file << "Location: " + std::to_string(g_loc.x_loc) + ", " + std::to_string(g_loc.y_loc) + "\n";
+                            status_report_file << "Energy: " + std::to_string(g_energy) + "\n";
+                            status_report_file << "\n";
+                        }
+                        status_report_file << "=========Predator info=========\n";
+                        for(int i = 0; i < predators.size(); i++)
+                        {
+                            point p_loc = predators[i]->get_loc();
+                            predator* prd = reinterpret_cast<predator*>(predators[i]);
+                            int p_energy = prd->get_energy();
+                            status_report_file << "Predator " + std::to_string(i+1) + ":\n";
+                            status_report_file << "Location: " + std::to_string(p_loc.x_loc) + ", " + std::to_string(p_loc.y_loc) + "\n";
+                            status_report_file << "Energy: " + std::to_string(p_energy) + "\n";
+                        }
+                        status_report_file.close();
                     }
                     break;
                 case WM_SIZE:
