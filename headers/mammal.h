@@ -35,6 +35,8 @@ class mammal : public environment_object
         void gain_energy(int);
         void reproduce();
         bool ready_to_reproduce();
+        vector<direction> untried_dirs;
+        vector<direction> untried_dirs_copy;
 };
 
 #endif

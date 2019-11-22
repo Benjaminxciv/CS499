@@ -96,9 +96,9 @@ std::vector<environment_object*> simulation::iterate_cells()
 	std::vector<point> skip_cells;
 	std::vector<environment_object*> garbage_collection;
 	sim_message& message = sim_message::get_instance();
-	for(int x = 0; x < sim_grid->get_width(); x++)
+	for(int x = 0; x < world_width; x++)
 	{
-		for(int y = 0; y < sim_grid->get_height(); y++)
+		for(int y = 0; y < world_height; y++)
 		{
 			point pt(x, y);
 			environment_object* cell = sim_grid->get_cell_contents(pt);
@@ -116,7 +116,7 @@ std::vector<environment_object*> simulation::iterate_cells()
 					continue;
 				}
 				skip_cells.push_back(cell->get_loc());
-				if(sim_grid->get_cell_contents(pt) != nullptr)
+				if(sim_grid->get_cell_contents(cell->get_loc()) != nullptr)
 				{
 					cells.push_back(cell);
 				}
@@ -328,7 +328,8 @@ void simulation::init_sim()
 	}
 
 	//Grazer info data
-	for(int i = 0; i < lsdp->getInitialGrazerCount(); i++)
+	//for(int i = 0; i < lsdp->getInitialGrazerCount(); i++)
+	for(int i = 0; i < 1; i++)
 	{
 		int energy;
 		if(lsdp->getGrazerData(&x_pos, &y_pos, &energy))

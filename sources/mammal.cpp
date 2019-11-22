@@ -13,6 +13,9 @@ mammal::mammal(point init_loc, int init_e, int e_output, int e_reprod_min, doubl
     maintain_speed(maintain_spd),
     environment_object(init_loc)
 {
+    dir = direction(rand() % 8 + 1);
+    untried_dirs = {up, up_right, right, down_right, down, down_left, left, up_left};
+    untried_dirs_copy = untried_dirs;
     du_moved = 0;
 }
 
@@ -52,39 +55,43 @@ bool mammal::move()
     {
         case up:
             move_to.y_loc++;
+            break;
         case up_right:
             move_to.x_loc++;
-            move_to.y_loc++;
+            move_to.y_loc--;
             break;
         case right:
             move_to.x_loc++;
             break;
         case down_right:
             move_to.x_loc++;
-            move_to.y_loc--;
+            move_to.y_loc++;
             break;
         case down:
-            move_to.y_loc--;
+            move_to.y_loc++;
             break;
         case down_left:
             move_to.x_loc--;
-            move_to.y_loc--;
+            move_to.y_loc++;
             break;
         case left:
             move_to.x_loc--;
             break;
         case up_left:
             move_to.x_loc--;
-            move_to.y_loc++;
+            move_to.y_loc--;
             break;
     }
     if(message.move_organism(move_to, this))
     {
         location = move_to;
+        untried_dirs = untried_dirs_copy;
     }
     else
     {
-        dir = direction(rand() % 8 + 1);
+        untried_dirs.erase(std::remove(untried_dirs.begin(), untried_dirs.end(), dir), untried_dirs.end());
+        int dir_idx = rand() % untried_dirs.size();
+        dir = untried_dirs[dir_idx];
         return false;
     }
     du_moved++;

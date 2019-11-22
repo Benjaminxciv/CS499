@@ -68,10 +68,9 @@ void grazer::act()
 {
     sim_message& message = sim_message::get_instance();
     message.get_current_time();
-    message.process_message();
     current_time = message.get_time_info();
 
-    if(this->danger)
+    /*if(this->danger)
     {
         reset_eat_timer();
         check_energy();
@@ -137,7 +136,13 @@ void grazer::act()
         this->curr_speed *= .75;       
     }
 
-    this->set_speed(this->curr_speed);
+    this->set_speed(this->curr_speed);*/
+    int dir_tries = 8;
+    while(!move() && dir_tries-- >= 0)
+    {
+
+    }
+    int x;
 }
 
 

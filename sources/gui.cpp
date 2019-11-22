@@ -334,10 +334,10 @@ void SimulationApp::DrawObject(environment_object* target)
     HRESULT hr = S_OK;
     point target_loc = target->get_loc();
     D2D1_RECT_F rectangle2 = D2D1::RectF(
-        target_loc.x_loc-5.0f,
-        target_loc.y_loc-5.0f,
-        target_loc.x_loc+5.0f,
-        target_loc.y_loc+5.0f
+        (target_loc.x_loc+10)-5.0f,
+        (target_loc.y_loc+10)-5.0f,
+        (target_loc.x_loc+10)+5.0f,
+        (target_loc.y_loc+10)+5.0f
     );
 
     // Draw the outline of a rectangle.
@@ -410,26 +410,19 @@ HRESULT SimulationApp::OnRender()
 
         m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
-        //D2D1_SIZE_F rtSize = m_pRenderTarget->GetSize();
-
-        // Draw a grid background.
-        //int width = static_cast<int>(rtSize.width);
-        //int height = static_cast<int>(rtSize.height);
-
         int world_width = sim.get_world_width();
         int world_height = sim.get_world_height();
-        for (int x = 0; x <= world_width; x+=10)
+        for (int x = 10; x <= world_width+10; x+=10)
         {
             m_pRenderTarget->DrawLine(
                 D2D1::Point2F(static_cast<FLOAT>(x), 0.0f),
-                //D2D1::Point2F(static_cast<FLOAT>(x), rtSize.height),
                 D2D1::Point2F(static_cast<FLOAT>(x), world_height),
                 m_pBlackBrush,
                 0.5f
             );
         }
 
-        for (int y = 0; y <= world_height; y+=10)
+        for (int y = 10; y <= world_height+10; y+=10)
         {
             m_pRenderTarget->DrawLine(
                 D2D1::Point2F(0.0f, static_cast<FLOAT>(y)),
