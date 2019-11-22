@@ -137,12 +137,7 @@ void grazer::act()
     }
 
     this->set_speed(this->curr_speed);*/
-    int dir_tries = 8;
-    while(!move() && dir_tries-- >= 0)
-    {
-
-    }
-    int x;
+    move();
 }
 
 
