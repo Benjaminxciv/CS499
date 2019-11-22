@@ -1,14 +1,3 @@
-'''from lxml import etree
-
-tree = etree.parse('LifeSimulation01.xml')
-root = tree.getroot()
-
-for elem in root.iter('*'):
-    if elem.text is not None and elem.text.strip() != '':
-        elem.text = elem.text.strip()
-        print(elem.tag)
-        print(elem.text)'''
-
 import lxml.etree
 import lxml.builder    
 
@@ -157,29 +146,93 @@ def single_obstacle_xml(E, x_loc, y_loc, diameter, height):
     )
     return OBSTACLE_INFO
 
+print("=====LAND INFO=====")
+land_width = int(input("What is the width of the grid? "))
+land_height = int(input("What is the height of the grid? "))
+print()
+
+print("=====PLANT INFO=====")
+p_count = int(input("How many plants do you want? "))
+p_grow_rate = float(input("What is the growth rate for plants? "))
+p_max_size = int(input("What is the maximum size for plants? "))
+p_seed_cast_dist = int(input("What is the maximum cast distance for seeds? "))
+p_max_seed = int(input("What is the maximum number of seeds? "))
+p_seed_viability = float(input("What is the viability of seeds? "))
+
 single_plants_info = []
-for plant in range(0, 1):
-    single_plants_info.append(single_plant_xml(E, 50, 125, 25))
+for plant in range(0, p_count):
+    location = input("What is the X and Y location of plant " + str(plant+1) + "? (X,Y) ")
+    x_loc, y_loc = location.split(",")
+    x_loc = int(x_loc)
+    y_loc = int(y_loc)
+    diameter = int(input("What is the diameter of the plant? "))
+    single_plants_info.append(single_plant_xml(E, x_loc, y_loc, diameter))
+print()
+
+print("=====GRAZER INFO=====")
+g_count = int(input("How many grazers do you want? "))
+g_e_in = int(input("What is the energy input for grazers eating? "))
+g_e_out = int(input("What is the energy output for grazer movement? "))
+g_e_reprod = int(input("What is the energy minimum required for grazer reproduction? "))
+g_main_speed = float(input("What is the maximum time for grazers can run? "))
+g_max_speed = float(input("What is the maximum speed for grazers? "))
 
 single_grazers_info = []
-for grazer in range(0,1):
-    single_grazers_info.append(single_grazer_xml(E, 50, 125, 25))
+for grazer in range(0,g_count):
+    location = input("What is the X and Y location of grazer " + str(grazer+1) + "? (X,Y) ")
+    x_loc, y_loc = location.split(",")
+    x_loc = int(x_loc)
+    y_loc = int(y_loc)
+    init_e = int(input("What is the initial energy of the grazer? "))
+    single_grazers_info.append(single_grazer_xml(E, x_loc, y_loc, init_e))
+print()
+
+print("=====PREDATOR INFO=====")
+p_count = int(input("How many predators do you want? "))
+p_max_spd_hod = float(input("What is the maximum speed for HOD predators? "))
+p_max_spd_hed = float(input("What is the maximum speed for HED predators? "))
+p_max_spd_hor = float(input("What is the maximum speed for HOR predators? "))
+p_main_speed = float(input("What is the maximum time predators can run? "))
+p_e_out = int(input("What is the energy output for predator movement? "))
+p_e_reprod = int(input("What is the energy minimum required for predator reproduction? "))
+p_max_off = int(input("What is the maximum number of offspring a predator can produce? "))
+p_gestation = float(input("What is the number of days that the predator gestation period lasts? "))
+p_off_e = int(input("What is the initial energy of predator offspring? "))
 
 single_predators_info = []
-for predator in range(0,1):
-    single_predators_info.append(single_predator_xml(E, 275, 125, 450, 'AA SS FF'))
+for predator in range(0,p_count):
+    location = input("What is the X and Y location of predator " + str(predator+1) + "? (X,Y) ")
+    x_loc, y_loc = location.split(",")
+    x_loc = int(x_loc)
+    y_loc = int(y_loc)
+    init_e = int(input("What is the initial energy of the predator? "))
+    genotype = input("What is the genotype for the predator? ")
+    single_predators_info.append(single_predator_xml(E, x_loc, y_loc, init_e, genotype))
+print()
 
+print("=====OBSTACLE INFO=====")
+o_count = int(input("How many obstacles do you want? "))
 single_obstacles_info = []
-for obstacle in range(0,1):
-    single_obstacles_info.append(single_obstacle_xml(E, 100, 50, 50, 15))
+for obstacle in range(0,o_count):
+    location = input("What is the X and Y location of obstacle " + str(obstacle+1) + "? (X,Y) ")
+    x_loc, y_loc = location.split(",")
+    x_loc = int(x_loc)
+    y_loc = int(y_loc)
+    diameter = int(input("What is the diameter of the obstacle? "))
+    height = int(input("What is the height of the obstacle? "))
+    single_obstacles_info.append(single_obstacle_xml(E, x_loc, y_loc, diameter, height))
 
 sim_xml = LIFE_SIMULATION(
-    land_xml(E, 1000, 750),
-    plants_xml(E, 25, 0.1, 100, 250, 10, 0.50, single_plants_info),
-    grazers_xml(E, 15, 5, 1, 100, 3.0, 20.0, single_grazers_info),
-    predators_xml(E, 5, 20.0, 18.0, 15.0, 4.0, 10, 500, 3, 5.0, 100, single_predators_info),
-    obstacles_xml(E, 15, single_obstacles_info)
+    land_xml(E, land_width, land_height),
+    plants_xml(E, p_count, p_grow_rate, p_max_size, p_seed_cast_dist, p_max_seed, p_seed_viability, single_plants_info),
+    grazers_xml(E, g_count, g_e_in, g_e_out, g_e_reprod, g_main_speed, g_max_speed, single_grazers_info),
+    predators_xml(E, p_count, p_max_spd_hod, p_max_spd_hed, p_max_spd_hor,
+                    p_main_speed, p_e_out, p_e_reprod, p_max_off, p_gestation,
+                    p_off_e, single_predators_info),
+    obstacles_xml(E, o_count, single_obstacles_info)
 )
-    
-with open('test.xml', 'wb') as txml:
+
+xml_file_name = input("What is the name of the XML file you want to write out to? ")
+
+with open(xml_file_name, 'wb') as txml:
     txml.write(lxml.etree.tostring(sim_xml, pretty_print=True))
