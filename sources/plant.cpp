@@ -142,6 +142,7 @@ void plant::act()
         
         if (current_time == retained_future_time)
         {
+            retained_future_time_set = false;
             set_seed_pod_values();
             radially_disperse_seed();
         }
