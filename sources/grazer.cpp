@@ -130,15 +130,15 @@ void grazer::act()
              move();
         }
         check_energy();
+    */
     }
-    if (movement_timer.time_min == current_time.time_min)
+    /*if (movement_timer.time_min == current_time.time_min)
     {
         this->curr_speed *= .75;       
     }
 
     this->set_speed(this->curr_speed);*/
     move();
-    }
 
 }
 
