@@ -483,30 +483,30 @@ bool simulation::process_sim_message()
 		//{
 			int search_radius = message.get_search_radius();
 			point org_pt = find_empty_cell(location, search_radius);
-			if(org_pt == location)
-			{
-				return false;
-			}
+			
 			if(message.get_environment_obj_type() == "plant")
 			{
 				int diameter = lsdp->getMaxPlantSize() / 10;
 				organism = create_plant(message.get_location(), diameter);
+				if(org_pt == location)
+				{
+				return false;
+				}
 			}
 			else if(message.get_environment_obj_type() == "leaf")
 			{
 				organism = create_leaf(org_pt);
+				if(org_pt == location)
+				{
+				return false;
+				}
 			}
 			else if(message.get_environment_obj_type() == "seed")
 			{
-				organism = create_leaf(org_pt);
+				organism = create_seed(location);
 			}
 			sim_grid->set_cell_contents(org_pt, organism);
 			return true;
-		//}
-		//else
-		//{
-		//	return false;
-		//}
 	}
 	else if(message.get_action_requested() == "replace organism")
 	{
