@@ -27,7 +27,7 @@ predator::~predator()
 
 }
 
-map<point, std::string> predator::smell()
+point predator::smell()
 {
     vector<point> points_to_check;
     int diameter = 25;
@@ -48,8 +48,18 @@ map<point, std::string> predator::smell()
             points_to_check.push_back(p);
         }
     }
-    
-    return;
+    sim_message& message = sim_message::get_instance();
+    point grazer_loc = location;
+    message.look_at_cell(grazer_loc, points_to_check);
+    map<point, std::string> cell_map = message.get_multiple_responses();
+    for (auto const& cell : cell_map)
+    {
+        if(cell.second == "grazer")
+        {
+            grazer_loc = cell.first;
+        }
+    }
+    return grazer_loc;
 }
 
 std::string predator::get_type()

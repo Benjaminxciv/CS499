@@ -24,7 +24,7 @@ class predator : public mammal
     public:
         predator(point, std::string, int, int, int, double, double, double, double, double, int, int, int);
         ~predator();
-        map<point, std::string> smell();
+        point smell();
         std::string get_type();
         int print_self();
         int get_max_offspring();
