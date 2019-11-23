@@ -18,7 +18,10 @@ plant::plant(point init_loc, double grow_rate, int m_size, int m_seed_dist, int 
     seed_viability(seed_via),
     environment_object(init_loc),
     initial_plant_size(init_plant_size)
+    
 {
+    retained_future_time_set = false;
+    current_size = 0;
 }
 
 plant::~plant()
@@ -46,6 +49,11 @@ int plant::print_self()
 
 }
 
+ int plant::get_current_size()
+ {
+     return current_size;
+ }
+
 /*
 Name: growth()
 Purpose: Calcualtes the number of leaves that can be placed in one simulation tick. 
@@ -61,15 +69,15 @@ void plant::grow()
     int num_total_leaves = max_size - current_size;
     int num_leaves_possible_in_tick = num_total_leaves * growth_rate;
 
-    for (int z = num_leaves_possible_in_tick; z <= 0; z--)
+    for (int z = num_leaves_possible_in_tick; z >= 0; z--)
     {
         sim_message& message = sim_message::get_instance();
         if(message.place_organism( location, "leaf", (max_size/2)))
         {
             //need to edit this to take in the children's unique ID
             list_of_leaves.push_back(1);
+            current_size++;
         }
-        
     }
 }
 
@@ -119,16 +127,20 @@ void plant::radially_disperse_seed()
 
 void plant::act()
 {
-    if (max_size == current_size)
+    if (current_size >= max_size)
     {
         sim_message& message = sim_message::get_instance();
         message.get_current_time();
         time_container current_time = message.get_time_info();
 
-        message.get_future_time(0, 0, 1);
-        time_container future_time = message.get_time_info();
+        if (!retained_future_time_set)
+        {
+            message.get_future_time(0, 0, 1);
+            retained_future_time = message.get_time_info();
+            retained_future_time_set = true;
+        }
         
-        if (current_time.time_hour == future_time.time_hour)
+        if (current_time == retained_future_time)
         {
             set_seed_pod_values();
             radially_disperse_seed();

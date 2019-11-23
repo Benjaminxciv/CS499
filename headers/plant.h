@@ -30,12 +30,15 @@ class plant : public environment_object
         int initial_plant_size;
         double seed_viability;
         int current_size;
+        time_container retained_future_time;
+        bool retained_future_time_set;
         vector<int> list_of_leaves;
     public:
         plant(point, double, int, int, int, double, int);
         ~plant();
         std::string get_type();
         int print_self();
+        int get_current_size();
         void grow();
         void set_seed_pod_values();
         void radially_disperse_seed();

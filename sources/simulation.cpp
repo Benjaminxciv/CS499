@@ -186,6 +186,16 @@ leaf* simulation::create_leaf(point leaf_pt)
 	return lf;
 }
 
+seed* simulation::create_seed(point seed_pt)
+{
+	if(!sim_grid->check_bounds(seed_pt))
+	{
+		return nullptr;
+	}
+	seed* sd = new seed(seed_pt);
+	return sd;
+}
+
 grazer* simulation::create_grazer(point grazer_pt, int init_energy)
 {
 	if(!sim_grid->check_bounds(grazer_pt))
@@ -323,7 +333,8 @@ void simulation::init_sim()
 	}
 
 	//Plant info data
-	for(int i = 0; i < lsdp->getInitialPlantCount(); i++)
+	//for(int i = 0; i < lsdp->getInitialPlantCount(); i++)
+	for(int i = 0; i < 1; i++)
 	{
 		int diameter;
 		if(lsdp->getPlantData(&x_pos, &y_pos, &diameter))
@@ -371,7 +382,8 @@ void simulation::init_sim()
 		}
 	}
 	//Use this for testing replacing / removing objects
-	//point pt(1000000,1000000);
+	point plant_test(50,125);
+	point pt = find_empty_cell(plant_test, 5);
 	//seed* sd = new seed(pt);
 	//grazer* gz = create_grazer(pt, 150);
 	//sim_grid->set_cell_contents(pt, gz);
@@ -379,14 +391,14 @@ void simulation::init_sim()
 
 point simulation::find_empty_cell(point center, int search_radius = 1)
 {
-	for(int i = 0; i<search_radius; i++)
+	for(int i = 1; i<search_radius; i++)
 	{
 		for (int x = center.x_loc-i; x < center.x_loc+i+1; x++)
 		{
 			point center_buf(x,center.y_loc-i);
 			if(sim_grid->check_bounds(center_buf))
 			{
-				if(sim_grid->get_cell_contents(center_buf)!= nullptr)
+				if(sim_grid->get_cell_contents(center_buf)== nullptr)
 				{
 					return center_buf;
 				}
@@ -394,7 +406,7 @@ point simulation::find_empty_cell(point center, int search_radius = 1)
 			center_buf.y_loc = center.y_loc+i;
 			if(sim_grid->check_bounds(center_buf))
 			{
-				if(sim_grid->get_cell_contents(center_buf)!= nullptr)
+				if(sim_grid->get_cell_contents(center_buf)== nullptr)
 				{
 					return center_buf;
 				}
@@ -405,7 +417,7 @@ point simulation::find_empty_cell(point center, int search_radius = 1)
 			point center_buf(center.x_loc-i, y);
 			if(sim_grid->check_bounds(center_buf))
 			{
-				if(sim_grid->get_cell_contents(center_buf)!= nullptr)
+				if(sim_grid->get_cell_contents(center_buf)== nullptr)
 				{
 					return center_buf;
 				}
@@ -413,7 +425,7 @@ point simulation::find_empty_cell(point center, int search_radius = 1)
 			center_buf.x_loc = center.x_loc+i;
 			if(sim_grid->check_bounds(center_buf))
 			{
-				if(sim_grid->get_cell_contents(center_buf)!= nullptr)
+				if(sim_grid->get_cell_contents(center_buf)== nullptr)
 				{
 					return center_buf;
 				}
@@ -447,7 +459,7 @@ bool simulation::process_sim_message()
 	}
 	environment_object* target_cell_contents = sim_grid->get_cell_contents(location);
 	environment_object* organism = message.get_organism();
-	if(!sim_grid->check_bounds(organism->get_loc()))
+	if((organism != nullptr) && (!sim_grid->check_bounds(organism->get_loc())))
 	{
 		return false;
 	}
@@ -467,10 +479,14 @@ bool simulation::process_sim_message()
 	}
 	else if(message.get_action_requested() == "place organism")
 	{
-		if(target_cell_contents == nullptr)
-		{
+		//if(target_cell_contents == nullptr)
+		//{
 			int search_radius = message.get_search_radius();
 			point org_pt = find_empty_cell(location, search_radius);
+			if(org_pt == location)
+			{
+				return false;
+			}
 			if(message.get_environment_obj_type() == "plant")
 			{
 				int diameter = lsdp->getMaxPlantSize() / 10;
@@ -480,13 +496,17 @@ bool simulation::process_sim_message()
 			{
 				organism = create_leaf(org_pt);
 			}
-			sim_grid->set_cell_contents(location, organism);
+			else if(message.get_environment_obj_type() == "seed")
+			{
+				organism = create_leaf(org_pt);
+			}
+			sim_grid->set_cell_contents(org_pt, organism);
 			return true;
-		}
-		else
-		{
-			return false;
-		}
+		//}
+		//else
+		//{
+		//	return false;
+		//}
 	}
 	else if(message.get_action_requested() == "replace organism")
 	{
