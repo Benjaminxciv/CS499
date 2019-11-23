@@ -64,13 +64,12 @@ void plant::grow()
     for (int z = num_leaves_possible_in_tick; z <= 0; z--)
     {
         sim_message& message = sim_message::get_instance();
-        /*if attempt to place leaf is successful
-            place leaf
-            add to vector
-        if not successful
-            try one more time error condition
-            do not add to vector
-        */
+        if(message.place_organism( location, "leaf", (max_size/2)))
+        {
+            //need to edit this to take in the children's unique ID
+            list_of_leaves.push_back(1);
+        }
+        
     }
 }
 

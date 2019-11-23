@@ -30,7 +30,7 @@ class plant : public environment_object
         int initial_plant_size;
         double seed_viability;
         int current_size;
-        vector<leaf> list_of_leaves;
+        vector<int> list_of_leaves;
     public:
         plant(point, double, int, int, int, double, int);
         ~plant();

@@ -30,7 +30,7 @@ class simulation
         int world_height;
         int world_width;
         grid* sim_grid;
-        point find_empty_cell(point);
+        point find_empty_cell(point, int);
     public:
         simulation();
         ~simulation();

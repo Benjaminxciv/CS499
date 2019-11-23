@@ -345,67 +345,48 @@ void simulation::init_sim()
 	//sim_grid->set_cell_contents(pt, sd);
 }
 
-point simulation::find_empty_cell(point center)
+point simulation::find_empty_cell(point center, int search_radius = 1)
 {
-	point center_buf = center;
-	//up
-	center_buf.y_loc--;
-	if(sim_grid->get_cell_contents(center_buf) == nullptr)
+	for(int i = 0; i<search_radius; i++)
 	{
-		return center_buf;
-	}
-	center_buf = center;
-	//up left
-	center_buf.x_loc--;
-	center_buf.y_loc--;
-	if(sim_grid->get_cell_contents(center_buf) == nullptr)
-	{
-		return center_buf;
-	}
-	center_buf = center;
-	//up right
-	center_buf.x_loc++;
-	center_buf.y_loc--;
-	if(sim_grid->get_cell_contents(center_buf) == nullptr)
-	{
-		return center_buf;
-	}
-	center_buf = center;
-	//left
-	center_buf.x_loc--;
-	if(sim_grid->get_cell_contents(center_buf) == nullptr)
-	{
-		return center_buf;
-	}
-	center_buf = center;
-	//right
-	center_buf.x_loc++;
-	if(sim_grid->get_cell_contents(center_buf) == nullptr)
-	{
-		return center_buf;
-	}
-	center_buf = center;
-	//down left
-	center_buf.x_loc--;
-	center_buf.y_loc++;
-	if(sim_grid->get_cell_contents(center_buf) == nullptr)
-	{
-		return center_buf;
-	}
-	center_buf = center;
-	//down
-	center_buf.y_loc++;
-	if(sim_grid->get_cell_contents(center_buf) == nullptr)
-	{
-		return center_buf;
-	}
-	center_buf = center;
-	//down right
-	center_buf.x_loc++;
-	center_buf.y_loc++;
-	if(sim_grid->get_cell_contents(center_buf) == nullptr)
-	{
-		return center_buf;
+		for (int x = center.x_loc-i; x < center.x_loc+i+1; x++)
+		{
+			point center_buf(x,center.y_loc-i);
+			if(sim_grid->check_bounds(center_buf))
+			{
+				if(sim_grid->get_cell_contents(center_buf)!= nullptr)
+				{
+					return center_buf;
+				}
+			}
+			center_buf.y_loc = center.y_loc+i;
+			if(sim_grid->check_bounds(center_buf))
+			{
+				if(sim_grid->get_cell_contents(center_buf)!= nullptr)
+				{
+					return center_buf;
+				}
+			}
+		}
+		for (int y = center.y_loc-i+1; y < center.y_loc+i; y++)
+		{
+			point center_buf(center.x_loc-i, y);
+			if(sim_grid->check_bounds(center_buf))
+			{
+				if(sim_grid->get_cell_contents(center_buf)!= nullptr)
+				{
+					return center_buf;
+				}
+			}
+			center_buf.x_loc = center.x_loc+i;
+			if(sim_grid->check_bounds(center_buf))
+			{
+				if(sim_grid->get_cell_contents(center_buf)!= nullptr)
+				{
+					return center_buf;
+				}
+			}
+		}
 	}
 	return center;
 }
@@ -448,6 +429,8 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents == nullptr)
 		{
+			int search_radius = message.get_search_radius();
+			point org_pt = find_empty_cell(location, search_radius);
 			if(message.get_environment_obj_type() == "plant")
 			{
 				int diameter = lsdp->getMaxPlantSize() / 10;
@@ -455,7 +438,7 @@ bool simulation::process_sim_message()
 			}
 			else if(message.get_environment_obj_type() == "leaf")
 			{
-				organism = create_leaf(message.get_location());
+				organism = create_leaf(org_pt);
 			}
 			sim_grid->set_cell_contents(location, organism);
 			return true;
