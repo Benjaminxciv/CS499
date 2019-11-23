@@ -109,6 +109,11 @@ std::vector<environment_object*> simulation::iterate_cells(bool skip_act)
 			environment_object* cell = sim_grid->get_cell_contents(pt);
 			if(cell != nullptr)
 			{
+				if(cell->get_type() == "boulder" || cell->get_type() == "leaf")
+				{
+					cells.push_back(cell);
+					continue;
+				}
 				if(std::find(skip_cells.begin(), skip_cells.end(), pt) == skip_cells.end())
 				{
 					if(!skip_act)
@@ -479,34 +484,37 @@ bool simulation::process_sim_message()
 	}
 	else if(message.get_action_requested() == "place organism")
 	{
-		//if(target_cell_contents == nullptr)
-		//{
-			int search_radius = message.get_search_radius();
-			point org_pt = find_empty_cell(location, search_radius);
+		int search_radius = message.get_search_radius();
+		point org_pt = find_empty_cell(location, search_radius);
+		if(message.get_environment_obj_type() == "plant")
+		{
 			if(org_pt == location)
 			{
 				return false;
 			}
-			if(message.get_environment_obj_type() == "plant")
+			int diameter = lsdp->getMaxPlantSize() / 10;
+			organism = create_plant(message.get_location(), diameter);
+			location = org_pt;
+		}
+		else if(message.get_environment_obj_type() == "leaf")
+		{
+			if(org_pt == location)
 			{
-				int diameter = lsdp->getMaxPlantSize() / 10;
-				organism = create_plant(message.get_location(), diameter);
+				return false;
 			}
-			else if(message.get_environment_obj_type() == "leaf")
+			organism = create_leaf(org_pt);
+			location = org_pt;
+		}
+		else if(message.get_environment_obj_type() == "seed")
+		{
+			if(target_cell_contents != nullptr)
 			{
-				organism = create_leaf(org_pt);
+				return false;
 			}
-			else if(message.get_environment_obj_type() == "seed")
-			{
-				organism = create_leaf(org_pt);
-			}
-			sim_grid->set_cell_contents(org_pt, organism);
-			return true;
-		//}
-		//else
-		//{
-		//	return false;
-		//}
+			organism = create_seed(location);
+		}
+		sim_grid->set_cell_contents(location, organism);
+		return true;
 	}
 	else if(message.get_action_requested() == "replace organism")
 	{
