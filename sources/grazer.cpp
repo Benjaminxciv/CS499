@@ -205,16 +205,6 @@ void grazer::reset_gain_energy_time()
     retained_gain_energy_time = false;
 }
 
-/*Name: start_movement_time()
-Purpose: Sets movement_time to a future time_container. The future time created uses
-            the data file defined maintain_speed
-*/
-void grazer::reset_eat_time()
-{
-    eat_time = {0,0,0};
-    retained_eat_time = false;
-}
-
 /*Name: reset_movement_time()
 Purpose: resets time_container movement_time min, secs, & hours = 0 
 Traces to Epic 3, Acceptance Criteria 2
@@ -228,29 +218,6 @@ void grazer::start_movement_time()
     message.process_message();
     movement_time = message.get_time_info();
     retained_movement_time = true;
-}
-
-/*Name: start_energy_time()
-Purpose: Sets energy_time to a future time_container 1 minute from current_time.*/
-void grazer::reset_movement_time()
-{
-    movement_time = {0,0,0};
-    retained_movement_time = false;
-}
-
-/*Name: reset_gain_energy_time()
-Purpose: resets time_container gain_energy_time min, secs, & hours = 0 
-Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-BP 11/18/19
-*/
-void grazer::start_gain_energy_time()
-{
-    sim_message& message = sim_message::get_instance();
-    message.get_future_time(0,1);
-    message.process_message();
-    gain_energy_time = message.get_time_info();
-    retained_gain_energy_time = true;
 }
 
 /*Name: start_eat_time()
@@ -292,22 +259,6 @@ void grazer::start_gain_energy_time()
     retained_gain_energy_time = true;
 }
 
-/*Name: start_eat_time()
-Purpose: Sets eat_time to a future time_container 10 minutes from current_time.
-Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-BP 11/18/19
-*/
-void grazer::start_eat_time()
-{
-    sim_message& message = sim_message::get_instance();
-    message.get_future_time(0,10);
-    message.process_message();
-    eat_time = message.get_time_info();
-    retained_eat_time = true;
-
-}
-
 /*
 Name: sight_on_plant()
 Purpose: Add aspect to Grazer's class that the grazer's can see a plant within 150DU.
@@ -335,4 +286,9 @@ void grazer::sight_on_predator()
     //if withing 25 du 
     //get_cell()
     //danger = true
+}
+
+void grazer::reset_speed()
+{
+    
 }
