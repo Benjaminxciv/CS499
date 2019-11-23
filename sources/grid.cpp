@@ -42,7 +42,7 @@ environment_object* grid::get_cell_contents(point location)
     {
         return nullptr;
     }
-    grid_cell* cell = &(this->cells[location.x_loc*this->height+location.y_loc]);
+    grid_cell* cell = &(cells[location.y_loc * width + location.x_loc]);
     return cell->environ_obj;
 }
 
@@ -62,7 +62,7 @@ void grid::set_cell_contents(point location, environment_object* environ_obj)
     {
         return;
     }
-    grid_cell* cell = &(this->cells[location.x_loc*this->height+location.y_loc]);
+    grid_cell* cell = &(cells[location.y_loc * width + location.x_loc]);
     cell->environ_obj = environ_obj;
 }
 
@@ -145,7 +145,7 @@ int grid::get_width()
 
 bool grid::check_bounds(point location)
 {
-    if(location.x_loc >= width-1 || location.y_loc >= height-1)
+    if(location.x_loc >= width || location.y_loc >= height)
     {
         return false;
     }

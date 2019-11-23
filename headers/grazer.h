@@ -25,6 +25,8 @@ class grazer : public mammal
         bool retained_eat_time;
         bool danger;
         bool food_available;
+        int init_speed;
+        int curr_speed;
 
         const int eat_reach = 5;
         const int plant_sight_dist = 150;
@@ -37,6 +39,8 @@ class grazer : public mammal
         void reset_gain_energy_time();
         void reset_eat_time();
         void eat();
+        void store_speed();
+        void reset_speed();
 
     public:
         grazer(point, int, int, int, int, double, double);

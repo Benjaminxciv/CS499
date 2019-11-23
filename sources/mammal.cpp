@@ -14,6 +14,7 @@ mammal::mammal(point init_loc, int init_e, int e_output, int e_reprod_min, doubl
     maintain_speed(maintain_spd),
     environment_object(init_loc)
 {
+    dir = direction(rand() % 8 + 1);
     du_moved = 0;
 }
 
@@ -32,56 +33,71 @@ void mammal::set_energy(int new_energy)
     energy = new_energy;
 }
 
-bool mammal::move(direction dir, int speed)
+bool mammal::move()
 {
     sim_message& message = sim_message::get_instance();
-    point move_to = location;
-    switch(dir)
+    vector<direction> untried_dirs = {up, up_right, right, down_right, down, down_left, left, up_left};
+    vector<direction> untried_dirs_copy = untried_dirs;
+    while(untried_dirs.size() > 0)
     {
-        case up:
-            move_to.y_loc++;
-            if(message.move_organism(move_to, this))
+        point move_to = location;
+        switch(dir)
+        {
+            case up:
+                move_to.y_loc++;
+                break;
+            case up_right:
+                move_to.x_loc++;
+                move_to.y_loc--;
+                break;
+            case right:
+                move_to.x_loc++;
+                break;
+            case down_right:
+                move_to.x_loc++;
+                move_to.y_loc++;
+                break;
+            case down:
+                move_to.y_loc++;
+                break;
+            case down_left:
+                move_to.x_loc--;
+                move_to.y_loc++;
+                break;
+            case left:
+                move_to.x_loc--;
+                break;
+            case up_left:
+                move_to.x_loc--;
+                move_to.y_loc--;
+                break;
+        }
+        if(message.move_organism(move_to, this))
+        {
+            location = move_to;
+            
+        }
+        else
+        {
+            untried_dirs.erase(std::remove(untried_dirs.begin(), untried_dirs.end(), dir), untried_dirs.end());
+            if(untried_dirs.size() == 0)
             {
-                location.y_loc++;
+                continue;
             }
-            else
-            {
-                return false;
-            }
-            break;
-        case up_right:
-            location.x_loc++;
-            location.y_loc++;
-            break;
-        case right:
-            location.x_loc++;
-            break;
-        case down_right:
-            location.x_loc++;
-            location.y_loc--;
-            break;
-        case down:
-            location.y_loc--;
-            break;
-        case down_left:
-            location.x_loc--;
-            location.y_loc--;
-            break;
-        case left:
-            location.x_loc--;
-            break;
-        case up_left:
-            location.x_loc--;
-            location.y_loc++;
-            break;
+            int dir_idx = rand() % untried_dirs.size();
+            dir = untried_dirs[dir_idx];
+            continue;
+        }
+        du_moved++;
+        if(du_moved >= 5)
+        {
+            du_moved = 0;
+            energy -= energy_output;
+        }
+        untried_dirs = untried_dirs_copy;
+        return true;
     }
-    du_moved++;
-    if(du_moved >= 5)
-    {
-        du_moved = 0;
-        energy -= energy_output;
-    }
-    return true;
+    return false;
 }
 
 void mammal::reproduce()

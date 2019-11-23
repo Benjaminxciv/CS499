@@ -101,9 +101,9 @@ std::vector<environment_object*> simulation::iterate_cells(bool skip_act)
 	std::vector<point> skip_cells;
 	std::vector<environment_object*> garbage_collection;
 	sim_message& message = sim_message::get_instance();
-	for(int x = 0; x < sim_grid->get_width(); x++)
+	for(int x = 0; x < world_width; x++)
 	{
-		for(int y = 0; y < sim_grid->get_height(); y++)
+		for(int y = 0; y < world_height; y++)
 		{
 			point pt(x, y);
 			environment_object* cell = sim_grid->get_cell_contents(pt);
@@ -124,7 +124,7 @@ std::vector<environment_object*> simulation::iterate_cells(bool skip_act)
 					continue;
 				}
 				skip_cells.push_back(cell->get_loc());
-				if(sim_grid->get_cell_contents(pt) != nullptr)
+				if(sim_grid->get_cell_contents(cell->get_loc()) != nullptr)
 				{
 					cells.push_back(cell);
 				}
@@ -197,6 +197,7 @@ grazer* simulation::create_grazer(point grazer_pt, int init_energy)
 	int grz_energy_input = lsdp->getGrazerEnergyInputRate();				// Energy input per minute when grazing
 	int grz_energy_output = lsdp->getGrazerEnergyOutputRate();			// Energy output when moving each 5 DU
 	int grz_energy_reprod = lsdp->getGrazerEnergyToReproduce();			// Energy level needed to reproduce
+	grz_energy_reprod = 800;
 	double grz_max_speed = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
 	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
 	grazer* grz = new grazer(grazer_pt, init_energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
