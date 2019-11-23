@@ -55,5 +55,4 @@ class simulation
         time_container get_simulation_time();
         bool process_sim_message();
 };
-
 #endif

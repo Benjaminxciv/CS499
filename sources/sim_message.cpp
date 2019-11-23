@@ -36,9 +36,19 @@ void sim_message::set_simulation_response(std::string sim_response)
     simulation_response = sim_response;
 }
 
+void sim_message::add_multiple_response(point pt, std::string sim_response)
+{
+    multiple_responses[pt] = sim_response;
+}
+
 std::string sim_message::get_simulation_response()
 {
     return simulation_response;
+}
+
+map<point, std::string> sim_message::get_multiple_responses()
+{
+    return multiple_responses;
 }
 
 void sim_message::set_organism_energy(int energy)
@@ -66,7 +76,7 @@ int sim_message::get_time_offset_hours()
     return time_offset_hours;
 }
 
-point sim_message::get_location()
+vector<point> sim_message::get_location()
 {
     return location;
 }
@@ -112,7 +122,7 @@ bool sim_message::get_future_time(int future_secs, int future_mins, int future_h
 bool sim_message::move_organism(point target_loc, environment_object* organism_to_move)
 {
     action_requested = "move organism";
-    location = target_loc;
+    location.push_back(target_loc);
     organism = organism_to_move;
     return sim->process_sim_message();
 }
@@ -120,7 +130,7 @@ bool sim_message::move_organism(point target_loc, environment_object* organism_t
 bool sim_message::place_organism(point target_loc, std::string organism_to_create)
 {
     action_requested = "place organism";
-    location = target_loc;
+    location.push_back(target_loc);
     environment_obj_type = organism_to_create;
     return sim->process_sim_message();
 }
@@ -128,7 +138,7 @@ bool sim_message::place_organism(point target_loc, std::string organism_to_creat
 bool sim_message::replace_organism(point target_loc, std::string organism_to_create)
 {
     action_requested = "replace organism";
-    location = target_loc;
+    location.push_back(target_loc);
     environment_obj_type = organism_to_create;
     return sim->process_sim_message();
 }
@@ -136,7 +146,7 @@ bool sim_message::replace_organism(point target_loc, std::string organism_to_cre
 bool sim_message::die(environment_object* organism_to_die)
 {
     action_requested = "die";
-    location = organism_to_die->get_loc();
+    location.push_back(organism_to_die->get_loc());
     organism = organism_to_die;
     return sim->process_sim_message();
 }
@@ -144,21 +154,28 @@ bool sim_message::die(environment_object* organism_to_die)
 bool sim_message::eat_organism(point target_loc)
 {
     action_requested = "eat organism";
-    location = target_loc;
+    location.push_back(target_loc);
     return sim->process_sim_message();
 }
 
-bool sim_message::look_at_cell(point target_loc)
+bool sim_message::look_at_cell(point target_loc, vector<point> multiple_locs)
 {
     action_requested = "look cell";
-    location = target_loc;
+    if(multiple_locs.size() > 0)
+    {
+        location = multiple_locs;
+    }
+    else
+    {
+        location.push_back(target_loc);   
+    }
     return sim->process_sim_message();
 }
 
 bool sim_message::request_reproduce(point target_loc, environment_object* organism_requesting)
 {
     action_requested = "request reproduction";
-    location = target_loc;
+    location.push_back(target_loc);
     organism = organism_requesting;
     return sim->process_sim_message();
 }

@@ -446,14 +446,14 @@ bool simulation::process_sim_message()
 		message.set_time_info(future_clock.get_time());
 		return true;
 	}
-	point location = message.get_location();
-	if(!sim_grid->check_bounds(location))
+	vector<point> location = message.get_location();
+	if(!sim_grid->check_bounds(location[0]))
 	{
 		return false;
 	}
-	environment_object* target_cell_contents = sim_grid->get_cell_contents(location);
+	environment_object* target_cell_contents = sim_grid->get_cell_contents(location[0]);
 	environment_object* organism = message.get_organism();
-	if(!sim_grid->check_bounds(organism->get_loc()))
+	if(organism != nullptr && !sim_grid->check_bounds(organism->get_loc()))
 	{
 		return false;
 	}
@@ -463,7 +463,7 @@ bool simulation::process_sim_message()
 		if(target_cell_contents == nullptr)
 		{
 			sim_grid->set_cell_contents(organism->get_loc(), nullptr);
-			sim_grid->set_cell_contents(location, organism);
+			sim_grid->set_cell_contents(location[0], organism);
 			return true;
 		}
 		else
@@ -478,13 +478,13 @@ bool simulation::process_sim_message()
 			if(message.get_environment_obj_type() == "plant")
 			{
 				int diameter = lsdp->getMaxPlantSize() / 10;
-				organism = create_plant(message.get_location(), diameter);
+				organism = create_plant(message.get_location()[0], diameter);
 			}
 			else if(message.get_environment_obj_type() == "leaf")
 			{
-				organism = create_leaf(message.get_location());
+				organism = create_leaf(message.get_location()[0]);
 			}
-			sim_grid->set_cell_contents(location, organism);
+			sim_grid->set_cell_contents(location[0], organism);
 			return true;
 		}
 		else
@@ -500,9 +500,9 @@ bool simulation::process_sim_message()
 			if( message.get_environment_obj_type() == "plant")
 			{
 				int diameter = lsdp->getMaxPlantSize() / 10;
-				organism = create_plant(message.get_location(), diameter);	
+				organism = create_plant(message.get_location()[0], diameter);	
 			}
-			sim_grid->set_cell_contents(location, organism);
+			sim_grid->set_cell_contents(location[0], organism);
 			return true;
 		}
 		else
@@ -513,7 +513,7 @@ bool simulation::process_sim_message()
 	else if(message.get_action_requested() == "die")
 	{
 		message.set_garbage(organism);
-		sim_grid->set_cell_contents(location, nullptr);
+		sim_grid->set_cell_contents(location[0], nullptr);
 		return true;
 	}
 	//This will need to be fixed up for predators & grazers
@@ -528,7 +528,7 @@ bool simulation::process_sim_message()
 				message.set_organism_energy(target_mammal->get_energy());
 			}
 			message.set_garbage(target_cell_contents);
-			sim_grid->set_cell_contents(location, nullptr);
+			sim_grid->set_cell_contents(location[0], nullptr);
 			return true;
 		}
 		else
@@ -538,23 +538,47 @@ bool simulation::process_sim_message()
 	}
 	else if(message.get_action_requested() == "look cell")
 	{
-		if(target_cell_contents != nullptr)
+		
+		if(location.size() == 1)
 		{
-			std::string cell_contents_type = target_cell_contents->get_type();
-			message.set_simulation_response(cell_contents_type);
-			return true;
+			if(target_cell_contents != nullptr)
+			{
+				std::string cell_contents_type = target_cell_contents->get_type();
+				message.set_simulation_response(cell_contents_type);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
-			return false;
+			for(int i = 0; i < location.size(); i++)
+			{
+				if(!sim_grid->check_bounds(location[i]))
+				{
+					continue;
+				}
+				environment_object* thing_in_cell = sim_grid->get_cell_contents(location[i]);
+				if(thing_in_cell == nullptr)
+				{
+					continue;
+				}
+				std::string cell_contents_type = thing_in_cell->get_type();
+				message.add_multiple_response(location[i], cell_contents_type);
+			}
+			return true;
 		}
+		
+		
 	}
 	else if(message.get_action_requested() == "request reproduction")
 	{
 		if(organism->get_type() == "grazer")
 		{
-			point empty_spot = find_empty_cell(location);
-			if(empty_spot == location)
+			point empty_spot = find_empty_cell(location[0]);
+			if(empty_spot == location[0])
 			{
 				return false;
 			}

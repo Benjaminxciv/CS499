@@ -10,6 +10,7 @@ mammal::mammal(point init_loc, int init_e, int e_output, int e_reprod_min, doubl
     energy_output(e_output),
     energy_reproduce_min(e_reprod_min),
     max_speed(m_spd),
+    current_speed(m_spd),
     maintain_speed(maintain_spd),
     environment_object(init_loc)
 {
@@ -26,9 +27,9 @@ mammal::~mammal()
     
 }
 
-void mammal::set_direction(int dir)
+void mammal::set_direction(int new_dir)
 {
-    direction = dir;
+    dir = new_dir;
 }
 
 /*Name: gain_energy(int)
@@ -53,7 +54,17 @@ bool mammal::move()
 {
     sim_message& message = sim_message::get_instance();
     point move_to = location;
-    switch(direction)
+    
+    if(dir == up || up_left || up_right)
+        looking_direction = 1;
+    else if(dir == right)
+        looking_direction = 2;
+    else if(dir == down || down_left || down_right)
+        looking_direction = 3;
+    else
+        looking_direction = 4;
+
+    switch(dir)
     {
         case up:
             move_to.y_loc++;
@@ -92,6 +103,7 @@ bool mammal::move()
             location.y_loc++;
             break;
     }
+
     du_moved++;
     if(du_moved >= 5)
     {
@@ -126,19 +138,6 @@ int mammal::get_energy()
 
 
 /*
-Name: get_speed()
-Purpose: returns the movement speed
-Trace: Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-Returns: movement_speed
-*/
-int mammal::get_speed()
-{
-    return this->maintain_speed;
-}
-
-
-/*
 Name: set_speed()
 Purpose: sets a speed that is passed in to the current speed of mammal
 Trace: Traces to Epic 3, Acceptance Criteria 2
@@ -153,4 +152,22 @@ void mammal::set_speed(double max_speed)
 bool mammal::ready_to_reproduce()
 {
     return energy >= energy_reproduce_min;
+}
+
+
+void mammal::set_current_speed(double speed)
+{
+    this->current_speed = speed;
+}
+
+/*
+Name: reset_speed()
+Purpose: Resets the current speed with the initial speed given
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: N/A
+*/
+void mammal::reset_speed()
+{
+    this->current_speed = max_speed;
 }
