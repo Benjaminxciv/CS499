@@ -154,11 +154,11 @@ char* trim_lead_whitespace(char* str)
 
 vector<boulder*> simulation::create_boulder(point boulder_pt, int diameter, int height)
 {
+	vector<boulder*> full_boulder;
 	if(!sim_grid->check_bounds(boulder_pt))
 	{
-		return nullptr;
+		return full_boulder;
 	}
-	vector<boulder*> full_boulder;
 	full_boulder.reserve((diameter / 2) + 1);
 	for(int i = 0; i < diameter / 2; i++)
 	{
