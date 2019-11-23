@@ -102,7 +102,7 @@ void grazer::act()
     }
     else 
     {
-        reset_eat_time();
+        /*reset_eat_time();
         reset_gain_energy_time();
         //request movement : if true increment number of moves
         //move(up, 1);
@@ -136,22 +136,10 @@ void grazer::act()
         this->curr_speed *= .75;       
     }
 
-    this->set_speed(this->curr_speed);
-}
+    this->set_speed(this->curr_speed);*/
+    move();
+    }
 
-
-/*
-Name: store_speed()
-Purpose: Creates an init speed and curr speed to allow the
-MAINTAIN_SPEED to be manipulated
-Trace: Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-Returns: N/A
-*/
-void grazer::store_speed()
-{
-    this->init_speed = this->get_speed();
-    this->curr_speed = this->get_speed();
 }
 
 /*
