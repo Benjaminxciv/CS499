@@ -26,6 +26,7 @@ class plant;
 class leaf;
 class grazer;
 class predator;
+class seed;
 
 class simulation
 {
@@ -35,7 +36,7 @@ class simulation
         int world_height;
         int world_width;
         grid* sim_grid;
-        point find_empty_cell(point);
+        point find_empty_cell(point, int);
     public:
         simulation();
         ~simulation();
@@ -50,6 +51,7 @@ class simulation
         vector<boulder*> create_boulder(point, int, int);
         plant* create_plant(point, int);
         leaf* create_leaf(point);
+        seed* create_seed(point);
         grazer* create_grazer(point, int);
         predator* create_predator(point, int, char*, bool);
         void increment_simulation_clock();

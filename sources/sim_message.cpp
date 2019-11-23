@@ -76,6 +76,11 @@ environment_object* sim_message::get_organism()
     return organism;
 }
 
+int sim_message::get_search_radius()
+{
+    return search_radius;
+}
+
 std::string sim_message::get_environment_obj_type()
 {
     return environment_obj_type;
@@ -117,11 +122,12 @@ bool sim_message::move_organism(point target_loc, environment_object* organism_t
     return sim->process_sim_message();
 }
 
-bool sim_message::place_organism(point target_loc, std::string organism_to_create)
+bool sim_message::place_organism(point target_loc, std::string organism_to_create, int search_ring)
 {
     action_requested = "place organism";
     location = target_loc;
     environment_obj_type = organism_to_create;
+    search_radius = search_ring;
     return sim->process_sim_message();
 }
 

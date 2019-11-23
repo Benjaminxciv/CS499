@@ -546,7 +546,7 @@ void SimulationApp::DrawObject(environment_object* target)
     // Draw the outline of a rectangle.
     ID2D1SolidColorBrush* brush;
     std::string target_type = target->get_type();
-    if(target_type == "plant")
+    if(target_type == "plant" || target_type == "leaf")
     {
         brush = m_pGreenBrush;
     }

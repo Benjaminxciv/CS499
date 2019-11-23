@@ -16,6 +16,7 @@ class sim_message
         int time_offset_secs;
         int time_offset_mins;
         int time_offset_hours;
+        int search_radius;
         point location;
         std::string action_requested;
         std::string environment_obj_type;
@@ -41,13 +42,14 @@ class sim_message
         int get_time_offset_hours();
         point get_location();
         environment_object* get_organism();
+        int get_search_radius();
         std::string get_environment_obj_type();
         void set_time_info(time_container);
         time_container get_time_info();
         bool get_current_time();
         bool get_future_time(int future_secs = 0, int future_mins = 0, int future_hours = 0);
         bool move_organism(point, environment_object*);
-        bool place_organism(point, std::string);
+        bool place_organism(point, std::string, int search_ring = 1);
         bool replace_organism(point, std::string);
         bool die(environment_object*);
         bool eat_organism(point);
