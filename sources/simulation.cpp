@@ -152,21 +152,15 @@ char* trim_lead_whitespace(char* str)
 	return str+str_idx-1;
 }
 
-vector<boulder*> simulation::create_boulder(point boulder_pt, int diameter, int height)
+boulder* simulation::create_boulder(point boulder_pt, int diameter, int height)
 {
-	vector<boulder*> full_boulder;
 	if(!sim_grid->check_bounds(boulder_pt))
 	{
-		return full_boulder;
+		return nullptr;
 	}
-	full_boulder.reserve((diameter / 2) + 1);
-	for(int i = 0; i < diameter / 2; i++)
-	{
-		point bld_pt = find_empty_cell(boulder_pt, diameter / 2);
-		boulder* bold = new boulder(bld_pt, diameter, height);
-		full_boulder.push_back(bold);
-	}
-	return full_boulder;
+	point bld_pt = find_empty_cell(boulder_pt, diameter / 2);
+	boulder* bold = new boulder(bld_pt, diameter, height);
+	return bold;
 }
 
 plant* simulation::create_plant(point plant_pt, int diameter)
@@ -335,10 +329,10 @@ void simulation::init_sim()
 		if(lsdp->getObstacleData(&x_pos, &y_pos, &diameter, &height))
 		{
 			point boulder_pt(x_pos, y_pos);
-			vector<boulder*> bold = create_boulder(boulder_pt, diameter, height);
-			for(int i = 0; i < bold.size(); i++)
+			for(int i = 0; i < diameter / 2; i++)
 			{
-				sim_grid->set_cell_contents(boulder_pt, bold[i]);
+				boulder* bold = create_boulder(boulder_pt, diameter, height);
+				sim_grid->set_cell_contents(bold->get_loc(), bold);
 			}
 		}
 		else
