@@ -5,6 +5,7 @@ Last editor: AW
 Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-quickstart*/
 
 #include "gui.h"
+#include "clock.h"
 
 SimulationApp::SimulationApp() :
         m_hwnd(NULL),
@@ -93,19 +94,99 @@ HRESULT SimulationApp::Initialize()
         m_hwnd = CreateWindow(
             L"D2DSimulationApp",
             L"Direct2D Simulation App",
-            WS_OVERLAPPEDWINDOW,
+            WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
             CW_USEDEFAULT,
             CW_USEDEFAULT,
-            static_cast<UINT>(ceil(640.f * dpiX / 96.f)),
-            static_cast<UINT>(ceil(480.f * dpiY / 96.f)),
+            static_cast<UINT>(ceil(1600.f * dpiX / 96.f)),
+            static_cast<UINT>(ceil(1200.f * dpiY / 96.f)),
             NULL,
             NULL,
             HINST_THISCOMPONENT,
             this
-            );
+        );
+
+        HWND c_hWndx1 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Simulation speed x1"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            10,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X1,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
+        HWND c_hWndx10 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Simulation speed x10"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            35,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X10,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
+        HWND c_hWndx50 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Simulation speed x50"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            60,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X50,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
+        HWND c_hWndx100 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Simulation speed x100"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            85,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X100,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
+        HWND c_hWndStatusReport = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Status Report"),
+            WS_CHILD | WS_VISIBLE,
+            1000,
+            110,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_STATUS_REPORT,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+        
         hr = m_hwnd ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
         {
+            SetTimer(m_hwnd, SIM_TIMER_X1, 1000, NULL); 
+            SetTimer(m_hwnd, SIM_TIMER_X10, 100, NULL); 
+            SetTimer(m_hwnd, SIM_TIMER_X50, 20, NULL); 
+            SetTimer(m_hwnd, SIM_TIMER_X100, 10, NULL); 
             ShowWindow(m_hwnd, SW_SHOWNORMAL);
             UpdateWindow(m_hwnd);
         }
@@ -252,9 +333,7 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             GWLP_USERDATA,
             PtrToUlong(pSimulationApp)
             );
-
         result = 1;
-        SetTimer(hwnd, 1, 1, NULL); 
     }
     else if (message == WM_TIMER)
     {
@@ -266,7 +345,38 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
 
         if (pSimulationApp)
         {
-            pSimulationApp->OnRender();
+            int tick_speed = pSimulationApp->sim.get_tick_speed();
+            switch (wParam)
+            {
+                case SIM_TIMER_X1:
+                    if(tick_speed == x1)
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    break;
+                case SIM_TIMER_X10:
+                    if(tick_speed == x10)
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    break;
+                case SIM_TIMER_X50:
+                    if(tick_speed == x50)
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    break;
+                case SIM_TIMER_X100:
+                    if(tick_speed == x100)
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    break;
+            }
         }
     }
     else
@@ -283,40 +393,133 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
         {
             switch (message)
             {
-            case WM_SIZE:
-                {
-                    UINT width = LOWORD(lParam);
-                    UINT height = HIWORD(lParam);
-                    pSimulationApp->OnResize(width, height);
-                }
-                result = 0;
-                wasHandled = true;
-                break;
+                case WM_COMMAND:
+                    if(LOWORD(wParam) == IDM_SET_TICK_X1)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x1);
+                    }
+                    if(LOWORD(wParam) == IDM_SET_TICK_X10)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x10);
+                    }
+                    if(LOWORD(wParam) == IDM_SET_TICK_X50)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x50);
+                    }
+                    if(LOWORD(wParam) == IDM_SET_TICK_X100)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x100);
+                    }
+                    if(LOWORD(wParam) == IDM_STATUS_REPORT)
+                    {
+                        time_container curr_time = pSimulationApp->sim.get_simulation_time();
 
-            case WM_DISPLAYCHANGE:
-                {
-                    InvalidateRect(hwnd, NULL, FALSE);
-                }
-                result = 0;
-                wasHandled = true;
-                break;
+                        ofstream status_report_file;
+                        std::string filename = "SimReport_";
+                        std::string curr_time_hour = std::to_string(curr_time.time_hour);
+                        if(curr_time_hour.size() < 2)
+                        {
+                            curr_time_hour = "0" + curr_time_hour;
+                        }
+                        std::string curr_time_min = std::to_string(curr_time.time_min);
+                        if(curr_time_min.size() < 2)
+                        {
+                            curr_time_min = "0" + curr_time_min;
+                        }
+                        std::string curr_time_sec = std::to_string(curr_time.time_sec);
+                        if(curr_time_sec.size() < 2)
+                        {
+                            curr_time_sec = "0" + curr_time_sec;
+                        }
+                        filename += curr_time_hour + "_";
+                        filename += curr_time_min + "_";
+                        filename += curr_time_sec + ".txt";
+                        status_report_file.open(filename);
+                        vector<environment_object*> cells = pSimulationApp->sim.iterate_cells(true);
+                        vector<environment_object*> plants;
+                        vector<environment_object*> grazers;
+                        vector<environment_object*> predators;
+                        for(int i = 0; i < cells.size(); i++)
+                        {
+                            if(cells[i]->get_type() == "plant")
+                            {
+                                plants.push_back(cells[i]);
+                            }
+                            else if(cells[i]->get_type() == "grazer")
+                            {
+                                grazers.push_back(cells[i]);
+                            }
+                            else if(cells[i]->get_type() == "predator")
+                            {
+                                predators.push_back(cells[i]);
+                            }
+                        }
+                        status_report_file << "=========Plant info=========\n";
+                        for(int i = 0; i < plants.size(); i++)
+                        {
+                            point p_loc = plants[i]->get_loc();
+                            status_report_file << "Plant " + std::to_string(i+1) + ":\n";
+                            status_report_file << "Location: " + std::to_string(p_loc.x_loc) + ", " + std::to_string(p_loc.y_loc) + "\n";
+                            status_report_file << "\n";
+                        }
+                        status_report_file << "=========Grazer info=========\n";
+                        for(int i = 0; i < grazers.size(); i++)
+                        {
+                            point g_loc = grazers[i]->get_loc();
+                            grazer* grz = reinterpret_cast<grazer*>(grazers[i]);
+                            int g_energy = grz->get_energy();
+                            status_report_file << "Grazer " + std::to_string(i+1) + ":\n";
+                            status_report_file << "Location: " + std::to_string(g_loc.x_loc) + ", " + std::to_string(g_loc.y_loc) + "\n";
+                            status_report_file << "Energy: " + std::to_string(g_energy) + "\n";
+                            status_report_file << "\n";
+                        }
+                        status_report_file << "=========Predator info=========\n";
+                        for(int i = 0; i < predators.size(); i++)
+                        {
+                            point p_loc = predators[i]->get_loc();
+                            predator* prd = reinterpret_cast<predator*>(predators[i]);
+                            int p_energy = prd->get_energy();
+                            status_report_file << "Predator " + std::to_string(i+1) + ":\n";
+                            status_report_file << "Location: " + std::to_string(p_loc.x_loc) + ", " + std::to_string(p_loc.y_loc) + "\n";
+                            status_report_file << "Energy: " + std::to_string(p_energy) + "\n";
+                        }
+                        status_report_file.close();
+                    }
+                    break;
+                case WM_SIZE:
+                    {
+                        UINT width = LOWORD(lParam);
+                        UINT height = HIWORD(lParam);
+                        pSimulationApp->OnResize(width, height);
+                    }
+                    result = 0;
+                    wasHandled = true;
+                    break;
 
-            case WM_PAINT:
-                {
-                    pSimulationApp->OnRender();
-                    ValidateRect(hwnd, NULL);
-                }
-                result = 0;
-                wasHandled = true;
-                break;
+                case WM_DISPLAYCHANGE:
+                    {
+                        InvalidateRect(hwnd, NULL, FALSE);
+                    }
+                    result = 0;
+                    wasHandled = true;
+                    break;
 
-            case WM_DESTROY:
-                {
-                    PostQuitMessage(0);
-                }
-                result = 1;
-                wasHandled = true;
-                break;
+                case WM_PAINT:
+                    {
+                        pSimulationApp->OnRender();
+                        ValidateRect(hwnd, NULL);
+                    }
+                    result = 0;
+                    wasHandled = true;
+                    break;
+
+                case WM_DESTROY:
+                    {
+                        PostQuitMessage(0);
+                    }
+                    result = 1;
+                    wasHandled = true;
+                    break;
             }
         }
 
@@ -334,10 +537,10 @@ void SimulationApp::DrawObject(environment_object* target)
     HRESULT hr = S_OK;
     point target_loc = target->get_loc();
     D2D1_RECT_F rectangle2 = D2D1::RectF(
-        target_loc.x_loc-5.0f,
-        target_loc.y_loc-5.0f,
-        target_loc.x_loc+5.0f,
-        target_loc.y_loc+5.0f
+        (target_loc.x_loc+5)-5.0f,
+        (target_loc.y_loc+5)-5.0f,
+        (target_loc.x_loc+5)+5.0f,
+        (target_loc.y_loc+5)+5.0f
     );
 
     // Draw the outline of a rectangle.
@@ -407,23 +610,15 @@ HRESULT SimulationApp::OnRender()
         m_pRenderTarget->BeginDraw();
 
         m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-
         m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
-
-        //D2D1_SIZE_F rtSize = m_pRenderTarget->GetSize();
-
-        // Draw a grid background.
-        //int width = static_cast<int>(rtSize.width);
-        //int height = static_cast<int>(rtSize.height);
 
         int world_width = sim.get_world_width();
         int world_height = sim.get_world_height();
         for (int x = 0; x <= world_width; x+=10)
         {
             m_pRenderTarget->DrawLine(
-                D2D1::Point2F(static_cast<FLOAT>(x), 0.0f),
-                //D2D1::Point2F(static_cast<FLOAT>(x), rtSize.height),
-                D2D1::Point2F(static_cast<FLOAT>(x), world_height),
+                D2D1::Point2F(static_cast<FLOAT>(x+5), 5.0f),
+                D2D1::Point2F(static_cast<FLOAT>(x+5), world_height+5),
                 m_pBlackBrush,
                 0.5f
             );
@@ -432,8 +627,8 @@ HRESULT SimulationApp::OnRender()
         for (int y = 0; y <= world_height; y+=10)
         {
             m_pRenderTarget->DrawLine(
-                D2D1::Point2F(0.0f, static_cast<FLOAT>(y)),
-                D2D1::Point2F(world_width, static_cast<FLOAT>(y)),
+                D2D1::Point2F(5.0f, static_cast<FLOAT>(y+5)),
+                D2D1::Point2F(world_width+5, static_cast<FLOAT>(y+5)),
                 m_pBlackBrush,
                 0.5f
             );

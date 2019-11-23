@@ -15,7 +15,7 @@ Last editor: MG*/
 simulation::simulation()
 {
 	this->simulation_clock = new sim_ns::clock();
-	this->tick_speed = 1000;
+	this->tick_speed = x1;
 }
 
 simulation::~simulation()
@@ -68,6 +68,11 @@ void simulation::set_tick_speed(int new_tick_speed)
 	this->tick_speed = new_tick_speed;
 }
 
+int simulation::get_tick_speed()
+{
+	return tick_speed;
+}
+
 void simulation::increase_tick_speed()
 {
 	switch(this->tick_speed)
@@ -90,15 +95,15 @@ void simulation::increase_tick_speed()
 }
 
 //Put test code in here
-std::vector<environment_object*> simulation::iterate_cells()
+std::vector<environment_object*> simulation::iterate_cells(bool skip_act)
 {
 	std::vector<environment_object*> cells;
 	std::vector<point> skip_cells;
 	std::vector<environment_object*> garbage_collection;
 	sim_message& message = sim_message::get_instance();
-	for(int x = 0; x < sim_grid->get_width(); x++)
+	for(int x = 0; x < world_width; x++)
 	{
-		for(int y = 0; y < sim_grid->get_height(); y++)
+		for(int y = 0; y < world_height; y++)
 		{
 			point pt(x, y);
 			environment_object* cell = sim_grid->get_cell_contents(pt);
@@ -106,7 +111,10 @@ std::vector<environment_object*> simulation::iterate_cells()
 			{
 				if(std::find(skip_cells.begin(), skip_cells.end(), pt) == skip_cells.end())
 				{
-					cell->act();
+					if(!skip_act)
+					{
+						cell->act();
+					}
 				}
 				environment_object* garbage = message.get_garbage();
 				if(garbage != nullptr)
@@ -116,14 +124,17 @@ std::vector<environment_object*> simulation::iterate_cells()
 					continue;
 				}
 				skip_cells.push_back(cell->get_loc());
-				if(sim_grid->get_cell_contents(pt) != nullptr)
+				if(sim_grid->get_cell_contents(cell->get_loc()) != nullptr)
 				{
 					cells.push_back(cell);
 				}
 			}
 		}
 	}
-	simulation_clock->add_sec();
+	if(!skip_act)
+	{
+		simulation_clock->add_sec();
+	}
 	return cells;
 }
 
@@ -136,14 +147,22 @@ char* trim_lead_whitespace(char* str)
 	return str+str_idx-1;
 }
 
-boulder* create_boulder(point boulder_pt, int diameter, int height)
+boulder* simulation::create_boulder(point boulder_pt, int diameter, int height)
 {
+	if(!sim_grid->check_bounds(boulder_pt))
+	{
+		return nullptr;
+	}
 	boulder* bold = new boulder(boulder_pt, diameter, height);
 	return bold;
 }
 
-plant* create_plant(point plant_pt, int diameter)
+plant* simulation::create_plant(point plant_pt, int diameter)
 {
+	if(!sim_grid->check_bounds(plant_pt))
+	{
+		return nullptr;
+	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	//Plant info data
 	//These values are consistent for every plant
@@ -157,20 +176,29 @@ plant* create_plant(point plant_pt, int diameter)
 	return plt;
 }
 
-leaf* create_leaf(point leaf_pt)
+leaf* simulation::create_leaf(point leaf_pt)
 {
+	if(!sim_grid->check_bounds(leaf_pt))
+	{
+		return nullptr;
+	}
 	leaf* lf = new leaf(leaf_pt);
 	return lf;
 }
 
-grazer* create_grazer(point grazer_pt, int init_energy)
+grazer* simulation::create_grazer(point grazer_pt, int init_energy)
 {
+	if(!sim_grid->check_bounds(grazer_pt))
+	{
+		return nullptr;
+	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	//Grazer info data
 	//These values are consistent for every grazer
 	int grz_energy_input = lsdp->getGrazerEnergyInputRate();				// Energy input per minute when grazing
 	int grz_energy_output = lsdp->getGrazerEnergyOutputRate();			// Energy output when moving each 5 DU
 	int grz_energy_reprod = lsdp->getGrazerEnergyToReproduce();			// Energy level needed to reproduce
+	grz_energy_reprod = 800;
 	double grz_max_speed = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
 	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
 	grazer* grz = new grazer(grazer_pt, init_energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
@@ -206,9 +234,13 @@ char pred_factory_punnett_square(char gene_one, char gene_two)
     }
 }
 
-predator* create_predator(point predator_pt, int init_energy, char* genotype,
+predator* simulation::create_predator(point predator_pt, int init_energy, char* genotype,
 							bool is_offspring = false)
 {
+	if(!sim_grid->check_bounds(predator_pt))
+	{
+		return nullptr;
+	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	// Predator info data
 	//These values are consistent for every predator
@@ -339,10 +371,10 @@ void simulation::init_sim()
 		}
 	}
 	//Use this for testing replacing / removing objects
-	//point pt(0,0);
+	//point pt(1000000,1000000);
 	//seed* sd = new seed(pt);
 	//grazer* gz = create_grazer(pt, 150);
-	//sim_grid->set_cell_contents(pt, sd);
+	//sim_grid->set_cell_contents(pt, gz);
 }
 
 point simulation::find_empty_cell(point center, int search_radius = 1)
@@ -409,8 +441,16 @@ bool simulation::process_sim_message()
 		return true;
 	}
 	point location = message.get_location();
+	if(!sim_grid->check_bounds(location))
+	{
+		return false;
+	}
 	environment_object* target_cell_contents = sim_grid->get_cell_contents(location);
 	environment_object* organism = message.get_organism();
+	if(!sim_grid->check_bounds(organism->get_loc()))
+	{
+		return false;
+	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	if(message.get_action_requested() == "move organism")
 	{

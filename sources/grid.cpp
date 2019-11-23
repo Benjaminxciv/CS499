@@ -38,7 +38,11 @@ Parameters:
 Returns: Pointer to resident of cell*/
 environment_object* grid::get_cell_contents(point location)
 {
-    grid_cell* cell = &(this->cells[location.x_loc*this->height+location.y_loc]);
+    if(!check_bounds(location))
+    {
+        return nullptr;
+    }
+    grid_cell* cell = &(cells[location.y_loc * width + location.x_loc]);
     return cell->environ_obj;
 }
 
@@ -54,7 +58,11 @@ Parameters:
 Returns: NA*/
 void grid::set_cell_contents(point location, environment_object* environ_obj)
 {
-    grid_cell* cell = &(this->cells[location.x_loc*this->height+location.y_loc]);
+    if(!check_bounds(location))
+    {
+        return;
+    }
+    grid_cell* cell = &(cells[location.y_loc * width + location.x_loc]);
     cell->environ_obj = environ_obj;
 }
 

@@ -10,9 +10,11 @@ mammal::mammal(point init_loc, int init_e, int e_output, int e_reprod_min, doubl
     energy_output(e_output),
     energy_reproduce_min(e_reprod_min),
     max_speed(m_spd),
+    current_speed(m_spd),
     maintain_speed(maintain_spd),
     environment_object(init_loc)
 {
+    dir = direction(rand() % 8 + 1);
     du_moved = 0;
 }
 
@@ -26,74 +28,76 @@ mammal::~mammal()
     
 }
 
-/*Name: gain_energy(int)
-Purpose: generic way for mammals gain energy 
-Parameters: 
-    energy: int
-        number of energy units to add to a mammal objects energy level
-Last edit:
-    BP 10/27/19
-*/
-void mammal::gain_energy(int added_energy)
-{
-    energy += added_energy;
-}
-
 void mammal::set_energy(int new_energy)
 {
     energy = new_energy;
 }
 
-bool mammal::move(direction dir, int speed)
+bool mammal::move()
 {
     sim_message& message = sim_message::get_instance();
-    point move_to = location;
-    switch(dir)
+    vector<direction> untried_dirs = {up, up_right, right, down_right, down, down_left, left, up_left};
+    vector<direction> untried_dirs_copy = untried_dirs;
+    while(untried_dirs.size() > 0)
     {
-        case up:
-            move_to.y_loc++;
-            if(message.move_organism(move_to, this))
+        point move_to = location;
+        switch(dir)
+        {
+            case up:
+                move_to.y_loc++;
+                break;
+            case up_right:
+                move_to.x_loc++;
+                move_to.y_loc--;
+                break;
+            case right:
+                move_to.x_loc++;
+                break;
+            case down_right:
+                move_to.x_loc++;
+                move_to.y_loc++;
+                break;
+            case down:
+                move_to.y_loc++;
+                break;
+            case down_left:
+                move_to.x_loc--;
+                move_to.y_loc++;
+                break;
+            case left:
+                move_to.x_loc--;
+                break;
+            case up_left:
+                move_to.x_loc--;
+                move_to.y_loc--;
+                break;
+        }
+        if(message.move_organism(move_to, this))
+        {
+            location = move_to;
+            
+        }
+        else
+        {
+            untried_dirs.erase(std::remove(untried_dirs.begin(), untried_dirs.end(), dir), untried_dirs.end());
+            if(untried_dirs.size() == 0)
             {
-                location.y_loc++;
+                continue;
             }
-            else
-            {
-                return false;
-            }
-            break;
-        case up_right:
-            location.x_loc++;
-            location.y_loc++;
-            break;
-        case right:
-            location.x_loc++;
-            break;
-        case down_right:
-            location.x_loc++;
-            location.y_loc--;
-            break;
-        case down:
-            location.y_loc--;
-            break;
-        case down_left:
-            location.x_loc--;
-            location.y_loc--;
-            break;
-        case left:
-            location.x_loc--;
-            break;
-        case up_left:
-            location.x_loc--;
-            location.y_loc++;
-            break;
+            int dir_idx = rand() % untried_dirs.size();
+            dir = untried_dirs[dir_idx];
+            continue;
+        }
+        du_moved++;
+        if(du_moved >= 5)
+        {
+            du_moved = 0;
+            energy -= energy_output;
+        }
+        untried_dirs = untried_dirs_copy;
+        return true;
     }
-    du_moved++;
-    if(du_moved >= 5)
-    {
-        du_moved = 0;
-        energy -= energy_output;
-    }
-    return true;
+    return false;
 }
 
 void mammal::reproduce()
@@ -116,19 +120,6 @@ int mammal::get_energy()
 
 
 /*
-Name: get_speed()
-Purpose: returns the movement speed
-Trace: Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-Returns: movement_speed
-*/
-int mammal::get_speed()
-{
-    return this->maintain_speed;
-}
-
-
-/*
 Name: set_speed()
 Purpose: sets a speed that is passed in to the current speed of mammal
 Trace: Traces to Epic 3, Acceptance Criteria 2
@@ -143,4 +134,22 @@ void mammal::set_speed(double max_speed)
 bool mammal::ready_to_reproduce()
 {
     return energy >= energy_reproduce_min;
+}
+
+
+void mammal::set_current_speed(double speed)
+{
+    this->current_speed = speed;
+}
+
+/*
+Name: reset_speed()
+Purpose: Resets the current speed with the initial speed given
+Trace: Traces to Epic 3, Acceptance Criteria 2
+Parameters: N/A
+Returns: N/A
+*/
+void mammal::reset_speed()
+{
+    this->current_speed = max_speed;
 }
