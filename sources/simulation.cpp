@@ -468,6 +468,7 @@ bool simulation::process_sim_message()
 	{
 		return false;
 	}
+	//
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	if(message.get_action_requested() == "move organism")
 	{
