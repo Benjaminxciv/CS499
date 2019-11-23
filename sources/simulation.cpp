@@ -338,8 +338,7 @@ void simulation::init_sim()
 	}
 
 	//Plant info data
-	//for(int i = 0; i < lsdp->getInitialPlantCount(); i++)
-	for(int i = 0; i < 1; i++)
+	for(int i = 0; i < lsdp->getInitialPlantCount(); i++)
 	{
 		int diameter;
 		if(lsdp->getPlantData(&x_pos, &y_pos, &diameter))
