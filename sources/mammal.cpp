@@ -106,31 +106,6 @@ void mammal::sense_shape(int sides, int side_size)
     
 }
 
-vector<point> sense_circle()
-{
-    vector<point> points_to_check;
-    int diameter = 9;
-    int radius = (diameter-1)/2;
-    point center(40,40);
-    for (int y = radius; y >= 0; y--)
-    {
-        for(int x = 0; x <= (radius-y)*2; x++)
-        {
-            point p(center.x_loc-x, center.y_loc-y);
-            points_to_check.push_back(p);
-        }
-    }
-    for (int y = 1; y <= radius; y++)
-    {
-        for(int x = 0; x <= (radius-y)*2; x++)
-        {
-            point p(center.x_loc+x, center.y_loc+y);
-            points_to_check.push_back(p);
-        }
-    }
-    return points_to_check;
-}
-
 void mammal::reproduce()
 {
 

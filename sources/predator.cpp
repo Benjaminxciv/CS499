@@ -27,16 +27,29 @@ predator::~predator()
 
 }
 
-void predator::smell()
+map<point, std::string> predator::smell()
 {
-    //smell in 25 DU radius
-    //send message up to sim asking for cells within 25 DU
-    //found_direction = sim->get_cells()
-    int found_direction = 0;
-    if(found_direction)
+    vector<point> points_to_check;
+    int diameter = 25;
+    int radius = (diameter-1)/2;
+    for (int y = radius; y >= 0; y--)
     {
-        this->set_direction(found_direction);
+        for(int x = 0; x <= (radius-y)*2; x++)
+        {
+            point p(location.x_loc-x, location.y_loc-y);
+            points_to_check.push_back(p);
+        }
     }
+    for (int y = 1; y <= radius; y++)
+    {
+        for(int x = 0; x <= (radius-y)*2; x++)
+        {
+            point p(location.x_loc+x, location.y_loc+y);
+            points_to_check.push_back(p);
+        }
+    }
+    
+    return;
 }
 
 std::string predator::get_type()
