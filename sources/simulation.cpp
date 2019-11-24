@@ -497,6 +497,7 @@ bool simulation::process_sim_message()
 				organism = create_leaf(message.get_location());
 			}
 			sim_grid->set_cell_contents(location, organism);
+			message.set_child_id(organism->get_id());
 			return true;
 		}
 		else

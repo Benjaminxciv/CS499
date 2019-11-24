@@ -172,3 +172,13 @@ environment_object* sim_message::get_garbage()
 {
     return garbage;
 }
+
+void sim_message::set_child_id(int id)
+{
+    child_id = id;
+}
+
+int sim_message::get_child_id()
+{
+    return child_id;
+}

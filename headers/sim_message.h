@@ -25,6 +25,7 @@ class sim_message
         time_container time_info;
         simulation* sim;
         environment_object* garbage;
+        int child_id;
         sim_message();
         ~sim_message();
     public:
@@ -54,6 +55,8 @@ class sim_message
         bool look_at_cell(point);
         bool request_reproduce(point, environment_object*);
         void set_garbage(environment_object*);
+        void set_child_id(int id);
+        int get_child_id();
         environment_object* get_garbage();
 };
 
