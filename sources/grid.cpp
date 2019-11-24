@@ -27,7 +27,6 @@ grid::~grid()
     delete [] this->cells;
 }
 
-
 /*Name: get_cell_contents
 Purpose: Get pointer to the resident of some cell at X and Y location
 Parameters: 
