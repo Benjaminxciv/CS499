@@ -37,6 +37,7 @@ class mammal : public environment_object
         void set_current_speed(double);
         void reset_speed();
         bool ready_to_reproduce();
+        vector<point> sight();
         
 };
 

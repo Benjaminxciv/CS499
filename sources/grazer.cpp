@@ -64,6 +64,7 @@ void grazer::eat()
 
 void grazer::act()
 {
+
     sim_message& message = sim_message::get_instance();
     message.get_current_time();
     current_time = message.get_time_info();

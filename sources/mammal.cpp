@@ -153,3 +153,8 @@ void mammal::reset_speed()
 {
     this->current_speed = max_speed;
 }
+
+vector<point> mammal::sight()
+{
+    
+}
