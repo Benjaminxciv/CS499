@@ -28,7 +28,7 @@ mammal::~mammal()
     
 }
 
-void mammal::set_direction(int new_dir)
+void mammal::set_direction(direction new_dir)
 {
     dir = new_dir;
 }
@@ -118,11 +118,6 @@ bool mammal::move()
     return false;
 }
 
-void mammal::sense_shape(int sides, int side_size)
-{
-    
-}
-
 void mammal::reproduce()
 {
 
@@ -179,5 +174,53 @@ void mammal::reset_speed()
 
 vector<point> mammal::sight()
 {
+    vector<point> points_to_check;
+    int diameter = 25;
+    int radius = (diameter-1)/2;
+    if(dir == up || dir == down || dir == up_left || dir == up_right || dir == down_left || dir == down_right)
+    {
+        int start = 1;
+        if(dir == down || dir == down_left || dir == down_right)
+        {
+            start *= -1;
+        }
+        for (int y = start; (y*start) <= (radius); y+=start)
+        {
+            for(int x = 0; x <= (radius-(y*start))*2; x++)
+            {
+                point p(location.x_loc+x, location.y_loc+y);
+                points_to_check.push_back(p);
+            }
+        }
+    }
+    else
+    {
+        int start = 1;
+        if(dir == left)
+        {
+            start *= -1;
+        }
+        for(int x = start; (x*start) <= (radius); x+=start)
+        {
+            for(int y = 0; y <= (radius-(x*start))*2; y++)
+            {
+                point p(location.x_loc+x, location.y_loc+y);
+                points_to_check.push_back(p);
+            }
+        }
+    }
     
+    /*sim_message& message = sim_message::get_instance();
+    point grazer_loc = location;
+    message.look_at_cell(grazer_loc, points_to_check);
+    map<point, std::string> cell_map = message.get_multiple_responses();
+    for (auto const& cell : cell_map)
+    {
+        if(cell.second == "grazer")
+        {
+            grazer_loc = cell.first;
+        }
+    }
+    return grazer_loc;*/
+    return points_to_check;
 }

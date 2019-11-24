@@ -154,7 +154,8 @@ void grazer::act()
     }
 
     this->set_speed(this->curr_speed);*/
-    move();
+    sight();
+    //move();
 }
 
 

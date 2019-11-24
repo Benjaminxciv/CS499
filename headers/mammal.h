@@ -27,12 +27,11 @@ class mammal : public environment_object
         double current_speed;
         double maintain_speed;
         int du_moved;
-        int dir;
     public:
         mammal(point, int, int, int, double, double);
         mammal();
         ~mammal();
-        void set_direction(int);
+        void set_direction(direction);
         void move(int);
         void sense_shape(int, int);
         int get_energy();
