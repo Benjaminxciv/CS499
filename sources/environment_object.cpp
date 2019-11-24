@@ -6,6 +6,8 @@ Last editor: MG*/
 
 #include "environment_object.h"
 
+int environment_object::next_id = 1;
+
 environment_object::environment_object()
 {
     
@@ -13,6 +15,7 @@ environment_object::environment_object()
 
 environment_object::environment_object(point init_loc) //: location (init_loc)
 {
+    id = next_id++;
     this->location = init_loc;
 }
 
@@ -44,6 +47,11 @@ Returns: NA*/
 void environment_object::set_location(point loc)
 {
     location = loc;
+}
+
+int environment_object::get_id()
+{
+    return id;
 }
 
 void environment_object::act()
