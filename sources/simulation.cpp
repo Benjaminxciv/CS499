@@ -128,6 +128,7 @@ std::vector<environment_object*> simulation::iterate_cells(bool skip_act)
 				environment_object* garbage = message.get_garbage();
 				if(garbage != nullptr)
 				{
+					created_objects.erase(remove(created_objects.begin(), created_objects.end(), garbage), created_objects.end());
 					delete garbage;
 					message.set_garbage(nullptr);
 					continue;
@@ -181,7 +182,7 @@ plant* simulation::create_plant(point plant_pt, int diameter)
 	int plt_max_seed_cast_dist = lsdp->getMaxSeedCastDistance();
 	int plt_max_seed_num = lsdp->getMaxSeedNumber();
 	double plt_seed_viability = lsdp->getSeedViability();
-	plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability);
+	plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability, diameter);
 	created_objects.push_back(plt);
 	return plt;
 }
@@ -204,6 +205,7 @@ seed* simulation::create_seed(point seed_pt)
 		return nullptr;
 	}
 	seed* sd = new seed(seed_pt);
+	created_objects.push_back(sd);
 	return sd;
 }
 
