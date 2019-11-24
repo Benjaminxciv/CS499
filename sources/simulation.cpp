@@ -158,9 +158,20 @@ boulder* simulation::create_boulder(point boulder_pt, int diameter, int height)
 	{
 		return nullptr;
 	}
-	point bld_pt = find_empty_cell(boulder_pt, diameter / 2);
+	point bld_pt = find_empty_cell(boulder_pt);
 	boulder* bold = new boulder(bld_pt, diameter, height);
 	return bold;
+}
+
+boulder_piece* simulation::create_boulder_piece(point boulder_piece_pt, int diameter)
+{
+	if(!sim_grid->check_bounds(boulder_piece_pt))
+	{
+		return nullptr;
+	}
+	point bld_pc_pt = find_empty_cell(boulder_piece_pt, diameter / 2);
+	boulder_piece* bold_pc = new boulder_piece(bld_pc_pt);
+	return bold_pc;
 }
 
 plant* simulation::create_plant(point plant_pt, int diameter)
@@ -329,10 +340,12 @@ void simulation::init_sim()
 		if(lsdp->getObstacleData(&x_pos, &y_pos, &diameter, &height))
 		{
 			point boulder_pt(x_pos, y_pos);
-			for(int i = 0; i < diameter / 2; i++)
+			boulder* bold = create_boulder(boulder_pt, diameter, height);
+			sim_grid->set_cell_contents(bold->get_loc(), bold);
+			for(int i = 1; i < diameter / 2; i++)
 			{
-				boulder* bold = create_boulder(boulder_pt, diameter, height);
-				sim_grid->set_cell_contents(bold->get_loc(), bold);
+				boulder_piece* bold_pc = create_boulder_piece(boulder_pt, diameter);
+				sim_grid->set_cell_contents(bold_pc->get_loc(), bold_pc);
 			}
 		}
 		else
@@ -397,7 +410,7 @@ void simulation::init_sim()
 	//sim_grid->set_cell_contents(pt, gz);
 }
 
-point simulation::find_empty_cell(point center, int search_radius = 1)
+point simulation::find_empty_cell(point center, int search_radius)
 {
 	for(int i = 1; i<search_radius; i++)
 	{

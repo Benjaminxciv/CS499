@@ -25,4 +25,13 @@ class boulder : public environment_object
         int print_self();
 };
 
+class boulder_piece : public environment_object
+{
+    private:
+    public:
+        boulder_piece(point);
+        ~boulder_piece();
+        std::string get_type();
+};
+
 #endif

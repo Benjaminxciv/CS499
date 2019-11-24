@@ -36,7 +36,7 @@ class simulation
         int world_height;
         int world_width;
         grid* sim_grid;
-        point find_empty_cell(point, int);
+        point find_empty_cell(point, int search_radius = 1);
     public:
         simulation();
         ~simulation();
@@ -49,6 +49,7 @@ class simulation
         void increase_tick_speed();
         std::vector<environment_object*> iterate_cells(bool skip_act = false);
         boulder* create_boulder(point, int, int);
+        boulder_piece *create_boulder_piece(point, int);
         plant* create_plant(point, int);
         leaf* create_leaf(point);
         seed* create_seed(point);
