@@ -101,12 +101,16 @@ std::vector<environment_object*> simulation::iterate_cells(bool skip_act)
 	std::vector<point> skip_cells;
 	std::vector<environment_object*> garbage_collection;
 	sim_message& message = sim_message::get_instance();
-	for(int x = 0; x < world_width; x++)
+	//for(int x = 0; x < world_width; x++)
+	//{
+	//	for(int y = 0; y < world_height; y++)
+	//	{
+	for(int i = 0; i < created_objects.size(); i++)
 	{
-		for(int y = 0; y < world_height; y++)
-		{
-			point pt(x, y);
-			environment_object* cell = sim_grid->get_cell_contents(pt);
+			//point pt(x, y);
+			//environment_object* cell = sim_grid->get_cell_contents(pt);
+			environment_object* cell = created_objects[i];
+			point pt = cell->get_loc();
 			if(cell != nullptr)
 			{
 				if(std::find(skip_cells.begin(), skip_cells.end(), pt) == skip_cells.end())
@@ -129,7 +133,7 @@ std::vector<environment_object*> simulation::iterate_cells(bool skip_act)
 					cells.push_back(cell);
 				}
 			}
-		}
+		//}
 	}
 	if(!skip_act)
 	{
@@ -154,6 +158,7 @@ boulder* simulation::create_boulder(point boulder_pt, int diameter, int height)
 		return nullptr;
 	}
 	boulder* bold = new boulder(boulder_pt, diameter, height);
+	created_objects.push_back(bold);
 	return bold;
 }
 
@@ -172,6 +177,7 @@ plant* simulation::create_plant(point plant_pt, int diameter)
 	int plt_max_seed_num = lsdp->getMaxSeedNumber();
 	double plt_seed_viability = lsdp->getSeedViability();
 	plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability);
+	created_objects.push_back(plt);
 	return plt;
 }
 
@@ -182,6 +188,7 @@ leaf* simulation::create_leaf(point leaf_pt)
 		return nullptr;
 	}
 	leaf* lf = new leaf(leaf_pt);
+	created_objects.push_back(lf);
 	return lf;
 }
 
@@ -201,6 +208,7 @@ grazer* simulation::create_grazer(point grazer_pt, int init_energy)
 	double grz_max_speed = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
 	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
 	grazer* grz = new grazer(grazer_pt, init_energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
+	created_objects.push_back(grz);
 	return grz;
 }
 
