@@ -8,6 +8,7 @@ Last editor: MG
 #ifndef PREDATOR_H
 #define PREDATOR_H
 
+#include <map>
 #include "mammal.h"
 
 class predator : public mammal
@@ -23,6 +24,7 @@ class predator : public mammal
     public:
         predator(point, std::string, int, int, int, double, double, double, double, double, int, int, int);
         ~predator();
+        point smell();
         std::string get_type();
         int print_self();
         int get_max_offspring();

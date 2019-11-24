@@ -28,6 +28,24 @@ mammal::~mammal()
     
 }
 
+void mammal::set_direction(int new_dir)
+{
+    dir = new_dir;
+}
+
+/*Name: gain_energy(int)
+Purpose: generic way for mammals gain energy 
+Parameters: 
+    energy: int
+        number of energy units to add to a mammal objects energy level
+Last edit:
+    BP 10/27/19
+*/
+void mammal::gain_energy(int added_energy)
+{
+    energy += added_energy;
+}
+
 void mammal::set_energy(int new_energy)
 {
     energy = new_energy;
@@ -98,6 +116,11 @@ bool mammal::move()
         return true;
     }
     return false;
+}
+
+void mammal::sense_shape(int sides, int side_size)
+{
+    
 }
 
 void mammal::reproduce()

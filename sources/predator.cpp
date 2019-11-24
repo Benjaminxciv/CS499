@@ -27,6 +27,41 @@ predator::~predator()
 
 }
 
+point predator::smell()
+{
+    vector<point> points_to_check;
+    int diameter = 25;
+    int radius = (diameter-1)/2;
+    for (int y = radius; y >= 0; y--)
+    {
+        for(int x = 0; x <= (radius-y)*2; x++)
+        {
+            point p(location.x_loc-x, location.y_loc-y);
+            points_to_check.push_back(p);
+        }
+    }
+    for (int y = 1; y <= radius; y++)
+    {
+        for(int x = 0; x <= (radius-y)*2; x++)
+        {
+            point p(location.x_loc+x, location.y_loc+y);
+            points_to_check.push_back(p);
+        }
+    }
+    sim_message& message = sim_message::get_instance();
+    point grazer_loc = location;
+    message.look_at_cell(grazer_loc, points_to_check);
+    map<point, std::string> cell_map = message.get_multiple_responses();
+    for (auto const& cell : cell_map)
+    {
+        if(cell.second == "grazer")
+        {
+            grazer_loc = cell.first;
+        }
+    }
+    return grazer_loc;
+}
+
 std::string predator::get_type()
 {
     return "predator";

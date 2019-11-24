@@ -69,8 +69,26 @@ void grazer::act()
     message.get_current_time();
     current_time = message.get_time_info();
 
+    //sight_cone();
+
     if(this->danger)
     {
+        if(this->energy < 25)
+        {
+            move_count++;
+        }
+
+        else
+        {
+            move_count = 0;
+        }
+
+        if(move_count > 10)
+        {
+            message.die(this);
+            return;
+        }
+
         reset_eat_time();
         reset_gain_energy_time();
         //request movement : if true increment number of moves
@@ -113,12 +131,7 @@ void grazer::act()
             start_movement_time();
         }   
 
-        if(this->energy <= 0)
-        {
-            sim_message& message = sim_message::get_instance();
-            message.die(this);
-        }
-        else if(ready_to_reproduce())
+        if(ready_to_reproduce())
         {
             sim_message& message = sim_message::get_instance();
             if(message.request_reproduce(location, this))
@@ -157,16 +170,17 @@ void grazer::check_energy()
 {
     if(this->energy < 25)
     {
-        this->move_count++;
+        move_count++;
     }
     else
     {
         move_count = 0;
     }
 
-    if(this->move_count > 10)
-    {
-        //message.die(this);
+    if(move_count > 10)
+    {   
+        sim_message& die_message = sim_message::get_instance();
+        die_message.die(this);   
     }
 }
 
@@ -261,20 +275,6 @@ void grazer::start_gain_energy_time()
 }
 
 /*
-Name: sight_on_plant()
-Purpose: Add aspect to Grazer's class that the grazer's can see a plant within 150DU.
-Trace: Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-Returns: N/A
-*/
-
-void grazer::sight_on_plant()
-{
-    //get_cell() get all the cells within 150du
-    //
-}
-
-/*
 Name: sight_on_predator()
 Purpose: Add aspect of Grazer's class that the grazer can see predators within 25 DU.
 Trace: Traces to Epic 3, Acceptance Criteria 2
@@ -282,11 +282,63 @@ Parameters: N/A
 Returns: N/A
 */
 
-void grazer::sight_on_predator()
-{
-    //if withing 25 du 
-    //get_cell()
-    //danger = true
+void grazer::sight_cone()
+{   
+    vector<point> points_to_check;
+    points_to_check.reserve(22500);
+    string predator_check;
+    point look_point;
+    look_point = location;
+    look_point.origin_x_loc = location.x_loc;
+    look_point.origin_y_loc = location.y_loc;
+    looking_direction = 1;
+
+    int test_count = 0; 
+    for(int i = 0; i < plant_sight_dist; i++)
+    {
+        for(int j = -i; j <= i; j++)
+        {
+            test_count++;
+            //right
+            if(this->looking_direction == 2)
+            {
+                look_point.x_loc += i;
+                look_point.y_loc += j;
+                //if(look_message.look_at_cell(pr))
+                //{
+                //    predator_check = look_message.get_simulation_response();
+                //    look_check(look_point, i);
+                //}
+            }
+
+            //left
+            if(this->looking_direction == 4)
+            {
+                look_point.x_loc -= i;
+                look_point.y_loc += j;
+                //look_check(look_point, i);
+            }
+
+            //up
+            if(this->looking_direction == 1)
+            {
+                look_point.x_loc += j;
+                look_point.y_loc += i;
+                //look_check(look_point, i);
+            }
+
+            //down
+            if (this->looking_direction == 3)
+            {
+                look_point.x_loc -= i;
+                look_point.y_loc -= j;
+                //look_check(look_point, i);
+            }
+            points_to_check.push_back(look_point);
+        }
+    }
+    sim_message& look_message = sim_message::get_instance();
+    look_message.look_at_cell(location, points_to_check);
 }
 
 void grazer::reset_speed()

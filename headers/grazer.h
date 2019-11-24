@@ -50,8 +50,8 @@ class grazer : public mammal
         void act() override;
 
         void check_energy();
-        void sight_on_plant();
-        void sight_on_predator();
+        void sight_cone();
+        void look_check(point, int);
         
 };
 #endif

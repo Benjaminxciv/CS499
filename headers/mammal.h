@@ -8,6 +8,8 @@ Last editor: BP
 #ifndef MAMMAL_H
 #define MAMMAL_H
 
+#include <vector>
+#include <iostream>
 #include "environment_object.h"
 #include "sim_message.h"
 
@@ -20,16 +22,21 @@ class mammal : public environment_object
         int energy;
         int energy_output;
         int energy_reproduce_min;
+        int looking_direction;
         double max_speed;
         double current_speed;
         double maintain_speed;
         int du_moved;
-        
+        int dir;
     public:
         mammal(point, int, int, int, double, double);
         mammal();
         ~mammal();
+        void set_direction(int);
+        void move(int);
+        void sense_shape(int, int);
         int get_energy();
+        void gain_energy(int);
         void set_energy(int);
         bool move();
         void set_speed(double);

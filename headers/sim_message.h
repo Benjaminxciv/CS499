@@ -2,6 +2,7 @@
 #define SIM_MESSAGE_H
 
 #include <string>
+#include <map>
 #include "environment_object.h"
 #include "clock.h"
 #include "simulation.h"
@@ -16,11 +17,12 @@ class sim_message
         int time_offset_secs;
         int time_offset_mins;
         int time_offset_hours;
-        point location;
+        vector<point> location;
         std::string action_requested;
         std::string environment_obj_type;
         //things returned from simulation:
         std::string simulation_response;
+        map<point, std::string> multiple_responses;
         int energy_from_organism;
         time_container time_info;
         simulation* sim;
@@ -33,13 +35,15 @@ class sim_message
         bool process_message();
         std::string get_action_requested();
         void set_simulation_response(std::string);
+        void add_multiple_response(point, std::string);
         std::string get_simulation_response();
+        map<point, std::string> get_multiple_responses();
         void set_organism_energy(int);
         int get_organism_energy();
         int get_time_offset_secs();
         int get_time_offset_mins();
         int get_time_offset_hours();
-        point get_location();
+        vector<point> get_location();
         environment_object* get_organism();
         std::string get_environment_obj_type();
         void set_time_info(time_container);
@@ -51,7 +55,7 @@ class sim_message
         bool replace_organism(point, std::string);
         bool die(environment_object*);
         bool eat_organism(point);
-        bool look_at_cell(point);
+        bool look_at_cell(point, vector<point> = vector<point>());
         bool request_reproduce(point, environment_object*);
         void set_garbage(environment_object*);
         environment_object* get_garbage();
