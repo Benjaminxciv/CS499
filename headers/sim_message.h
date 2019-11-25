@@ -27,6 +27,7 @@ class sim_message
         simulation* sim;
         environment_object* garbage;
         int child_id;
+        int parent_id;
         sim_message();
         ~sim_message();
     public:
@@ -50,7 +51,7 @@ class sim_message
         bool get_current_time();
         bool get_future_time(int future_secs = 0, int future_mins = 0, int future_hours = 0);
         bool move_organism(point, environment_object*);
-        bool place_organism(point, std::string, int search_ring = 1);
+        bool place_organism(point, std::string, int, int search_ring = 1);
         bool replace_organism(point, std::string);
         bool die(environment_object*);
         bool eat_organism(point);
@@ -59,6 +60,8 @@ class sim_message
         void set_garbage(environment_object*);
         void set_child_id(int id);
         int get_child_id();
+        void set_parent_id(int id);
+        int get_parent_id();
         environment_object* get_garbage();
 };
 

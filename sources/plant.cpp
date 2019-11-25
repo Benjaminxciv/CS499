@@ -72,7 +72,7 @@ void plant::grow()
     for (int z = num_leaves_possible_in_tick; z >= 0; z--)
     {
         sim_message& message = sim_message::get_instance();
-        if(message.place_organism( location, "leaf", (max_size/2)))
+        if(message.place_organism( location, "leaf", id, (max_size/2)))
         {
             //need to edit this to take in the children's unique ID
             list_of_leaves.push_back(1);
@@ -113,13 +113,13 @@ void plant::radially_disperse_seed()
         theta = theta + rand() % (360/max_seed_num) + 0;
         
         sim_message& message = sim_message::get_instance();
-        if(!message.place_organism(pt, "seed"))
+        if(!message.place_organism(pt, "seed", id))
         {
             target_center_x = (cos (theta) * max_seed_cast_dist) + location.x_loc;
             target_center_y = (sin (theta) * max_seed_cast_dist) + location.y_loc;
             point pt2(target_center_x,target_center_y);
             theta = theta + rand() % (360/41) + 0;
-            message.place_organism(pt2, "seed");
+            message.place_organism(pt2, "seed", id);
         }
    }
 }

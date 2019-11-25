@@ -191,12 +191,12 @@ bool simulation::create_plant(point plant_pt, int diameter)
 	sim_grid->set_cell_contents(plant_pt, plt);
 	for(int i = 0; i < diameter / 2; i++)
 	{
-		create_leaf(plant_pt, diameter);
+		create_leaf(plant_pt, diameter, plt->get_id());
 	}
 	return plt;
 }
 
-bool simulation::create_leaf(point start_pt, int diameter)
+bool simulation::create_leaf(point start_pt, int diameter, int p_id)
 {
 	if(!sim_grid->check_bounds(start_pt))
 	{
@@ -210,6 +210,8 @@ bool simulation::create_leaf(point start_pt, int diameter)
 	leaf* lf = new leaf(lf_pt);
 	created_objects.push_back(lf);
 	sim_grid->set_cell_contents(lf_pt, lf);
+	parent_children[p_id].push_back(lf->get_id());
+	children_parent[lf->get_id()].push_back(p_id);
 	return true;
 }
 
@@ -225,7 +227,7 @@ bool simulation::create_seed(point seed_pt)
 	return true;
 }
 
-bool simulation::create_grazer(point grazer_pt, int init_energy)
+bool simulation::create_grazer(point grazer_pt, int init_energy, int p_id)
 {
 	if(!sim_grid->check_bounds(grazer_pt))
 	{
@@ -243,6 +245,11 @@ bool simulation::create_grazer(point grazer_pt, int init_energy)
 	grazer* grz = new grazer(grazer_pt, init_energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
 	created_objects.push_back(grz);
 	sim_grid->set_cell_contents(grazer_pt, grz);
+	if(p_id > 0)
+	{
+		parent_children[p_id].push_back(grz->get_id());
+		children_parent[grz->get_id()].push_back(p_id);
+	}
 	return true;
 }
 
@@ -276,7 +283,7 @@ char pred_factory_punnett_square(char gene_one, char gene_two)
 }
 
 bool simulation::create_predator(point predator_pt, int init_energy, char* genotype,
-							bool is_offspring = false)
+							bool is_offspring = false, vector<int> p_id_list)
 {
 	if(!sim_grid->check_bounds(predator_pt))
 	{
@@ -322,6 +329,14 @@ bool simulation::create_predator(point predator_pt, int init_energy, char* genot
 									pred_gestation_period, pred_offspring_energy_level);
 	created_objects.push_back(pred);
 	sim_grid->set_cell_contents(predator_pt, pred);
+	if(is_offspring)
+	{
+		for(int i = 0; i < p_id_list.size(); i++)
+		{
+			parent_children[p_id_list[i]].push_back(pred->get_id());
+			children_parent[pred->get_id()].push_back(p_id_list[i]);
+		}
+	}
 	return true;
 }
 
@@ -511,7 +526,7 @@ bool simulation::process_sim_message()
 		int search_radius = message.get_search_radius();
 		if(message.get_environment_obj_type() == "leaf")
 		{
-			return create_leaf(location, search_radius);
+			return create_leaf(location, search_radius, message.get_parent_id());
 		}
 		else if(message.get_environment_obj_type() == "seed")
 		{

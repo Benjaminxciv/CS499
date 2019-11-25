@@ -122,12 +122,13 @@ bool sim_message::move_organism(point target_loc, environment_object* organism_t
     return sim->process_sim_message();
 }
 
-bool sim_message::place_organism(point target_loc, std::string organism_to_create, int search_ring)
+bool sim_message::place_organism(point target_loc, std::string organism_to_create, int p_id, int search_ring)
 {
     action_requested = "place organism";
     location = target_loc;
     environment_obj_type = organism_to_create;
     search_radius = search_ring;
+    parent_id = p_id;
     return sim->process_sim_message();
 }
 
@@ -187,4 +188,14 @@ void sim_message::set_child_id(int id)
 int sim_message::get_child_id()
 {
     return child_id;
+}
+
+void sim_message::set_parent_id(int id)
+{
+    parent_id = id;
+}
+
+int sim_message::get_parent_id()
+{
+    return parent_id;
 }
