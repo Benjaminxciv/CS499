@@ -55,3 +55,16 @@ std::string predator::get_genotype()
 {
     return genotype;
 }
+
+void predator::eat()
+{   
+    //Temporary place holder for an actual location of an organism
+    point food_location = {1,2};
+    sim_message &message = sim_message::get_instance();
+    if(message.eat_organism(food_location))
+    {
+        int energy_to_gain = message.get_organism_energy();
+        this->energy = this->energy+= (energy_to_gain * .90);
+    }
+
+}
