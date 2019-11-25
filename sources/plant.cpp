@@ -75,7 +75,8 @@ void plant::grow()
         if(message.place_organism( location, "leaf", (max_size/2)))
         {
             //need to edit this to take in the children's unique ID
-            list_of_leaves.push_back(1);
+            //need to grab the ID returned from sim_message
+            list_of_leaves.push_back(1);//add that ID to the vector
             current_size++;
         }
     }
