@@ -133,30 +133,40 @@ char* trim_lead_whitespace(char* str)
 	return str+str_idx-1;
 }
 
-boulder* simulation::create_boulder(point boulder_pt, int diameter, int height)
+bool simulation::create_boulder(point boulder_pt, int diameter, int height)
 {
 	if(!sim_grid->check_bounds(boulder_pt))
 	{
-		return nullptr;
+		return false;
 	}
-	point bld_pt = find_empty_cell(boulder_pt);
-	boulder* bold = new boulder(bld_pt, diameter, height);
+	boulder* bold = new boulder(boulder_pt, diameter, height);
 	created_objects.push_back(bold);
-	return bold;
-}
-
-boulder_piece* simulation::create_boulder_piece(point boulder_piece_pt, int diameter)
-{
-	if(!sim_grid->check_bounds(boulder_piece_pt))
+	sim_grid->set_cell_contents(boulder_pt, bold);
+	for(int i = 0; i < diameter / 2; i++)
 	{
-		return nullptr;
+		create_boulder_piece(boulder_pt, diameter);
 	}
-	point bld_pc_pt = find_empty_cell(boulder_piece_pt, diameter / 2);
-	boulder_piece* bold_pc = new boulder_piece(bld_pc_pt);
-	return bold_pc;
+	return true;
 }
 
-plant* simulation::create_plant(point plant_pt, int diameter)
+bool simulation::create_boulder_piece(point start_pt, int diameter)
+{
+	if(!sim_grid->check_bounds(start_pt))
+	{
+		return false;
+	}
+	point bld_pc_pt = find_empty_cell(start_pt, diameter / 2);
+	if(bld_pc_pt == start_pt)
+	{
+		return false;
+	}
+	boulder_piece* bold_pc = new boulder_piece(bld_pc_pt);
+	created_objects.push_back(bold_pc);
+	sim_grid->set_cell_contents(bld_pc_pt, bold_pc);
+	return true;
+}
+
+bool simulation::create_plant(point plant_pt, int diameter)
 {
 	if(!sim_grid->check_bounds(plant_pt))
 	{
@@ -172,36 +182,48 @@ plant* simulation::create_plant(point plant_pt, int diameter)
 	double plt_seed_viability = lsdp->getSeedViability();
 	plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability, diameter);
 	created_objects.push_back(plt);
+	sim_grid->set_cell_contents(plant_pt, plt);
+	for(int i = 0; i < diameter / 2; i++)
+	{
+		create_leaf(plant_pt, diameter);
+	}
 	return plt;
 }
 
-leaf* simulation::create_leaf(point leaf_pt)
+bool simulation::create_leaf(point start_pt, int diameter)
 {
-	if(!sim_grid->check_bounds(leaf_pt))
+	if(!sim_grid->check_bounds(start_pt))
 	{
-		return nullptr;
+		return false;
 	}
-	leaf* lf = new leaf(leaf_pt);
+	point lf_pt = find_empty_cell(start_pt, diameter / 2);
+	if(lf_pt == start_pt)
+	{
+		return false;
+	}
+	leaf* lf = new leaf(lf_pt);
 	created_objects.push_back(lf);
-	return lf;
+	sim_grid->set_cell_contents(lf_pt, lf);
+	return true;
 }
 
-seed* simulation::create_seed(point seed_pt)
+bool simulation::create_seed(point seed_pt)
 {
 	if(!sim_grid->check_bounds(seed_pt))
 	{
-		return nullptr;
+		return false;
 	}
 	seed* sd = new seed(seed_pt);
 	created_objects.push_back(sd);
-	return sd;
+	sim_grid->set_cell_contents(seed_pt, sd);
+	return true;
 }
 
-grazer* simulation::create_grazer(point grazer_pt, int init_energy)
+bool simulation::create_grazer(point grazer_pt, int init_energy)
 {
 	if(!sim_grid->check_bounds(grazer_pt))
 	{
-		return nullptr;
+		return false;
 	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	//Grazer info data
@@ -214,7 +236,8 @@ grazer* simulation::create_grazer(point grazer_pt, int init_energy)
 	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
 	grazer* grz = new grazer(grazer_pt, init_energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
 	created_objects.push_back(grz);
-	return grz;
+	sim_grid->set_cell_contents(grazer_pt, grz);
+	return true;
 }
 
 /*
@@ -246,12 +269,12 @@ char pred_factory_punnett_square(char gene_one, char gene_two)
     }
 }
 
-predator* simulation::create_predator(point predator_pt, int init_energy, char* genotype,
+bool simulation::create_predator(point predator_pt, int init_energy, char* genotype,
 							bool is_offspring = false)
 {
 	if(!sim_grid->check_bounds(predator_pt))
 	{
-		return nullptr;
+		return false;
 	}
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
 	// Predator info data
@@ -291,7 +314,9 @@ predator* simulation::create_predator(point predator_pt, int init_energy, char* 
 	predator* pred = new predator(predator_pt, genotype_str, init_energy, pred_energy_output, pred_energy_reprod, pred_max_speed, pred_maintain_speed,
 									pred_max_speed_hod, pred_max_speed_hed, pred_max_speed_hor, pred_max_offspring,
 									pred_gestation_period, pred_offspring_energy_level);
-	return pred;
+	created_objects.push_back(pred);
+	sim_grid->set_cell_contents(predator_pt, pred);
+	return true;
 }
 
 void simulation::init_sim()
@@ -325,13 +350,7 @@ void simulation::init_sim()
 		if(lsdp->getObstacleData(&x_pos, &y_pos, &diameter, &height))
 		{
 			point boulder_pt(x_pos, y_pos);
-			boulder* bold = create_boulder(boulder_pt, diameter, height);
-			sim_grid->set_cell_contents(bold->get_loc(), bold);
-			for(int i = 1; i < diameter / 2; i++)
-			{
-				boulder_piece* bold_pc = create_boulder_piece(boulder_pt, diameter);
-				sim_grid->set_cell_contents(bold_pc->get_loc(), bold_pc);
-			}
+			create_boulder(boulder_pt, diameter, height);
 		}
 		else
 		{
@@ -346,8 +365,7 @@ void simulation::init_sim()
 		if(lsdp->getPlantData(&x_pos, &y_pos, &diameter))
 		{
 			point plant_pt(x_pos, y_pos);
-			plant* plt = create_plant(plant_pt, diameter);
-			sim_grid->set_cell_contents(plant_pt, plt);
+			create_plant(plant_pt, diameter);
 		}
 		else
 		{
@@ -362,8 +380,7 @@ void simulation::init_sim()
 		if(lsdp->getGrazerData(&x_pos, &y_pos, &energy))
 		{
 			point grazer_pt(x_pos, y_pos);
-			grazer* grz = create_grazer(grazer_pt, energy);
-			sim_grid->set_cell_contents(grazer_pt, grz);
+			create_grazer(grazer_pt, energy);
 		}
 		else
 		{
@@ -379,8 +396,7 @@ void simulation::init_sim()
 		if(lsdp->getPredatorData(&x_pos, &y_pos, &energy, genotype))
 		{
 			point predator_pt(x_pos, y_pos);
-			predator* pred = create_predator(predator_pt, energy, genotype);
-			sim_grid->set_cell_contents(predator_pt, pred);
+			create_predator(predator_pt, energy, genotype);
 		}
 		else
 		{
@@ -388,8 +404,8 @@ void simulation::init_sim()
 		}
 	}
 	//Use this for testing replacing / removing objects
-	point plant_test(50,125);
-	point pt = find_empty_cell(plant_test, 5);
+	//point plant_test(50,125);
+	//point pt = find_empty_cell(plant_test, 5);
 	//seed* sd = new seed(pt);
 	//grazer* gz = create_grazer(pt, 150);
 	//sim_grid->set_cell_contents(pt, gz);
@@ -487,25 +503,9 @@ bool simulation::process_sim_message()
 	else if(message.get_action_requested() == "place organism")
 	{
 		int search_radius = message.get_search_radius();
-		point org_pt = find_empty_cell(location, search_radius);
-		if(message.get_environment_obj_type() == "plant")
+		if(message.get_environment_obj_type() == "leaf")
 		{
-			if(org_pt == location)
-			{
-				return false;
-			}
-			int diameter = lsdp->getMaxPlantSize() / 10;
-			organism = create_plant(message.get_location(), diameter);
-			location = org_pt;
-		}
-		else if(message.get_environment_obj_type() == "leaf")
-		{
-			if(org_pt == location)
-			{
-				return false;
-			}
-			organism = create_leaf(org_pt);
-			location = org_pt;
+			return create_leaf(location, search_radius);
 		}
 		else if(message.get_environment_obj_type() == "seed")
 		{
@@ -513,22 +513,20 @@ bool simulation::process_sim_message()
 			{
 				return false;
 			}
-			organism = create_seed(location);
+			return create_seed(location);
 		}
-		sim_grid->set_cell_contents(location, organism);
-		return true;
+		return false;
 	}
 	else if(message.get_action_requested() == "replace organism")
 	{
 		if(target_cell_contents != nullptr)
 		{
 			message.set_garbage(target_cell_contents);
-			if( message.get_environment_obj_type() == "plant")
+			if(message.get_environment_obj_type() == "plant")
 			{
 				int diameter = lsdp->getMaxPlantSize() / 10;
-				organism = create_plant(message.get_location(), diameter);	
+				return create_plant(location, diameter);
 			}
-			sim_grid->set_cell_contents(location, organism);
 			return true;
 		}
 		else
@@ -586,9 +584,7 @@ bool simulation::process_sim_message()
 			}
 			grazer* grz_organsim = reinterpret_cast<grazer*>(organism);
 			int init_energy = grz_organsim->get_energy() / 2;
-			grazer* grz = create_grazer(empty_spot, init_energy);
-			sim_grid->set_cell_contents(empty_spot, grz);
-			return true;
+			return create_grazer(empty_spot, init_energy);
 		}
 		else if(organism->get_type() == "predator")
 		{
@@ -616,8 +612,7 @@ bool simulation::process_sim_message()
 						char spd1 = pred_factory_punnett_square(p1_genes[6], p1_genes[7]);
 						char spd2 = pred_factory_punnett_square(p2_genes[6], p2_genes[7]);
 						std::string new_genotype{agr1, agr2, str1, str2, spd1, spd2};
-						predator* pred = create_predator(empty_spot, 0, &new_genotype[0], true);
-						sim_grid->set_cell_contents(empty_spot, pred);
+						create_predator(empty_spot, 0, &new_genotype[0], true);
 					}
 					return true;
 				}
