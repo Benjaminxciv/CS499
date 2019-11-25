@@ -20,7 +20,7 @@ class predator : public mammal
         int max_offspring;
         int gestation_period;
         int offspring_energy_level;
-        void eat();
+        void eat(point);
         
     public:
         predator(point, std::string, int, int, int, double, double, double, double, double, int, int, int);
