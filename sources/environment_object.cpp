@@ -17,11 +17,22 @@ environment_object::environment_object(point init_loc) //: location (init_loc)
 {
     id = next_id++;
     this->location = init_loc;
+    garbage = false;
 }
 
 environment_object::~environment_object()
 {
 
+}
+
+bool environment_object::is_garbage()
+{
+    return garbage;
+}
+
+void environment_object::become_garbage()
+{
+    garbage = true;
 }
 
 /*Name: get_loc

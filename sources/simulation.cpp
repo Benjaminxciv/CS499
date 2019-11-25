@@ -97,7 +97,7 @@ void simulation::increase_tick_speed()
 //Put test code in here
 void simulation::iterate_cells()
 {
-	std::vector<environment_object*> garbage_collection;
+	vector<environment_object*> garbage_collection;
 	sim_message& message = sim_message::get_instance();
 	for(int iter = 0; iter < created_objects.size(); iter++)
 	{
@@ -111,11 +111,17 @@ void simulation::iterate_cells()
 		environment_object* garbage = message.get_garbage();
 		if(garbage != nullptr)
 		{
-			created_objects.erase(remove(created_objects.begin(), created_objects.end(), garbage), created_objects.end());
-			delete garbage;
+			garbage->become_garbage();
+			garbage_collection.push_back(garbage);
 			message.set_garbage(nullptr);
 			continue;
 		}
+	}
+	for(int iter = 0; iter < garbage_collection.size(); iter++)
+	{
+		environment_object* garbage = garbage_collection[iter];
+		created_objects.erase(remove(created_objects.begin(), created_objects.end(), garbage), created_objects.end());
+		delete garbage;
 	}
 	simulation_clock->add_sec();
 }
