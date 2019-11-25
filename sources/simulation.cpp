@@ -481,12 +481,13 @@ point simulation::find_empty_cell(point center, int search_radius)
 bool simulation::process_sim_message()
 {
 	sim_message& message = sim_message::get_instance();
-	if(message.get_action_requested() == "get curr_time")
+	string action = message.get_action_requested();
+	if(action == "get curr_time")
 	{
 		message.set_time_info(get_simulation_time());
 		return true;
 	}
-	else if(message.get_action_requested() == "get future_time")
+	else if(action == "get future_time")
 	{
 		sim_ns::clock future_clock = *(simulation_clock);
 		future_clock.add_sec(message.get_time_offset_secs());
@@ -508,7 +509,7 @@ bool simulation::process_sim_message()
 	}
 	//
 	LifeSimDataParser* lsdp = LifeSimDataParser::getInstance();
-	if(message.get_action_requested() == "move organism")
+	if(action == "move organism")
 	{
 		if(target_cell_contents == nullptr)
 		{
@@ -521,7 +522,7 @@ bool simulation::process_sim_message()
 			return false;
 		}
 	}
-	else if(message.get_action_requested() == "place organism")
+	else if(action == "place organism")
 	{
 		int search_radius = message.get_search_radius();
 		if(message.get_environment_obj_type() == "leaf")
@@ -538,7 +539,7 @@ bool simulation::process_sim_message()
 		}
 		return false;
 	}
-	else if(message.get_action_requested() == "replace organism")
+	else if(action == "replace organism")
 	{
 		if(target_cell_contents != nullptr)
 		{
@@ -555,14 +556,14 @@ bool simulation::process_sim_message()
 			return false;
 		}
 	}
-	else if(message.get_action_requested() == "die")
+	else if(action == "die")
 	{
 		message.set_garbage(organism);
 		sim_grid->set_cell_contents(location, nullptr);
 		return true;
 	}
 	//This will need to be fixed up for predators & grazers
-	else if(message.get_action_requested() == "eat organism")
+	else if(action == "eat organism")
 	{
 		if(target_cell_contents != nullptr)
 		{
@@ -581,7 +582,7 @@ bool simulation::process_sim_message()
 			return false;
 		}
 	}
-	else if(message.get_action_requested() == "look cell")
+	else if(action == "look cell")
 	{
 		if(target_cell_contents != nullptr)
 		{
@@ -594,7 +595,7 @@ bool simulation::process_sim_message()
 			return false;
 		}
 	}
-	else if(message.get_action_requested() == "request reproduction")
+	else if(action == "request reproduction")
 	{
 		if(organism->get_type() == "grazer")
 		{
@@ -605,7 +606,7 @@ bool simulation::process_sim_message()
 			}
 			grazer* grz_organsim = reinterpret_cast<grazer*>(organism);
 			int init_energy = grz_organsim->get_energy() / 2;
-			return create_grazer(empty_spot, init_energy);
+			return create_grazer(empty_spot, init_energy, message.get_parent_id());
 		}
 		else if(organism->get_type() == "predator")
 		{
@@ -633,7 +634,8 @@ bool simulation::process_sim_message()
 						char spd1 = pred_factory_punnett_square(p1_genes[6], p1_genes[7]);
 						char spd2 = pred_factory_punnett_square(p2_genes[6], p2_genes[7]);
 						std::string new_genotype{agr1, agr2, str1, str2, spd1, spd2};
-						create_predator(empty_spot, 0, &new_genotype[0], true);
+						vector<int> parents = {pred1->get_id(), pred2->get_id()};
+						create_predator(empty_spot, 0, &new_genotype[0], true, parents);
 					}
 					return true;
 				}
@@ -648,6 +650,28 @@ bool simulation::process_sim_message()
 			}
 		}
 		return false;
+	}
+	else if(action == "child list")
+	{
+		int p_id = message.get_parent_id();
+		if(parent_children.count(p_id) == 0)
+		{
+			return false;
+		}
+		vector<int> c_list = parent_children.at(p_id);
+		message.set_child_list(c_list);
+		return true;
+	}
+	else if(action == "parent list")
+	{
+		int c_id = message.get_child_id();
+		if(children_parent.count(c_id) == 0)
+		{
+			return false;
+		}
+		vector<int> p_list = children_parent.at(c_id);
+		message.set_parent_list(p_list);
+		return true;
 	}
 	else
 	{

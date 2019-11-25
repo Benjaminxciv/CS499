@@ -20,14 +20,16 @@ class sim_message
         point location;
         std::string action_requested;
         std::string environment_obj_type;
+        int child_id;
+        int parent_id;
         //things returned from simulation:
         std::string simulation_response;
         int energy_from_organism;
         time_container time_info;
         simulation* sim;
         environment_object* garbage;
-        int child_id;
-        int parent_id;
+        vector<int> children_list;
+        vector<int> parent_list;
         sim_message();
         ~sim_message();
     public:
@@ -62,6 +64,12 @@ class sim_message
         int get_child_id();
         void set_parent_id(int id);
         int get_parent_id();
+        bool request_child_list(int);
+        bool request_parent_list(int);
+        void set_child_list(vector<int>);
+        void set_parent_list(vector<int>);
+        vector<int> get_child_list();
+        vector<int> get_parent_list();
         environment_object* get_garbage();
 };
 
