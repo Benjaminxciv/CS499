@@ -48,7 +48,8 @@ class simulation
         void set_tick_speed(int);
         int get_tick_speed();
         void increase_tick_speed();
-        std::vector<environment_object*> iterate_cells(bool skip_act = false);
+        void iterate_cells();
+        std::vector<environment_object*> get_created_objects();
         boulder* create_boulder(point, int, int);
         plant* create_plant(point, int);
         leaf* create_leaf(point);

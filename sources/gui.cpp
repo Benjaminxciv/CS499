@@ -6,6 +6,7 @@ Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsof
 
 #include "gui.h"
 #include "clock.h"
+#include <chrono>
 
 SimulationApp::SimulationApp() :
         m_hwnd(NULL),
@@ -435,7 +436,7 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
                         filename += curr_time_min + "_";
                         filename += curr_time_sec + ".txt";
                         status_report_file.open(filename);
-                        vector<environment_object*> cells = pSimulationApp->sim.iterate_cells(true);
+                        vector<environment_object*> cells = pSimulationApp->sim.get_created_objects();
                         vector<environment_object*> plants;
                         vector<environment_object*> grazers;
                         vector<environment_object*> predators;
@@ -633,11 +634,28 @@ HRESULT SimulationApp::OnRender()
                 0.5f
             );
         }
-        std::vector<environment_object*> cells = sim.iterate_cells();
-        for(int i = 0; i < cells.size(); i++)
+        //auto start = std::chrono::high_resolution_clock::now();
+        sim.iterate_cells();
+        //auto stop = std::chrono::high_resolution_clock::now();
+        //auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+        //start = std::chrono::high_resolution_clock::now();
+        vector<environment_object*> cells = sim.get_created_objects();
+        vector<environment_object*>::iterator cell;
+        for(cell = cells.begin(); cell != cells.end(); cell++)
         {
-            DrawObject(cells[i]);
+            DrawObject(*cell);
         }
+        //stop = std::chrono::high_resolution_clock::now();
+        //auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+        /*ofstream timings;
+        timings.open("timings.txt", std::ios_base::app);
+        timings << duration1.count();
+        timings << "\n";
+        timings << duration2.count();
+        timings << "\n\n";
+        timings.close();*/
 
         hr = m_pRenderTarget->EndDraw();
     }

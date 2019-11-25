@@ -95,59 +95,35 @@ void simulation::increase_tick_speed()
 }
 
 //Put test code in here
-std::vector<environment_object*> simulation::iterate_cells(bool skip_act)
+void simulation::iterate_cells()
 {
-	std::vector<environment_object*> cells;
-	std::vector<point> skip_cells;
 	std::vector<environment_object*> garbage_collection;
 	sim_message& message = sim_message::get_instance();
-	//for(int x = 0; x < world_width; x++)
-	//{
-	//	for(int y = 0; y < world_height; y++)
-	//	{
-	for(int i = 0; i < created_objects.size(); i++)
+	for(int iter = 0; iter < created_objects.size(); iter++)
 	{
-			//point pt(x, y);
-			//environment_object* cell = sim_grid->get_cell_contents(pt);
-			environment_object* cell = created_objects[i];
-			point pt = cell->get_loc();
-			if(cell != nullptr)
-			{
-				if(cell->get_type() == "boulder" || cell->get_type() == "leaf")
-				{
-					cells.push_back(cell);
-					continue;
-				}
-				if(std::find(skip_cells.begin(), skip_cells.end(), pt) == skip_cells.end())
-				{
-					if(!skip_act)
-					{
-						cell->act();
-					}
-				}
-				environment_object* garbage = message.get_garbage();
-				if(garbage != nullptr)
-				{
-					created_objects.erase(remove(created_objects.begin(), created_objects.end(), garbage), created_objects.end());
-					delete garbage;
-					message.set_garbage(nullptr);
-					continue;
-				}
-				skip_cells.push_back(cell->get_loc());
-				if(sim_grid->get_cell_contents(cell->get_loc()) != nullptr)
-				{
-					cells.push_back(cell);
-				}
-			}
-		//}
+		environment_object* cell = created_objects[iter];
+		std::string cell_type = cell->get_type();
+		if(cell_type == "boulder" || cell_type == "leaf")
+		{
+			continue;
+		}
+		cell->act();
+		environment_object* garbage = message.get_garbage();
+		if(garbage != nullptr)
+		{
+			created_objects.erase(remove(created_objects.begin(), created_objects.end(), garbage), created_objects.end());
+			delete garbage;
+			message.set_garbage(nullptr);
+			continue;
+		}
 	}
-	if(!skip_act)
-	{
-		simulation_clock->add_sec();
-	}
-	return cells;
+	simulation_clock->add_sec();
 }
 
+std::vector<environment_object*> simulation::get_created_objects()
+{
+	return created_objects;
+}
 
 //Helper function for stripping leading whitespace from string
 char* trim_lead_whitespace(char* str)
