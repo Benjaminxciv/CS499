@@ -58,8 +58,6 @@ std::string predator::get_genotype()
 
 void predator::eat(point food_location)
 {   
-    //Temporary place holder for an actual location of an organism
-    food_location = {1,2};
     sim_message &message = sim_message::get_instance();
     if(message.eat_organism(food_location))
     {
