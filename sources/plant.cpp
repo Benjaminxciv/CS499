@@ -18,6 +18,7 @@ plant::plant(point init_loc, double grow_rate, int m_size, int m_seed_dist, int 
     seed_viability(seed_via),
     environment_object(init_loc)
 {
+    current_size = 0;
 }
 
 plant::~plant()
@@ -43,6 +44,16 @@ int plant::print_self()
 
     return 0;
 
+}
+
+int plant::get_max_size()
+{
+    return max_size;
+}
+
+int plant::get_curr_size()
+{
+    return current_size;
 }
 
 

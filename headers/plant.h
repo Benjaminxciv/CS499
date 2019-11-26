@@ -27,11 +27,14 @@ class plant : public environment_object
         int max_seed_cast_dist;
         int max_seed_num;
         double seed_viability;
+        int current_size;
     public:
         plant(point, double, int, int, int, double);
         ~plant();
         std::string get_type();
         int print_self();
+        int get_max_size();
+        int get_curr_size();
         void set_seed_pod_values();
         void radially_disperse_seed();
         void act();

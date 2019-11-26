@@ -455,38 +455,42 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
                             }
                         }
                         status_report_file << "=========Plant info=========\n";
-                        status_report_file << "Total number of plants: " + std::to_string(plants.size()) + "\n";
+                        status_report_file << "Total number of plants: " << plants.size() << "\n";
                         for(int i = 0; i < plants.size(); i++)
                         {
                             point p_loc = plants[i]->get_loc();
-                            status_report_file << "Plant " + std::to_string(i+1) + ":\n";
-                            status_report_file << "Location: " + std::to_string(p_loc.x_loc) + ", " + std::to_string(p_loc.y_loc) + "\n";
+                            plant* plt = reinterpret_cast<plant*>(plants[i]);
+                            status_report_file << "Plant " << i+1 << ":\n";
+                            status_report_file << "Max size: " << plt->get_max_size() << "\n";
+                            status_report_file << "Current size: " << plt->get_curr_size() << "\n";
+                            status_report_file << "Location: " << p_loc.x_loc << ", " << p_loc.y_loc << "\n";
                             status_report_file << "\n";
                         }
                         status_report_file << "=========Grazer info=========\n";
-                        status_report_file << "Total number of grazers: " + std::to_string(grazers.size()) + "\n";
+                        status_report_file << "Total number of grazers: " << grazers.size() << "\n";
                         for(int i = 0; i < grazers.size(); i++)
                         {
                             point g_loc = grazers[i]->get_loc();
                             grazer* grz = reinterpret_cast<grazer*>(grazers[i]);
-                            status_report_file << "Energy level required for reproduction: " + std::to_string(grz->get_energy_reproduce_min()) + "\n";
                             int g_energy = grz->get_energy();
-                            status_report_file << "Grazer " + std::to_string(i+1) + ":\n";
-                            status_report_file << "Location: " + std::to_string(g_loc.x_loc) + ", " + std::to_string(g_loc.y_loc) + "\n";
-                            status_report_file << "Energy: " + std::to_string(g_energy) + "\n";
+                            status_report_file << "Grazer "<< i+1 << ":\n";
+                            status_report_file << "Energy level required for reproduction: " << grz->get_energy_reproduce_min() << "\n";
+                            status_report_file << "Location: " << g_loc.x_loc << ", " << g_loc.y_loc << "\n";
+                            status_report_file << "Energy: " << g_energy << "\n";
                             status_report_file << "\n";
                         }
                         status_report_file << "=========Predator info=========\n";
-                        status_report_file << "Total number of predators: " + std::to_string(predators.size()) + "\n";
+                        status_report_file << "Total number of predators: " << predators.size() << "\n";
                         for(int i = 0; i < predators.size(); i++)
                         {
                             point p_loc = predators[i]->get_loc();
                             predator* prd = reinterpret_cast<predator*>(predators[i]);
-                            status_report_file << "Energy level required for reproduction: " + std::to_string(prd->get_energy_reproduce_min()) + "\n";
                             int p_energy = prd->get_energy();
-                            status_report_file << "Predator " + std::to_string(i+1) + ":\n";
-                            status_report_file << "Location: " + std::to_string(p_loc.x_loc) + ", " + std::to_string(p_loc.y_loc) + "\n";
-                            status_report_file << "Energy: " + std::to_string(p_energy) + "\n";
+                            status_report_file << "Predator " << i+1 << ":\n";
+                            status_report_file << "Energy level required for reproduction: " << prd->get_energy_reproduce_min() << "\n";
+                            status_report_file << "Location: " << p_loc.x_loc << ", " << p_loc.y_loc << "\n";
+                            status_report_file << "Energy: " << p_energy << "\n";
+                            status_report_file << "\n";
                         }
                         status_report_file.close();
                     }
