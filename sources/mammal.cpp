@@ -172,7 +172,7 @@ void mammal::reset_speed()
     this->current_speed = max_speed;
 }
 
-void mammal::sight()
+map<point, string> mammal::sight()
 {
     vector<point> points_to_check;
     int diameter = 25;
@@ -210,28 +210,9 @@ void mammal::sight()
         }
     }
     
-    /*sim_message& message = sim_message::get_instance();
-    point grazer_loc = location;
-    message.look_at_cell(grazer_loc, points_to_check);
-    map<point, std::string> cell_map = message.get_multiple_responses();
-    for (auto const& cell : cell_map)
-    {
-        if(cell.second == "grazer")
-        {
-            grazer_loc = cell.first;
-        }
-    }
-    return grazer_loc;*/
     point throwaway;
     sim_message& message = sim_message::get_instance();
     message.look_at_cell(throwaway, points_to_check);
     map<point, string> results = message.get_multiple_responses();
-    bool danger; //add this as a member variable later
-    for (auto const& x : results)
-    {
-        if(x.second == "predator")
-        {
-            danger = true;
-        }
-    }
+    return results;
 }

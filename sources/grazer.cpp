@@ -64,16 +64,29 @@ void grazer::eat()
 
 void grazer::act()
 {
+    map<point, string> things_in_sight = sight();
 
     sim_message& message = sim_message::get_instance();
     message.get_current_time();
     current_time = message.get_time_info();
 
-    //sight_cone();
+    point danger(-1, -1);
+    point food(-1, -1);
 
-    if(this->danger)
+    for (auto const& x : things_in_sight)
     {
-        if(this->energy < 25)
+        if(x.second == "predator")
+        {
+            danger = x.first;
+            break;
+        }
+        if(x.second == "plant" && food.x_loc == -1)
+        {
+            food = x.first;
+        }
+    }
+
+    /*if(this->energy < 25)
         {
             move_count++;
         }
@@ -87,8 +100,10 @@ void grazer::act()
         {
             message.die(this);
             return;
-        }
+        }*/
 
+    if(danger.x_loc != -1)
+    {
         reset_eat_time();
         reset_gain_energy_time();
         //request movement : if true increment number of moves

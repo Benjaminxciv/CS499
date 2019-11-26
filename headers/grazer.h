@@ -15,7 +15,7 @@ class grazer : public mammal
 {
     private:
         int energy_input;
-        double move_count;
+        int move_count;
         time_container current_time;
         time_container eat_time;
         time_container gain_energy_time;
@@ -23,8 +23,6 @@ class grazer : public mammal
         bool retained_movement_time;
         bool retained_gain_energy_time;
         bool retained_eat_time;
-        bool danger;
-        bool food_available;
         int init_speed;
         int curr_speed;
 
