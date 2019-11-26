@@ -153,3 +153,8 @@ void mammal::reset_speed()
 {
     this->current_speed = max_speed;
 }
+
+int mammal::get_energy_reproduce_min()
+{
+    return energy_reproduce_min;
+}
