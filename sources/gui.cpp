@@ -463,7 +463,7 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
                             plant* plt = reinterpret_cast<plant*>(plants[i]);
                             status_report_file << "Plant " << i+1 << ":\n";
                             status_report_file << "Max size: " << plt->get_max_size() << "\n";
-                            status_report_file << "Current size: " << plt->get_curr_size() << "\n";
+                            status_report_file << "Current size: " << plt->get_current_size() << "\n";
                             status_report_file << "Location: " << p_loc.x_loc << ", " << p_loc.y_loc << "\n";
                             status_report_file << "\n";
                         }
