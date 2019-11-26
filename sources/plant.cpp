@@ -77,7 +77,6 @@ void plant::grow()
             //need to edit this to take in the children's unique ID
             //need to grab the ID returned from sim_message
             list_of_leaves.push_back(1);//add that ID to the vector
-            current_size++;
         }
     }
 }
