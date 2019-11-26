@@ -27,7 +27,6 @@ class grazer : public mammal
         bool retained_danger_time;
         int init_speed;
         int curr_speed;
-        float banked_moves;
 
         const int eat_reach = 5;
         const int plant_sight_dist = 150;

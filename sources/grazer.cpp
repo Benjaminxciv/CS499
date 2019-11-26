@@ -47,30 +47,29 @@ BP 11/18/19
 */
 void grazer::eat()
 {
-    /*
-    if(!retained_eat_time)
-            {
-                //figure out the rate & stuff
-                //message.get_future_time(0,10);
-            }
-            if(!retained_gain_energy_time)
-            {
-                message.get_future_time(0,1);
-                gain_energy_time = message.get_time_info();
-                retained_gain_energy_time = true;
-            }*/
-     if(current_time == eat_time)
-     {
+    /*if(!retained_eat_time)
+    {
+        //figure out the rate & stuff
+        //message.get_future_time(0,10);
+    }
+    if(!retained_gain_energy_time)
+    {
+        message.get_future_time(0,1);
+        gain_energy_time = message.get_time_info();
+        retained_gain_energy_time = true;
+    }
+    if(current_time == eat_time)
+    {
         reset_eat_time();
         //move: this is based on eating all plants in 5du not the grazers sight
-     }
+    }
 
     if(current_time == gain_energy_time)
     {
         this->energy += energy_input;
         reset_gain_energy_time();
         //call for deletion of leaf
-    }
+    }*/
 }
 
 grazer::direction grazer::invert_dir()
@@ -107,7 +106,6 @@ grazer::direction grazer::invert_dir()
 
 void grazer::act()
 {
-    banked_moves += float(current_speed/60);
     map<point, string> things_in_sight = sight(150);
     //return;   
     point danger(-1, -1);
@@ -135,9 +133,16 @@ void grazer::act()
             danger = x.first;
             break;
         }
-        if(x.second == "plant" && food.x_loc == -1)
+        if(x.second == "plant" || x.second == "leaf")
         {
-            food = x.first;
+            if(food.x_loc == -1)
+            {
+                food = x.first;
+            }
+            if(location.distance(location, x.first) < location.distance(location, food))
+            {
+                food = x.first;
+            }
         }
     }
 
@@ -179,11 +184,34 @@ void grazer::act()
     }
     else if(food.x_loc != -1)
     {
-        if(food.distance(food, location) <= 5)
+        int distance = location.distance(location, food);
+        if(distance <= 5)
         {
             retained_movement_time = false;
             curr_speed = init_speed;
-            eat();
+            if(!retained_eat_time)
+            {
+                message.get_future_time(10);
+                eat_time = message.get_time_info();
+                retained_eat_time = true;
+            }
+            if(!retained_gain_energy_time)
+            {
+                message.get_future_time(0,1);
+                gain_energy_time = message.get_time_info();
+                retained_gain_energy_time = true;
+            }
+            if(current_time == eat_time)
+            {
+                retained_eat_time = false;
+                message.eat_organism(food);
+            }
+
+            if(current_time == gain_energy_time)
+            {
+                energy += energy_input;
+                retained_gain_energy_time = false;
+            }
             return;
         }
         else
@@ -205,6 +233,7 @@ void grazer::act()
             current_speed *= .75;
         }
     }
+    banked_moves += float(current_speed/60);
     for (int i = 0; i < floor(banked_moves); i++)
     {
         if(move())

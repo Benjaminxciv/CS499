@@ -19,7 +19,7 @@ predator::predator(point init_loc, std::string geno, int init_e, int e_output, i
     offspring_energy_level(offsprg_e_lvl),
     mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
-
+    banked_moves = 0;
 }
 
 predator::~predator()
@@ -130,17 +130,17 @@ void predator::act()
         }
     }
     //loop for move rate
-    if(move() && energy < 25)
+    banked_moves += float(current_speed/60);
+    for (int i = 0; i < floor(banked_moves); i++)
     {
-        move_count++;
-        if(move_count >= 10)
+        if(move())
         {
-            //essage.die(this);
+            banked_moves--;
+            //make sure this is in loop ^
+            if(energy <= 0)
+            {
+                message.die(this);
+            }
         }
-    }
-    //make sure this is in loop ^
-    if(energy <= 0)
-    {
-        //message.die(this);
     }
 }

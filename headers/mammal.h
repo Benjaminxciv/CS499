@@ -27,6 +27,7 @@ class mammal : public environment_object
         double current_speed;
         double maintain_speed;
         int du_moved;
+        float banked_moves;
     public:
         mammal(point, int, int, int, double, double);
         mammal();
