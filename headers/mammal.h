@@ -44,7 +44,7 @@ class mammal : public environment_object
         void reset_speed();
         bool ready_to_reproduce();
         map<point, string> sight();
-        
+        direction find_direction(point);
 };
 
 #endif

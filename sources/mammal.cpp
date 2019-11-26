@@ -216,3 +216,50 @@ map<point, string> mammal::sight()
     map<point, string> results = message.get_multiple_responses();
     return results;
 }
+
+mammal::direction mammal::find_direction(point compare)
+{
+    if(location.x_loc < compare.x_loc)
+    {
+        if(location.y_loc < compare.y_loc)
+        {
+            return down_right;
+        }
+        else if(location.y_loc > compare.y_loc)
+        {
+            return up_right;
+        }
+        else
+        {
+            return right;
+        }
+    }
+    else if(location.x_loc > compare.x_loc)
+    {
+        if(location.y_loc < compare.y_loc)
+        {
+            return down_left;
+        }
+        else if(location.y_loc > compare.y_loc)
+        {
+            return up_left;
+        }
+        else
+        {
+            return left;
+        }
+    }
+    else
+    {
+        if(location.y_loc < compare.y_loc)
+        {
+            return down;
+        }
+        else if(location.y_loc > compare.y_loc)
+        {
+            return up;
+        }
+    }
+    //if the two locations are the same, just return up
+    return up;
+}

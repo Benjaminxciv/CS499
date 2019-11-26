@@ -10,8 +10,6 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     energy_input(e_input),
     mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
-    this->danger                    = false;
-    this->food_available            = false;
     this->retained_movement_time    = false;
     this->retained_eat_time         = false;
     this->retained_gain_energy_time = false;
@@ -48,6 +46,18 @@ BP 11/18/19
 */
 void grazer::eat()
 {
+    /*
+    if(!retained_eat_time)
+            {
+                //figure out the rate & stuff
+                //message.get_future_time(0,10);
+            }
+            if(!retained_gain_energy_time)
+            {
+                message.get_future_time(0,1);
+                gain_energy_time = message.get_time_info();
+                retained_gain_energy_time = true;
+            }*/
      if(current_time == eat_time)
      {
         reset_eat_time();
@@ -62,13 +72,41 @@ void grazer::eat()
     }
 }
 
+grazer::direction grazer::invert_dir()
+{
+    switch(dir)
+    {
+        case up:
+            return down;
+            break;
+        case down:
+            return up;
+            break;
+        case left:
+            return right;
+            break;
+        case right:
+            return left;
+            break;
+        case up_left:
+            return down_right;
+            break;
+        case up_right:
+            return down_left;
+            break;
+        case down_left:
+            return up_right;
+            break;
+        case down_right:
+            return up_left;
+            break;
+    }
+    return up;
+}
+
 void grazer::act()
 {
     map<point, string> things_in_sight = sight();
-
-    sim_message& message = sim_message::get_instance();
-    message.get_current_time();
-    current_time = message.get_time_info();
 
     point danger(-1, -1);
     point food(-1, -1);
@@ -86,91 +124,82 @@ void grazer::act()
         }
     }
 
-    /*if(this->energy < 25)
-        {
-            move_count++;
-        }
-
-        else
-        {
-            move_count = 0;
-        }
-
-        if(move_count > 10)
-        {
-            message.die(this);
-            return;
-        }*/
+    sim_message& message = sim_message::get_instance();
+    message.get_current_time();
+    current_time = message.get_time_info();
 
     if(danger.x_loc != -1)
     {
-        reset_eat_time();
-        reset_gain_energy_time();
-        //request movement : if true increment number of moves
-        if(!retained_movement_time)
+        retained_eat_time = false;
+        retained_gain_energy_time = false;
+        if(!retained_danger_time)
         {
-            start_movement_time();
+            retained_danger_time = true;
+            message.get_future_time(0, 5, 0);
+            danger_time = message.get_time_info();
         }
-        
+        dir = invert_dir();
+    }
+    else if(retained_danger_time)
+    {
+        if(danger_time == current_time)
+        {
+            //stop & look behind
+            dir = invert_dir();
+            retained_movement_time = false;
+            retained_danger_time = false;
+            curr_speed = init_speed;
+        }
+    }
+    else if(food.x_loc != -1)
+    {
+        if(food.distance(food, location) < 5)
+        {
+            retained_movement_time = false;
+            curr_speed = init_speed;
+            eat();
+            return;
+        }
+        else
+        {
+            dir = find_direction(food);
+        }
+    }
+    
+    if(!retained_movement_time)
+    {
+        message.get_future_time(0, maintain_speed, 0);
+        movement_time = message.get_time_info();
+        retained_movement_time = true;
+    }
+    else
+    {
         if(current_time == movement_time)
         {
-            //check behind
-            this->current_speed *=.75;
-            reset_movement_time(); 
-        } 
-    } 
-    else if(this->food_available)
-    {
-        reset_movement_time();
-        this->reset_speed();
-        if(!retained_eat_time)
-        {
-            start_eat_time();
+            current_speed *= .75;
         }
-       
-        if(!retained_gain_energy_time)
-        {
-            start_gain_energy_time();
-        }
-        eat();
-    }
-    else 
-    {
-        /*reset_eat_time();
-        reset_gain_energy_time();
-        //request movement : if true increment number of moves
-        //move(up, 1);
-        
-        if(!retained_movement_time)
-        {
-            start_movement_time();
-        }   
-
-        if(ready_to_reproduce())
-        {
-            sim_message& message = sim_message::get_instance();
-            if(message.request_reproduce(location, this))
-            {
-                energy /= 2;
-            }
-        }
-        // else
-        // {
-        //     if(move(up, 1))
-        //     {
-
-        //     }
-        // }
-    */
-    }
-    /*if (movement_timer.time_min == current_time.time_min)
-    {
-        this->curr_speed *= .75;       
     }
 
-    this->set_speed(this->curr_speed);*/
-    sight();
-    //move();
+    if(ready_to_reproduce())
+    {
+        sim_message& message = sim_message::get_instance();
+        if(message.request_reproduce(location, this))
+        {
+            energy /= 2;
+        }
+    }
+    if(move() && energy < 25)
+    {
+        move_count++;
+        if(move_count >= 10)
+        {
+            message.die(this);
+        }
+    }
+    if(energy <= 0)
+    {
+        message.die(this);
+    }
 }
 
 
@@ -245,8 +274,7 @@ BP 11/18/19
 void grazer::start_movement_time()
 {
     sim_message& message = sim_message::get_instance();
-    message.get_future_time(0,this->maintain_speed);
-    message.process_message();
+    message.get_future_time(0, maintain_speed);
     movement_time = message.get_time_info();
     retained_movement_time = true;
 }

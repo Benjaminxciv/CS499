@@ -19,10 +19,12 @@ class grazer : public mammal
         time_container current_time;
         time_container eat_time;
         time_container gain_energy_time;
-        time_container movement_time;      
+        time_container movement_time;
+        time_container danger_time;
         bool retained_movement_time;
         bool retained_gain_energy_time;
         bool retained_eat_time;
+        bool retained_danger_time;
         int init_speed;
         int curr_speed;
 
@@ -39,6 +41,7 @@ class grazer : public mammal
         void eat();
         void store_speed();
         void reset_speed();
+        direction invert_dir();
 
     public:
         grazer(point, int, int, int, int, double, double);
