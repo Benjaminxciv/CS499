@@ -86,6 +86,11 @@ environment_object* sim_message::get_organism()
     return organism;
 }
 
+int sim_message::get_search_radius()
+{
+    return search_radius;
+}
+
 std::string sim_message::get_environment_obj_type()
 {
     return environment_obj_type;
@@ -127,11 +132,13 @@ bool sim_message::move_organism(point target_loc, environment_object* organism_t
     return sim->process_sim_message();
 }
 
-bool sim_message::place_organism(point target_loc, std::string organism_to_create)
+bool sim_message::place_organism(point target_loc, std::string organism_to_create, int p_id, int search_ring)
 {
     action_requested = "place organism";
     location.push_back(target_loc);
     environment_obj_type = organism_to_create;
+    search_radius = search_ring;
+    parent_id = p_id;
     return sim->process_sim_message();
 }
 
@@ -188,4 +195,58 @@ void sim_message::set_garbage(environment_object* to_be_deleted)
 environment_object* sim_message::get_garbage()
 {
     return garbage;
+}
+
+void sim_message::set_child_id(int id)
+{
+    child_id = id;
+}
+
+int sim_message::get_child_id()
+{
+    return child_id;
+}
+
+void sim_message::set_parent_id(int id)
+{
+    parent_id = id;
+}
+
+int sim_message::get_parent_id()
+{
+    return parent_id;
+}
+
+bool sim_message::request_child_list(int p_id)
+{
+    action_requested = "child list";
+    parent_id = p_id;
+    return sim->process_sim_message();
+}
+
+bool sim_message::request_parent_list(int c_id)
+{
+    action_requested = "parent list";
+    child_id = c_id;
+    return sim->process_sim_message();
+}
+
+void sim_message::set_child_list(vector<int> c_list)
+{
+    children_list = c_list;
+}
+
+void sim_message::set_parent_list(vector<int> p_list)
+{
+    parent_list = p_list;
+}
+
+vector<int> sim_message::get_child_list()
+{
+    return children_list;
+}
+
+vector<int> sim_message::get_parent_list()
+{
+    return parent_list;
 }

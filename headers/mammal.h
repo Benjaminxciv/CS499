@@ -46,6 +46,7 @@ class mammal : public environment_object
         map<point, string> sight(int);
         map<point, string> sense(int);
         direction find_direction(point);
+        int get_energy_reproduce_min();
 };
 
 #endif

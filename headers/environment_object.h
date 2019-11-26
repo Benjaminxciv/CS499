@@ -52,13 +52,19 @@ class environment_object
 {
     protected:
         point location;
+        int id;
+        static int next_id;
+        bool garbage;
     public:
         environment_object();
         environment_object(point);
         ~environment_object();
         
+        bool is_garbage();
+        void become_garbage();
         point get_loc();
-        void set_location(point); 
+        void set_location(point);
+        int get_id();
         virtual void act();
         virtual std::string get_type();
         virtual int print_self();

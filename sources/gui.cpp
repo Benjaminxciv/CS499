@@ -6,6 +6,7 @@ Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsof
 
 #include "gui.h"
 #include "clock.h"
+#include <chrono>
 
 SimulationApp::SimulationApp() :
         m_hwnd(NULL),
@@ -110,7 +111,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("BUTTON"),
             TEXT("Simulation speed x1"),
             WS_CHILD | WS_VISIBLE,
-            1000,
+            1050,
             10,
             150,
             25,
@@ -125,7 +126,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("BUTTON"),
             TEXT("Simulation speed x10"),
             WS_CHILD | WS_VISIBLE,
-            1000,
+            1050,
             35,
             150,
             25,
@@ -140,7 +141,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("BUTTON"),
             TEXT("Simulation speed x50"),
             WS_CHILD | WS_VISIBLE,
-            1000,
+            1050,
             60,
             150,
             25,
@@ -155,7 +156,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("BUTTON"),
             TEXT("Simulation speed x100"),
             WS_CHILD | WS_VISIBLE,
-            1000,
+            1050,
             85,
             150,
             25,
@@ -170,7 +171,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("BUTTON"),
             TEXT("Status Report"),
             WS_CHILD | WS_VISIBLE,
-            1000,
+            1050,
             110,
             150,
             25,
@@ -435,7 +436,7 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
                         filename += curr_time_min + "_";
                         filename += curr_time_sec + ".txt";
                         status_report_file.open(filename);
-                        vector<environment_object*> cells = pSimulationApp->sim.iterate_cells(true);
+                        vector<environment_object*> cells = pSimulationApp->sim.get_created_objects();
                         vector<environment_object*> plants;
                         vector<environment_object*> grazers;
                         vector<environment_object*> predators;
@@ -455,33 +456,42 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
                             }
                         }
                         status_report_file << "=========Plant info=========\n";
+                        status_report_file << "Total number of plants: " << plants.size() << "\n";
                         for(int i = 0; i < plants.size(); i++)
                         {
                             point p_loc = plants[i]->get_loc();
-                            status_report_file << "Plant " + std::to_string(i+1) + ":\n";
-                            status_report_file << "Location: " + std::to_string(p_loc.x_loc) + ", " + std::to_string(p_loc.y_loc) + "\n";
+                            plant* plt = reinterpret_cast<plant*>(plants[i]);
+                            status_report_file << "Plant " << i+1 << ":\n";
+                            status_report_file << "Max size: " << plt->get_max_size() << "\n";
+                            status_report_file << "Current size: " << plt->get_current_size() << "\n";
+                            status_report_file << "Location: " << p_loc.x_loc << ", " << p_loc.y_loc << "\n";
                             status_report_file << "\n";
                         }
                         status_report_file << "=========Grazer info=========\n";
+                        status_report_file << "Total number of grazers: " << grazers.size() << "\n";
                         for(int i = 0; i < grazers.size(); i++)
                         {
                             point g_loc = grazers[i]->get_loc();
                             grazer* grz = reinterpret_cast<grazer*>(grazers[i]);
                             int g_energy = grz->get_energy();
-                            status_report_file << "Grazer " + std::to_string(i+1) + ":\n";
-                            status_report_file << "Location: " + std::to_string(g_loc.x_loc) + ", " + std::to_string(g_loc.y_loc) + "\n";
-                            status_report_file << "Energy: " + std::to_string(g_energy) + "\n";
+                            status_report_file << "Grazer "<< i+1 << ":\n";
+                            status_report_file << "Energy level required for reproduction: " << grz->get_energy_reproduce_min() << "\n";
+                            status_report_file << "Location: " << g_loc.x_loc << ", " << g_loc.y_loc << "\n";
+                            status_report_file << "Energy: " << g_energy << "\n";
                             status_report_file << "\n";
                         }
                         status_report_file << "=========Predator info=========\n";
+                        status_report_file << "Total number of predators: " << predators.size() << "\n";
                         for(int i = 0; i < predators.size(); i++)
                         {
                             point p_loc = predators[i]->get_loc();
                             predator* prd = reinterpret_cast<predator*>(predators[i]);
                             int p_energy = prd->get_energy();
-                            status_report_file << "Predator " + std::to_string(i+1) + ":\n";
-                            status_report_file << "Location: " + std::to_string(p_loc.x_loc) + ", " + std::to_string(p_loc.y_loc) + "\n";
-                            status_report_file << "Energy: " + std::to_string(p_energy) + "\n";
+                            status_report_file << "Predator " << i+1 << ":\n";
+                            status_report_file << "Energy level required for reproduction: " << prd->get_energy_reproduce_min() << "\n";
+                            status_report_file << "Location: " << p_loc.x_loc << ", " << p_loc.y_loc << "\n";
+                            status_report_file << "Energy: " << p_energy << "\n";
+                            status_report_file << "\n";
                         }
                         status_report_file.close();
                     }
@@ -546,7 +556,7 @@ void SimulationApp::DrawObject(environment_object* target)
     // Draw the outline of a rectangle.
     ID2D1SolidColorBrush* brush;
     std::string target_type = target->get_type();
-    if(target_type == "plant")
+    if(target_type == "plant" || target_type == "leaf")
     {
         brush = m_pGreenBrush;
     }
@@ -633,11 +643,28 @@ HRESULT SimulationApp::OnRender()
                 0.5f
             );
         }
-        std::vector<environment_object*> cells = sim.iterate_cells();
-        for(int i = 0; i < cells.size(); i++)
+        //auto start = std::chrono::high_resolution_clock::now();
+        sim.iterate_cells();
+        //auto stop = std::chrono::high_resolution_clock::now();
+        //auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+        //start = std::chrono::high_resolution_clock::now();
+        vector<environment_object*> cells = sim.get_created_objects();
+        vector<environment_object*>::iterator cell;
+        for(cell = cells.begin(); cell != cells.end(); cell++)
         {
-            DrawObject(cells[i]);
+            DrawObject(*cell);
         }
+        //stop = std::chrono::high_resolution_clock::now();
+        //auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+        /*ofstream timings;
+        timings.open("timings.txt", std::ios_base::app);
+        timings << duration1.count();
+        timings << "\n";
+        timings << duration2.count();
+        timings << "\n\n";
+        timings.close();*/
 
         hr = m_pRenderTarget->EndDraw();
     }

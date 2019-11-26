@@ -272,3 +272,8 @@ mammal::direction mammal::find_direction(point compare)
     //if the two locations are the same, just return up
     return up;
 }
+
+int mammal::get_energy_reproduce_min()
+{
+    return energy_reproduce_min;
+}
