@@ -13,7 +13,7 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     this->retained_movement_time    = false;
     this->retained_eat_time         = false;
     this->retained_gain_energy_time = false;
-    moves_per_tick_count = 0;
+    banked_moves = 0;
 }
 
 grazer::~grazer()
@@ -107,7 +107,7 @@ grazer::direction grazer::invert_dir()
 
 void grazer::act()
 {
-    moves_per_tick_count += float(current_speed/60);
+    banked_moves += float(current_speed/60);
     map<point, string> things_in_sight = sight(150);
     //return;   
     point danger(-1, -1);
@@ -205,23 +205,30 @@ void grazer::act()
             current_speed *= .75;
         }
     }
-    //for (int y = 0; y >= moves_per_tick_count; y--)
-    //{
-        //loop for move rate
-        if(move() && energy < 25)
+    for (int i = 0; i < floor(banked_moves); i++)
+    {
+        if(move())
         {
-            move_count++;
-            if(move_count >= 10)
+            banked_moves--;
+            if(energy < 25)
+            {
+                move_count++;
+                if(move_count >= 10)
+                {
+                    message.die(this);
+                }
+            }
+            if(energy <= 0)
             {
                 message.die(this);
             }
         }
-        //make sure this is in loop ^
-        if(energy <= 0)
+        else
         {
-            message.die(this);
+            continue;
         }
-    //}
+        
+    }
 }
 
 
