@@ -33,7 +33,6 @@ class mammal : public environment_object
         ~mammal();
         void set_direction(direction);
         void move(int);
-        void sense_shape(int, int);
         int get_energy();
         void gain_energy(int);
         void set_energy(int);
@@ -44,7 +43,7 @@ class mammal : public environment_object
         void reset_speed();
         bool ready_to_reproduce();
         map<point, string> sight(int);
-        map<point, string> sense(int);
+        map<point, string> smell(int);
         direction find_direction(point);
         int get_energy_reproduce_min();
 };

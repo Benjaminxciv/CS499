@@ -178,31 +178,80 @@ map<point, string> mammal::sight(int radius)
     point p1;
     point p2;
     point p3;
-    if(dir == up || dir == up_left || dir == up_right)
+    if(dir == up)
     {
-        p1 = point(location.x_loc-150, location.y_loc-1);
-        p2 = point(location.x_loc+150, location.y_loc-1);
-        p3 = point(location.x_loc, location.y_loc-150);
+        p1 = point(location.x_loc-radius, location.y_loc-1);
+        p2 = point(location.x_loc+radius, location.y_loc-1);
+        p3 = point(location.x_loc, location.y_loc-radius);
+    }
+    if(dir == up_left)
+    {
+        p1 = point(location.x_loc-radius, location.y_loc+(radius-2));
+        p2 = point(location.x_loc+(radius-2), location.y_loc-radius);
+        p3 = point(location.x_loc-radius, location.y_loc-radius);
+    }
+    if(dir == up_right)
+    {
+        p1 = point(location.x_loc+radius, location.y_loc+(radius-2));
+        p2 = point(location.x_loc-(radius-2), location.y_loc-radius);
+        p3 = point(location.x_loc+radius, location.y_loc-radius);
     }
     else if(dir == left)
     {
-        p1 = point(location.x_loc-1, location.y_loc-150);
-        p2 = point(location.x_loc-1, location.y_loc+150);
-        p3 = point(location.x_loc-150, location.y_loc);
+        p1 = point(location.x_loc-1, location.y_loc-radius);
+        p2 = point(location.x_loc-1, location.y_loc+radius);
+        p3 = point(location.x_loc-radius, location.y_loc);
     }
     else if(dir == right)
     {
-        p1 = point(location.x_loc+1, location.y_loc-150);
-        p2 = point(location.x_loc+1, location.y_loc+150);
-        p3 = point(location.x_loc+150, location.y_loc);
+        p1 = point(location.x_loc+1, location.y_loc-radius);
+        p2 = point(location.x_loc+1, location.y_loc+radius);
+        p3 = point(location.x_loc+radius, location.y_loc);
     }
-    else if(dir == down || dir == down_left || dir == down_right)
+    else if(dir == down)
     {
-        p1 = point(location.x_loc-150, location.y_loc+1);
-        p2 = point(location.x_loc+150, location.y_loc+1);
-        p3 = point(location.x_loc, location.y_loc+150);
+        p1 = point(location.x_loc-radius, location.y_loc+1);
+        p2 = point(location.x_loc+radius, location.y_loc+1);
+        p3 = point(location.x_loc, location.y_loc+radius);
+    }
+    if(dir == down_left)
+    {
+        p1 = point(location.x_loc-radius, location.y_loc-(radius-2));
+        p2 = point(location.x_loc+(radius-2), location.y_loc+radius);
+        p3 = point(location.x_loc-radius, location.y_loc+radius);
+    }
+    if(dir == down_right)
+    {
+        p1 = point(location.x_loc+radius, location.y_loc-(radius-2));
+        p2 = point(location.x_loc-(radius-2), location.y_loc+radius);
+        p3 = point(location.x_loc+radius, location.y_loc+radius);
     }
     points_to_check = {p1, p2, p3};
+    point throwaway;
+    sim_message& message = sim_message::get_instance();
+    message.look_at_cell(throwaway, points_to_check);
+    map<point, string> results = message.get_multiple_responses();
+    return results;
+}
+
+map<point, string> mammal::smell(int radius)
+{
+    vector<point> points_to_check;
+    point p1;
+    point p2;
+    point p3;
+    point p4;
+    point p5;
+    point p6;
+    p1 = point(location.x_loc-radius, location.y_loc-1);
+    p2 = point(location.x_loc+radius, location.y_loc-1);
+    p3 = point(location.x_loc, location.y_loc-radius);
+
+    p4 = point(location.x_loc-radius, location.y_loc+1);
+    p5 = point(location.x_loc+radius, location.y_loc+1);
+    p6 = point(location.x_loc, location.y_loc+radius);
+
+    points_to_check = {p1, p2, p3, p4, p5, p6};
     point throwaway;
     sim_message& message = sim_message::get_instance();
     message.look_at_cell(throwaway, points_to_check);

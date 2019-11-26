@@ -98,7 +98,7 @@ void simulation::increase_tick_speed()
 void simulation::iterate_cells()
 {
 	vector<environment_object*> garbage_collection;
-	sim_message& message = sim_message::get_instance();
+	sim_message& message = sim_message::get_instance(false);
 	for(int iter = 0; iter < created_objects.size(); iter++)
 	{
 		environment_object* cell = created_objects[iter];
@@ -342,7 +342,7 @@ bool simulation::create_predator(point predator_pt, int init_energy, char* genot
 void simulation::init_sim()
 {
 	srand(time(NULL));
-	sim_message& message = sim_message::get_instance();
+	sim_message& message = sim_message::get_instance(false);
 	message.set_sim(this);
 
 	LifeSimDataParser *lsdp = LifeSimDataParser::getInstance();	// Get the singleton
@@ -479,7 +479,7 @@ point simulation::find_empty_cell(point center, int search_radius)
 
 bool simulation::process_sim_message()
 {
-	sim_message& message = sim_message::get_instance();
+	sim_message& message = sim_message::get_instance(false);
 	string action = message.get_action_requested();
 	if(action == "get curr_time")
 	{
@@ -496,7 +496,6 @@ bool simulation::process_sim_message()
 		return true;
 	}
 	vector<point> location = message.get_location();
-	message.clear_location();
 	if(!sim_grid->check_bounds(location[0]))
 	{
 		return false;
@@ -603,9 +602,22 @@ bool simulation::process_sim_message()
 			point p1 = location[0];
 			point p2 = location[1];
 			point p3 = location[2];
+			point p4(-1,-1);
+			point p5(-1,-1);
+			point p6(-1,-1);
+			if(location.size() > 3)
+			{
+				p4 = location[3];
+				p5 = location[4];
+				p6 = location[5];
+			}
 			for(int i = 0; i < created_objects.size(); i++)
 			{
 				environment_object* thing_in_cell = created_objects[i];
+				if(thing_in_cell->get_type() == "boulder")
+				{
+					continue;
+				}
 				if(thing_in_cell->is_garbage())
 				{
 					return false;
@@ -619,6 +631,18 @@ bool simulation::process_sim_message()
 				if(alpha > 0 && beta > 0 && gamma > 0)
 				{
 					message.add_multiple_response(p, thing_in_cell->get_type());
+				}
+				if(p4.x_loc != -1)
+				{
+					alpha = ((p2.y_loc - p3.y_loc)*(p.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p.y_loc - p3.y_loc)) /
+						((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
+					beta = ((p3.y_loc - p1.y_loc)*(p.x_loc - p3.x_loc) + (p1.x_loc - p3.x_loc)*(p.y_loc - p3.y_loc)) /
+						((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
+					gamma = 1.0f - alpha - beta;
+					if(alpha > 0 && beta > 0 && gamma > 0)
+					{
+						message.add_multiple_response(p, thing_in_cell->get_type());
+					}
 				}
 			}
 			return true;

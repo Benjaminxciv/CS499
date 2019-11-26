@@ -35,7 +35,7 @@ class sim_message
         sim_message();
         ~sim_message();
     public:
-        static sim_message& get_instance();
+        static sim_message& get_instance(bool reset = true);
         void set_sim(simulation*);
         bool process_message();
         std::string get_action_requested();
@@ -49,7 +49,6 @@ class sim_message
         int get_time_offset_mins();
         int get_time_offset_hours();
         vector<point> get_location();
-        void clear_location();
         environment_object* get_organism();
         int get_search_radius();
         std::string get_environment_obj_type();

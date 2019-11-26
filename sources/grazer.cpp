@@ -200,7 +200,6 @@ void grazer::act()
     //move this between running from preds & before eating
     if(ready_to_reproduce())
     {
-        sim_message& message = sim_message::get_instance();
         if(message.request_reproduce(location, this))
         {
             energy /= 2;

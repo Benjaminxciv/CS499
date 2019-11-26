@@ -10,9 +10,27 @@ sim_message::~sim_message()
 
 }
 
-sim_message& sim_message::get_instance()
+sim_message& sim_message::get_instance(bool reset)
 {
     static sim_message sim_message_instance;
+    if(reset)
+    {
+        sim_message_instance.time_offset_secs = -1;
+        sim_message_instance.time_offset_mins = -1;
+        sim_message_instance.time_offset_hours = -1;
+        sim_message_instance.organism = nullptr;
+        sim_message_instance.location.clear();
+        sim_message_instance.search_radius = -1;
+        sim_message_instance.action_requested = "";
+        sim_message_instance.environment_obj_type = "";
+        sim_message_instance.child_id = -1;
+        sim_message_instance.parent_id = -1;
+        sim_message_instance.simulation_response = "";
+        sim_message_instance.multiple_responses.clear();
+        sim_message_instance.energy_from_organism = -1;
+        sim_message_instance.children_list.clear();
+        sim_message_instance.parent_list.clear();
+    }
     return sim_message_instance;
 }
 
@@ -79,11 +97,6 @@ int sim_message::get_time_offset_hours()
 vector<point> sim_message::get_location()
 {
     return location;
-}
-
-void sim_message::clear_location()
-{
-    location.clear();
 }
 
 environment_object* sim_message::get_organism()

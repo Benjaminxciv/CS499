@@ -27,41 +27,6 @@ predator::~predator()
 
 }
 
-point predator::smell()
-{
-    vector<point> points_to_check;
-    int diameter = 25;
-    int radius = (diameter-1)/2;
-    for (int y = radius; y >= 0; y--)
-    {
-        for(int x = 0; x <= (radius-y)*2; x++)
-        {
-            point p(location.x_loc-x, location.y_loc-y);
-            points_to_check.push_back(p);
-        }
-    }
-    for (int y = 1; y <= radius; y++)
-    {
-        for(int x = 0; x <= (radius-y)*2; x++)
-        {
-            point p(location.x_loc+x, location.y_loc+y);
-            points_to_check.push_back(p);
-        }
-    }
-    sim_message& message = sim_message::get_instance();
-    point grazer_loc = location;
-    message.look_at_cell(grazer_loc, points_to_check);
-    map<point, std::string> cell_map = message.get_multiple_responses();
-    for (auto const& cell : cell_map)
-    {
-        if(cell.second == "grazer")
-        {
-            grazer_loc = cell.first;
-        }
-    }
-    return grazer_loc;
-}
-
 std::string predator::get_type()
 {
     return "predator";
@@ -110,4 +75,63 @@ void predator::eat(point food_location)
         this->energy = this->energy+= (energy_to_gain * .90);
     }
 
+}
+
+void predator::act()
+{
+    map<point, string> things_in_sight = sight(150);
+    //return;   
+    point danger(-1, -1);
+    point food(-1, -1);
+
+    point left(-1, -1);
+    point right(-1, -1);
+    point middle(-1, -1);
+
+    for (auto const& x : things_in_sight)
+    {
+        if(x.second == "grazer" && food.x_loc == -1)
+        {
+            food = x.first;
+        }
+    }
+
+    sim_message& message = sim_message::get_instance();
+    message.get_current_time();
+    current_time = message.get_time_info();
+
+    if(food.x_loc != -1)
+    {
+        //if(food.distance(food, location) <= 5)
+        //{
+        //    //return;
+        //}
+        //else
+        //{
+            dir = find_direction(food);
+        //}
+    }
+
+    //move this between running from preds & before eating
+    if(ready_to_reproduce())
+    {
+        sim_message& message = sim_message::get_instance();
+        if(message.request_reproduce(location, this))
+        {
+        }
+    }
+    //loop for move rate
+    if(move() && energy < 25)
+    {
+        move_count++;
+        if(move_count >= 10)
+        {
+            //essage.die(this);
+        }
+    }
+    //make sure this is in loop ^
+    if(energy <= 0)
+    {
+        //message.die(this);
+    }
 }
