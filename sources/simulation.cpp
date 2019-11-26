@@ -614,15 +614,15 @@ bool simulation::process_sim_message()
 			for(int i = 0; i < created_objects.size(); i++)
 			{
 				environment_object* thing_in_cell = created_objects[i];
-				if(thing_in_cell->get_type() == "boulder")
-				{
-					continue;
-				}
 				if(thing_in_cell->is_garbage())
 				{
 					return false;
 				}
 				point p = thing_in_cell->get_loc();
+				//if(p.distance(p, p1) > 600 && p.distance(p, p2) > 600 && p.distance(p, p3) > 600)
+				//{
+				//	continue;
+				//}
 				float alpha = ((p2.y_loc - p3.y_loc)*(p.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p.y_loc - p3.y_loc)) /
 					((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
 				float beta = ((p3.y_loc - p1.y_loc)*(p.x_loc - p3.x_loc) + (p1.x_loc - p3.x_loc)*(p.y_loc - p3.y_loc)) /

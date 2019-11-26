@@ -96,6 +96,15 @@ void predator::act()
         }
     }
 
+    map<point, string> things_in_smell = smell(25);
+    for (auto const& x : things_in_smell)
+    {
+        if(x.second == "grazer" && food.x_loc == -1)
+        {
+            food = x.first;
+        }
+    }
+
     sim_message& message = sim_message::get_instance();
     message.get_current_time();
     current_time = message.get_time_info();
