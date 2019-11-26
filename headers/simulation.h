@@ -12,6 +12,7 @@ Last editor:
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <map>
 #include "grid.h"
 #include "boulder.h"
 #include "LifeSimDataParser.h"
@@ -36,7 +37,10 @@ class simulation
         int world_height;
         int world_width;
         grid* sim_grid;
-        point find_empty_cell(point, int);
+        point find_empty_cell(point, int search_radius = 1);
+        vector<environment_object*> created_objects;
+        map<int, vector<int>> parent_children;
+        map<int, vector<int>> children_parent;
     public:
         simulation();
         ~simulation();
@@ -47,13 +51,15 @@ class simulation
         void set_tick_speed(int);
         int get_tick_speed();
         void increase_tick_speed();
-        std::vector<environment_object*> iterate_cells(bool skip_act = false);
-        boulder* create_boulder(point, int, int);
-        plant* create_plant(point, int);
-        leaf* create_leaf(point);
-        seed* create_seed(point);
-        grazer* create_grazer(point, int);
-        predator* create_predator(point, int, char*, bool);
+        void iterate_cells();
+        vector<environment_object*> get_created_objects();
+        bool create_boulder(point, int, int);
+        bool create_boulder_piece(point, int);
+        bool create_plant(point, int);
+        bool create_leaf(point, int, int);
+        bool create_seed(point);
+        bool create_grazer(point, int, int p_id = -1);
+        bool create_predator(point, int, char*, bool, vector<int> p_id_list = {});
         void increment_simulation_clock();
         time_container get_simulation_time();
         bool process_sim_message();

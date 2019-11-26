@@ -7,6 +7,16 @@ Last editor: MG
 
 #include "boulder.h"
 
+boulder_piece::boulder_piece(point init_loc) : environment_object(init_loc)
+{
+
+}
+
+std::string boulder_piece::get_type()
+{
+    return "boulder";
+}
+
 /*
 Name: boulder(int, int, int, int)
 Purpose: Set the location and height from data file
