@@ -24,7 +24,7 @@ leaf::~leaf()
 
 std::string leaf::get_type()
 {
-    return "plant";
+    return "leaf";
 }
 
 void leaf::act()
