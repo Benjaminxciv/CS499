@@ -113,6 +113,11 @@ void LifeSimDataParser::initDataParser(char *filename)
 				getNextLine(line, 127); // Get plant max size
 				m_iMaxPlantSize = atoi(line);
 			}
+			else if(strcmp(line, "<MAX_SEED_CAST_DISTANCE>") == 0)
+			{
+				getNextLine(line, 127); // Get plant max size
+				m_iMaxSeedCast = atoi(line);
+			}
 			else if(strcmp(line, "<MAX_SEED_NUMBER>") == 0)
 			{
 				getNextLine(line, 127); // Get max number of seeds a plant can produce
