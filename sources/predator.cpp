@@ -56,6 +56,16 @@ std::string predator::get_genotype()
     return genotype;
 }
 
+
+/*
+Name: eat()
+Purpose: calls sim_message wrapper to an organism, then calls sim_message's get_organism_energy 
+    then reduces the energy returned to 90%
+Trace: Traces to Epic 3, Acceptance Criteria 3
+Parameters: point food_location
+    desc: the point/location of the organism the predator is 
+    trying to eat.
+*/
 void predator::eat(point food_location)
 {   
     sim_message &message = sim_message::get_instance();
