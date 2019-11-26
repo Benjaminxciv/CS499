@@ -23,7 +23,7 @@ class grazer : public mammal
         time_container danger_time;
         bool retained_movement_time;
         bool retained_gain_energy_time;
-        bool retained_eat_time_set;
+        bool retained_eat_time;
         bool retained_danger_time;
         int init_speed;
         int curr_speed;
