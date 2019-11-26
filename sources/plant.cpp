@@ -1,7 +1,7 @@
 /*
 Name: plant.cpp
 Purpose: Class defining all the plant's function, such as location and growing pattern.
-Last edit: 11-19-2019
+Last edit: 11-25-2019
 Last editor: MG
 */
 
@@ -63,9 +63,6 @@ Returns: N/A
 */
 void plant::grow()
 {
-
-    //grab initial size of the plant. 
-    current_size = initial_plant_size + list_of_leaves.size();
     int num_total_leaves = max_size - current_size;
     int num_leaves_possible_in_tick = num_total_leaves * growth_rate;
 
@@ -74,9 +71,8 @@ void plant::grow()
         sim_message& message = sim_message::get_instance();
         if(message.place_organism( location, "leaf", id, (max_size/2)))
         {
-            //need to edit this to take in the children's unique ID
-            //need to grab the ID returned from sim_message
-            list_of_leaves.push_back(1);//add that ID to the vector
+            message.request_child_list(id);
+            current_size = message.get_child_list().size();
         }
     }
 }
