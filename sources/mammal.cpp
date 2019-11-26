@@ -172,6 +172,7 @@ void mammal::reset_speed()
     this->current_speed = max_speed;
 }
 
+//add diameter
 map<point, string> mammal::sight()
 {
     vector<point> points_to_check;

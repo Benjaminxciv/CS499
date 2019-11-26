@@ -113,7 +113,7 @@ void grazer::act()
 
     for (auto const& x : things_in_sight)
     {
-        if(x.second == "predator")
+        if(x.second == "predator" && x.first.distance(x.first, location) <= 25)
         {
             danger = x.first;
             break;
@@ -135,7 +135,8 @@ void grazer::act()
         if(!retained_danger_time)
         {
             retained_danger_time = true;
-            message.get_future_time(0, 5, 0);
+            //need to look at this amount of time
+            message.get_future_time(0, 7, 0);
             danger_time = message.get_time_info();
         }
         dir = invert_dir();
@@ -149,11 +150,12 @@ void grazer::act()
             retained_movement_time = false;
             retained_danger_time = false;
             curr_speed = init_speed;
+            return;
         }
     }
     else if(food.x_loc != -1)
     {
-        if(food.distance(food, location) < 5)
+        if(food.distance(food, location) <= 5)
         {
             retained_movement_time = false;
             curr_speed = init_speed;
@@ -180,6 +182,7 @@ void grazer::act()
         }
     }
 
+    //move this between running from preds & before eating
     if(ready_to_reproduce())
     {
         sim_message& message = sim_message::get_instance();
@@ -188,6 +191,7 @@ void grazer::act()
             energy /= 2;
         }
     }
+    //loop for move rate
     if(move() && energy < 25)
     {
         move_count++;
@@ -196,6 +200,7 @@ void grazer::act()
             message.die(this);
         }
     }
+    //make sure this is in loop ^
     if(energy <= 0)
     {
         message.die(this);
