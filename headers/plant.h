@@ -39,6 +39,7 @@ class plant : public environment_object
         std::string get_type();
         int print_self();
         int get_current_size();
+        int get_max_size();
         void grow();
         void set_seed_pod_values();
         void radially_disperse_seed();

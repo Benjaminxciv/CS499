@@ -54,6 +54,11 @@ int plant::print_self()
      return current_size;
  }
 
+ int plant::get_max_size()
+ {
+     return max_size;
+ }
+
 /*
 Name: growth()
 Purpose: Calcualtes the number of leaves that can be placed in one simulation tick. 
