@@ -205,8 +205,8 @@ void grazer::act()
             current_speed *= .75;
         }
     }
-    for (int y = 0; y >= moves_per_tick_count; y--)
-    {
+    //for (int y = 0; y >= moves_per_tick_count; y--)
+    //{
         //loop for move rate
         if(move() && energy < 25)
         {
@@ -221,7 +221,7 @@ void grazer::act()
         {
             message.die(this);
         }
-    }
+    //}
 }
 
 
