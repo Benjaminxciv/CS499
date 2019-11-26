@@ -107,7 +107,7 @@ grazer::direction grazer::invert_dir()
 void grazer::act()
 {
     map<point, string> things_in_sight = sight(150);
-    return;   
+    //return;   
     point danger(-1, -1);
     point food(-1, -1);
 
@@ -212,13 +212,13 @@ void grazer::act()
         move_count++;
         if(move_count >= 10)
         {
-            message.die(this);
+            //essage.die(this);
         }
     }
     //make sure this is in loop ^
     if(energy <= 0)
     {
-        message.die(this);
+        //message.die(this);
     }
 }
 

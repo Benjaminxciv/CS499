@@ -41,7 +41,7 @@ environment_object* grid::get_cell_contents(point location)
     {
         return nullptr;
     }
-    grid_cell* cell = &(cells[location.y_loc * width + location.x_loc]);
+    grid_cell* cell = &(cells[(int)(location.y_loc) * width + (int)(location.x_loc)]);
     if(cell->environ_obj != nullptr && cell->environ_obj->is_garbage())
     {
         return nullptr;
@@ -65,7 +65,7 @@ void grid::set_cell_contents(point location, environment_object* environ_obj)
     {
         return;
     }
-    grid_cell* cell = &(cells[location.y_loc * width + location.x_loc]);
+    grid_cell* cell = &(cells[(int)(location.y_loc) * width + (int)(location.x_loc)]);
     cell->environ_obj = environ_obj;
 }
 

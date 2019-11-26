@@ -239,7 +239,6 @@ bool simulation::create_grazer(point grazer_pt, int init_energy, int p_id)
 	int grz_energy_input = lsdp->getGrazerEnergyInputRate();				// Energy input per minute when grazing
 	int grz_energy_output = lsdp->getGrazerEnergyOutputRate();			// Energy output when moving each 5 DU
 	int grz_energy_reprod = lsdp->getGrazerEnergyToReproduce();			// Energy level needed to reproduce
-	grz_energy_reprod = 800;
 	double grz_max_speed = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
 	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
 	grazer* grz = new grazer(grazer_pt, init_energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
@@ -497,6 +496,7 @@ bool simulation::process_sim_message()
 		return true;
 	}
 	vector<point> location = message.get_location();
+	message.clear_location();
 	if(!sim_grid->check_bounds(location[0]))
 	{
 		return false;
@@ -600,19 +600,26 @@ bool simulation::process_sim_message()
 		}
 		else
 		{
-			for(int i = 0; i < location.size(); i++)
+			point p1 = location[0];
+			point p2 = location[1];
+			point p3 = location[2];
+			for(int i = 0; i < created_objects.size(); i++)
 			{
-				if(!sim_grid->check_bounds(location[i]))
+				environment_object* thing_in_cell = created_objects[i];
+				if(thing_in_cell->is_garbage())
 				{
-					continue;
+					return false;
 				}
-				environment_object* thing_in_cell = sim_grid->get_cell_contents(location[i]);
-				if(thing_in_cell == nullptr)
+				point p = thing_in_cell->get_loc();
+				float alpha = ((p2.y_loc - p3.y_loc)*(p.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p.y_loc - p3.y_loc)) /
+					((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
+				float beta = ((p3.y_loc - p1.y_loc)*(p.x_loc - p3.x_loc) + (p1.x_loc - p3.x_loc)*(p.y_loc - p3.y_loc)) /
+					((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
+				float gamma = 1.0f - alpha - beta;
+				if(alpha > 0 && beta > 0 && gamma > 0)
 				{
-					continue;
+					message.add_multiple_response(p, thing_in_cell->get_type());
 				}
-				std::string cell_contents_type = thing_in_cell->get_type();
-				message.add_multiple_response(location[i], cell_contents_type);
 			}
 			return true;
 		}
@@ -623,7 +630,7 @@ bool simulation::process_sim_message()
 	{
 		if(organism->get_type() == "grazer")
 		{
-			point empty_spot = find_empty_cell(location[0]);
+			point empty_spot = find_empty_cell(location[0], 5);
 			if(empty_spot == location[0])
 			{
 				return false;

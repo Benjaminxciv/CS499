@@ -14,8 +14,8 @@ Last editor: MG
 
 struct point
 {
-    int x_loc;
-    int y_loc;
+    float x_loc;
+    float y_loc;
     int origin_x_loc;
     int origin_y_loc;
     point() { origin_x_loc = -1; origin_y_loc = -1; }

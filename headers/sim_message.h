@@ -49,6 +49,7 @@ class sim_message
         int get_time_offset_mins();
         int get_time_offset_hours();
         vector<point> get_location();
+        void clear_location();
         environment_object* get_organism();
         int get_search_radius();
         std::string get_environment_obj_type();

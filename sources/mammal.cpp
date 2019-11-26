@@ -175,50 +175,34 @@ void mammal::reset_speed()
 map<point, string> mammal::sight(int radius)
 {
     vector<point> points_to_check;
-    points_to_check.reserve(11325);
-    if(dir == up || dir == down || dir == up_left || dir == up_right || dir == down_left || dir == down_right)
+    point p1;
+    point p2;
+    point p3;
+    if(dir == up || dir == up_left || dir == up_right)
     {
-        int start = -1;
-        if(dir == down || dir == down_left || dir == down_right)
-        {
-            start *= -1;
-        }
-        for (int y = start; (y*start) <= (radius); y+=start)
-        {
-            for(int x = 0; x <= (radius-y); x++)
-            {
-                point p(location.x_loc+x, location.y_loc+y);
-                points_to_check.push_back(p);
-            }
-            for(int x = -1; x*(-1) <= (radius-y); x--)
-            {
-                point p(location.x_loc+x, location.y_loc+y);
-                points_to_check.push_back(p);
-            }
-        }
+        p1 = point(location.x_loc-150, location.y_loc-1);
+        p2 = point(location.x_loc+150, location.y_loc-1);
+        p3 = point(location.x_loc, location.y_loc-150);
     }
-    else
+    else if(dir == left)
     {
-        int start = 1;
-        if(dir == left)
-        {
-            start *= -1;
-        }
-        for(int x = start; (x*start) <= (radius); x+=start)
-        {
-            for(int y = 0; y <= (radius-x); y++)
-            {
-                point p(location.x_loc+x, location.y_loc+y);
-                points_to_check.push_back(p);
-            }
-            for(int y = -1; y*(-1) <= (radius-x); y--)
-            {
-                point p(location.x_loc+x, location.y_loc+y);
-                points_to_check.push_back(p);
-            }
-        }
+        p1 = point(location.x_loc-1, location.y_loc-150);
+        p2 = point(location.x_loc-1, location.y_loc+150);
+        p3 = point(location.x_loc-150, location.y_loc);
     }
-    
+    else if(dir == right)
+    {
+        p1 = point(location.x_loc+1, location.y_loc-150);
+        p2 = point(location.x_loc+1, location.y_loc+150);
+        p3 = point(location.x_loc+150, location.y_loc);
+    }
+    else if(dir == down || dir == down_left || dir == down_right)
+    {
+        p1 = point(location.x_loc-150, location.y_loc+1);
+        p2 = point(location.x_loc+150, location.y_loc+1);
+        p3 = point(location.x_loc, location.y_loc+150);
+    }
+    points_to_check = {p1, p2, p3};
     point throwaway;
     sim_message& message = sim_message::get_instance();
     message.look_at_cell(throwaway, points_to_check);
