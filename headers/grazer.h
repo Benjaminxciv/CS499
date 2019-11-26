@@ -23,10 +23,11 @@ class grazer : public mammal
         time_container danger_time;
         bool retained_movement_time;
         bool retained_gain_energy_time;
-        bool retained_eat_time;
+        bool retained_eat_time_set;
         bool retained_danger_time;
         int init_speed;
         int curr_speed;
+        int moves_per_tick_count;
 
         const int eat_reach = 5;
         const int plant_sight_dist = 150;

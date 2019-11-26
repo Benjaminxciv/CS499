@@ -1,8 +1,8 @@
 /*
 Name: grazer.cpp
 Purpose: Grazer's class that defines their EU consumption and reproduction information.
-Last edit: 11-18-2019
-Last editor: BP
+Last edit: 11-26-2019
+Last editor: MG
 */
 #include "grazer.h"
 
@@ -11,8 +11,9 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
     this->retained_movement_time    = false;
-    this->retained_eat_time         = false;
+    this->retained_eat_tim_set         = false;
     this->retained_gain_energy_time = false;
+    moves_per_tick_count = 0;
 }
 
 grazer::~grazer()
@@ -46,31 +47,36 @@ BP 11/18/19
 */
 void grazer::eat()
 {
-    /*
-    if(!retained_eat_time)
+   /* sim_message& message = sim_message::get_instance();
+    if(!retained_eat_time_set)
             {
-                //figure out the rate & stuff
-                //message.get_future_time(0,10);
+                time_container retained_eat_time = message.get_future_time(0,10);
+                retained_eat_time_set = true;
             }
             if(!retained_gain_energy_time)
             {
                 message.get_future_time(0,1);
                 gain_energy_time = message.get_time_info();
                 retained_gain_energy_time = true;
-            }*/
-     if(current_time == eat_time)
-     {
-        reset_eat_time();
-        //move: this is based on eating all plants in 5du not the grazers sight
-     }
-    
-    if(current_time == gain_energy_time)
+            }
+    if(current_time >= gain_energy_time)
     {
         this->energy += energy_input;
         reset_gain_energy_time();
-        //call for deletion of leaf
+        message.look_at_cell(location, );
+        if (message.eat_organism() == true)
+        {
+            if(current_time >= )
+            //gain energy after tracking
+        }
     }
-}
+     if(current_time == retained_eat_time)
+     {
+        retained_eat_time_set = false;
+        break;
+     }
+}*/
+
 
 grazer::direction grazer::invert_dir()
 {
@@ -106,6 +112,7 @@ grazer::direction grazer::invert_dir()
 
 void grazer::act()
 {
+    moves_per_tick_count += float(current_speed/60);
     map<point, string> things_in_sight = sight(150);
     //return;   
     point danger(-1, -1);
@@ -150,7 +157,6 @@ void grazer::act()
         if(!retained_danger_time)
         {
             retained_danger_time = true;
-            //need to look at this amount of time
             message.get_future_time(0, 7, 0);
             danger_time = message.get_time_info();
         }
@@ -166,6 +172,13 @@ void grazer::act()
             retained_danger_time = false;
             curr_speed = init_speed;
             return;
+        }
+    }
+    else if(ready_to_reproduce())
+    {
+        if(message.request_reproduce(location, this))
+        {
+            energy /= 2;
         }
     }
     else if(food.x_loc != -1)
@@ -197,27 +210,21 @@ void grazer::act()
         }
     }
 
-    //move this between running from preds & before eating
-    if(ready_to_reproduce())
+   
+    for (int y = 0; y >= moves_per_tick_count; y--)
     {
-        if(message.request_reproduce(location, this))
+        if(move() && energy < 25)
         {
-            energy /= 2;
+            move_count++;
+            if(move_count >= 10)
+            {
+                message.die(this);
+            }
         }
-    }
-    //loop for move rate
-    if(move() && energy < 25)
-    {
-        move_count++;
-        if(move_count >= 10)
+        if(energy <= 0)
         {
-            //essage.die(this);
+            message.die(this);
         }
-    }
-    //make sure this is in loop ^
-    if(energy <= 0)
-    {
-        //message.die(this);
     }
 }
 
@@ -298,9 +305,7 @@ void grazer::start_movement_time()
     retained_movement_time = true;
 }
 
-/*Name: start_eat_time()
-Purpose: Sets eat_time to a future time_container 10 minutes from current_time.
-void grazer::reset_gain_energy_time()
+
 {
     gain_energy_time = {0,0,0};
     retained_gain_energy_time = false;
@@ -313,6 +318,10 @@ Traces to Epic 3, Acceptance Criteria 2
 Parameters: N/A
 BP 11/18/19
 */
+
+/*Name: start_eat_time()
+Purpose: Sets eat_time to a future time_container 10 minutes from current_time.
+void grazer::reset_gain_energy_time()
 void grazer::start_eat_time()
 {
     sim_message& message = sim_message::get_instance();
@@ -338,8 +347,8 @@ void grazer::start_gain_energy_time()
 }
 
 /*
-Name: sight_on_predator()
-Purpose: Add aspect of Grazer's class that the grazer can see predators within 25 DU.
+Name: sight_cone()
+Purpose: Add aspect of Grazer's class that the grazer can see predators within 25 DU and plants within 150
 Trace: Traces to Epic 3, Acceptance Criteria 2
 Parameters: N/A
 Returns: N/A
