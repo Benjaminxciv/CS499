@@ -43,7 +43,8 @@ class mammal : public environment_object
         void set_current_speed(double);
         void reset_speed();
         bool ready_to_reproduce();
-        map<point, string> sight();
+        map<point, string> sight(int);
+        map<point, string> sense(int);
         direction find_direction(point);
 };
 

@@ -106,13 +106,28 @@ grazer::direction grazer::invert_dir()
 
 void grazer::act()
 {
-    map<point, string> things_in_sight = sight();
-
+    map<point, string> things_in_sight = sight(150);
+    return;   
     point danger(-1, -1);
     point food(-1, -1);
 
+    point left(-1, -1);
+    point right(-1, -1);
+    point middle(-1, -1);
+
     for (auto const& x : things_in_sight)
     {
+        /*direction obj_dir = find_direction(x.first);
+        if(x.second == "boulder")
+        {
+            if(location.x_loc == x.first.x_loc)
+            {
+                if(obj_dir == left)
+                {
+                    //ignore x,y's past boulder's x,y
+                }
+            }
+        }*/
         if(x.second == "predator" && x.first.distance(x.first, location) <= 25)
         {
             danger = x.first;

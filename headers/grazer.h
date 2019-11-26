@@ -42,6 +42,7 @@ class grazer : public mammal
         void store_speed();
         void reset_speed();
         direction invert_dir();
+        
 
     public:
         grazer(point, int, int, int, int, double, double);

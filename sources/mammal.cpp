@@ -172,22 +172,25 @@ void mammal::reset_speed()
     this->current_speed = max_speed;
 }
 
-//add diameter
-map<point, string> mammal::sight()
+map<point, string> mammal::sight(int radius)
 {
     vector<point> points_to_check;
-    int diameter = 25;
-    int radius = (diameter-1)/2;
+    points_to_check.reserve(11325);
     if(dir == up || dir == down || dir == up_left || dir == up_right || dir == down_left || dir == down_right)
     {
-        int start = 1;
+        int start = -1;
         if(dir == down || dir == down_left || dir == down_right)
         {
             start *= -1;
         }
         for (int y = start; (y*start) <= (radius); y+=start)
         {
-            for(int x = 0; x <= (radius-(y*start))*2; x++)
+            for(int x = 0; x <= (radius-y); x++)
+            {
+                point p(location.x_loc+x, location.y_loc+y);
+                points_to_check.push_back(p);
+            }
+            for(int x = -1; x*(-1) <= (radius-y); x--)
             {
                 point p(location.x_loc+x, location.y_loc+y);
                 points_to_check.push_back(p);
@@ -203,7 +206,12 @@ map<point, string> mammal::sight()
         }
         for(int x = start; (x*start) <= (radius); x+=start)
         {
-            for(int y = 0; y <= (radius-(x*start))*2; y++)
+            for(int y = 0; y <= (radius-x); y++)
+            {
+                point p(location.x_loc+x, location.y_loc+y);
+                points_to_check.push_back(p);
+            }
+            for(int y = -1; y*(-1) <= (radius-x); y--)
             {
                 point p(location.x_loc+x, location.y_loc+y);
                 points_to_check.push_back(p);
