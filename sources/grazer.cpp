@@ -45,31 +45,44 @@ Trace: Traces to Epic 3, Acceptance Criteria 2
 Parameters: N/A
 BP 11/18/19
 */
-void grazer::eat()
+bool grazer::eat(sim_message& message, point food)
 {
-    /*if(!retained_eat_time)
+    int distance = location.distance(location, food);
+    if(distance <= 5)
     {
-        //figure out the rate & stuff
-        //message.get_future_time(0,10);
-    }
-    if(!retained_gain_energy_time)
-    {
-        message.get_future_time(0,1);
-        gain_energy_time = message.get_time_info();
-        retained_gain_energy_time = true;
-    }
-    if(current_time == eat_time)
-    {
-        reset_eat_time();
-        //move: this is based on eating all plants in 5du not the grazers sight
-    }
+        retained_movement_time = false;
+        curr_speed = init_speed;
+        if(!retained_eat_time)
+        {
+            message.get_future_time(10);
+            eat_time = message.get_time_info();
+            retained_eat_time = true;
+        }
+        if(!retained_gain_energy_time)
+        {
+            message.get_future_time(0,1);
+            gain_energy_time = message.get_time_info();
+            retained_gain_energy_time = true;
+        }
+        if(current_time == eat_time)
+        {
+            retained_eat_time = false;
+            message.eat_organism(food);
+        }
 
-    if(current_time == gain_energy_time)
+        if(current_time == gain_energy_time)
+        {
+            energy += energy_input;
+            retained_gain_energy_time = false;
+        }
+        return true;
+    }
+    else
     {
-        this->energy += energy_input;
-        reset_gain_energy_time();
-        //call for deletion of leaf
-    }*/
+        dir = find_direction(food);
+        return false;
+    }
+    return false;
 }
 
 grazer::direction grazer::invert_dir()
@@ -133,7 +146,7 @@ void grazer::act()
             danger = x.first;
             break;
         }
-        if(x.second == "plant" || x.second == "leaf")
+        if((x.second == "plant" || x.second == "leaf") && !retained_eat_time)
         {
             if(food.x_loc == -1)
             {
@@ -182,41 +195,36 @@ void grazer::act()
             energy /= 2;
         }
     }
+    else if(retained_eat_time)
+    {
+        map<point, string> things_in_smell = sight(25);
+        for (auto const& x : things_in_sight)
+        {
+            if(x.second == "plant" || x.second == "leaf") 
+            {
+                if(food.x_loc == -1)
+                {
+                    food = x.first;
+                }
+                if(location.distance(location, x.first) < location.distance(location, food))
+                {
+                    food = x.first;
+                }
+            }
+        }
+        if(food.x_loc != -1)
+        {
+            if(eat(message, food))
+            {
+                return;
+            }
+        }
+    }
     else if(food.x_loc != -1)
     {
-        int distance = location.distance(location, food);
-        if(distance <= 5)
+        if(eat(message, food))
         {
-            retained_movement_time = false;
-            curr_speed = init_speed;
-            if(!retained_eat_time)
-            {
-                message.get_future_time(10);
-                eat_time = message.get_time_info();
-                retained_eat_time = true;
-            }
-            if(!retained_gain_energy_time)
-            {
-                message.get_future_time(0,1);
-                gain_energy_time = message.get_time_info();
-                retained_gain_energy_time = true;
-            }
-            if(current_time == eat_time)
-            {
-                retained_eat_time = false;
-                message.eat_organism(food);
-            }
-
-            if(current_time == gain_energy_time)
-            {
-                energy += energy_input;
-                retained_gain_energy_time = false;
-            }
             return;
-        }
-        else
-        {
-            dir = find_direction(food);
         }
     }
 

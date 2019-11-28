@@ -38,7 +38,7 @@ class grazer : public mammal
         void reset_movement_time();
         void reset_gain_energy_time();
         void reset_eat_time();
-        void eat();
+        bool eat(sim_message&, point);
         void store_speed();
         void reset_speed();
         direction invert_dir();

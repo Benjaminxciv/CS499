@@ -208,6 +208,10 @@ bool sim_message::request_reproduce(point target_loc, environment_object* organi
 void sim_message::set_garbage(environment_object* to_be_deleted)
 {
     garbage = to_be_deleted;
+    if(garbage != nullptr)
+    {
+        garbage->become_garbage();
+    }
 }
 
 environment_object* sim_message::get_garbage()

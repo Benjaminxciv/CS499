@@ -111,7 +111,6 @@ void simulation::iterate_cells()
 		environment_object* garbage = message.get_garbage();
 		if(garbage != nullptr)
 		{
-			garbage->become_garbage();
 			garbage_collection.push_back(garbage);
 			message.set_garbage(nullptr);
 			continue;
@@ -121,6 +120,33 @@ void simulation::iterate_cells()
 	{
 		environment_object* garbage = garbage_collection[iter];
 		created_objects.erase(remove(created_objects.begin(), created_objects.end(), garbage), created_objects.end());
+		map<int, vector<int>>::iterator it;
+		int g_id = garbage->get_id();
+		//check if object was a parent
+		it = parent_children.find(g_id);
+		if(it != parent_children.end())
+		{
+			//if it was, remove it from any child's parent list
+			for(auto const& x : children_parent)
+			{
+				vector<int> parents = x.second;
+				parents.erase(remove(parents.begin(), parents.end(), g_id), parents.end());
+			}
+			//remove it from parent map
+			parent_children.erase(it);
+		}
+		//check if object was a child
+		it = children_parent.find(g_id);
+		if(it != children_parent.end())
+		{
+			//if it was, remove it from any parent's children list
+			for(auto const& x : parent_children)
+			{
+				vector<int> children = x.second;
+				children.erase(remove(children.begin(), children.end(), g_id), children.end());
+			}
+			children_parent.erase(it);
+		}
 		delete garbage;
 	}
 	simulation_clock->add_sec();
@@ -731,37 +757,5 @@ bool simulation::process_sim_message()
 	else
 	{
 		return false;
-	}
-}
-
-void sense_circle(int diameter, point center)
-{
-	if(diameter % 2 == 0)
-	{
-		return;
-	}
-
-	int radius = (diameter - 1) / 2;
-	std::vector<point> cells;
-
-	for (int y = radius; y >= 0; y--)
-	{
-		for(int x = 0; x <= (radius-y)*2; x++)
-		{
-			point smelly;
-			smelly.x_loc = (center.x_loc - x);
-			smelly.y_loc = (center.y_loc - y);
-			cells.push_back(smelly);
-		}
-	}
-	for (int y = 1; y <= radius; y++)
-	{
-		for(int x = 0; x <= (radius-y)*2; x++)
-		{
-			point smelly;
-			smelly.x_loc = (center.x_loc - x);
-			smelly.y_loc = (center.y_loc - y);
-			cells.push_back(smelly);
-		}
 	}
 }
