@@ -17,6 +17,22 @@ struct time_container
     {
         return (time_sec == t1.time_sec && time_min == t1.time_min && time_hour == t1.time_hour);
     }
+    bool operator>=(const time_container& t1)
+    {
+        if(time_hour >= t1.time_hour)
+        {
+            return true;
+        }
+        if(time_min >= t1.time_hour)
+        {
+            return true;
+        }
+        if(time_sec >= t1.time_sec)
+        {
+            return true;
+        }
+        return false;
+    }
 };
 
 namespace sim_ns

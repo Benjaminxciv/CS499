@@ -131,16 +131,5 @@ void predator::act()
     }
     //loop for move rate
     banked_moves += float(current_speed/60);
-    for (int i = 0; i < floor(banked_moves); i++)
-    {
-        if(move())
-        {
-            banked_moves--;
-            //make sure this is in loop ^
-            if(energy <= 0)
-            {
-                message.die(this);
-            }
-        }
-    }
+    move();
 }

@@ -103,17 +103,15 @@ void simulation::iterate_cells()
 	{
 		environment_object* cell = created_objects[iter];
 		std::string cell_type = cell->get_type();
-		if(cell_type == "boulder" || cell_type == "leaf")
+		if(cell_type != "boulder" && cell_type != "leaf")
 		{
-			continue;
+			cell->act();;
 		}
-		cell->act();
 		environment_object* garbage = message.get_garbage();
 		if(garbage != nullptr)
 		{
 			garbage_collection.push_back(garbage);
 			message.set_garbage(nullptr);
-			continue;
 		}
 	}
 	for(int iter = 0; iter < garbage_collection.size(); iter++)
@@ -127,10 +125,9 @@ void simulation::iterate_cells()
 		if(it != parent_children.end())
 		{
 			//if it was, remove it from any child's parent list
-			for(auto const& x : children_parent)
+			for(auto& x : children_parent)
 			{
-				vector<int> parents = x.second;
-				parents.erase(remove(parents.begin(), parents.end(), g_id), parents.end());
+				x.second.erase(remove(x.second.begin(), x.second.end(), g_id), x.second.end());
 			}
 			//remove it from parent map
 			parent_children.erase(it);
@@ -140,10 +137,9 @@ void simulation::iterate_cells()
 		if(it != children_parent.end())
 		{
 			//if it was, remove it from any parent's children list
-			for(auto const& x : parent_children)
+			for(auto& x : parent_children)
 			{
-				vector<int> children = x.second;
-				children.erase(remove(children.begin(), children.end(), g_id), children.end());
+				x.second.erase(remove(x.second.begin(), x.second.end(), g_id), x.second.end());
 			}
 			children_parent.erase(it);
 		}
@@ -642,7 +638,7 @@ bool simulation::process_sim_message()
 				environment_object* thing_in_cell = created_objects[i];
 				if(thing_in_cell->is_garbage())
 				{
-					return false;
+					continue;
 				}
 				point p = thing_in_cell->get_loc();
 				//if(p.distance(p, p1) > 600 && p.distance(p, p2) > 600 && p.distance(p, p3) > 600)
@@ -654,18 +650,18 @@ bool simulation::process_sim_message()
 				float beta = ((p3.y_loc - p1.y_loc)*(p.x_loc - p3.x_loc) + (p1.x_loc - p3.x_loc)*(p.y_loc - p3.y_loc)) /
 					((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
 				float gamma = 1.0f - alpha - beta;
-				if(alpha > 0 && beta > 0 && gamma > 0)
+				if(alpha >= 0 && beta >= 0 && gamma >= 0)
 				{
 					message.add_multiple_response(p, thing_in_cell->get_type());
 				}
 				if(p4.x_loc != -1)
 				{
-					alpha = ((p2.y_loc - p3.y_loc)*(p.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p.y_loc - p3.y_loc)) /
-						((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
-					beta = ((p3.y_loc - p1.y_loc)*(p.x_loc - p3.x_loc) + (p1.x_loc - p3.x_loc)*(p.y_loc - p3.y_loc)) /
-						((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
+					alpha = ((p5.y_loc - p6.y_loc)*(p.x_loc - p6.x_loc) + (p6.x_loc - p5.x_loc)*(p.y_loc - p6.y_loc)) /
+						((p5.y_loc - p6.y_loc)*(p4.x_loc - p6.x_loc) + (p6.x_loc - p5.x_loc)*(p4.y_loc - p6.y_loc));
+					beta = ((p6.y_loc - p4.y_loc)*(p.x_loc - p6.x_loc) + (p4.x_loc - p6.x_loc)*(p.y_loc - p6.y_loc)) /
+						((p5.y_loc - p6.y_loc)*(p4.x_loc - p6.x_loc) + (p6.x_loc - p5.x_loc)*(p4.y_loc - p6.y_loc));
 					gamma = 1.0f - alpha - beta;
-					if(alpha > 0 && beta > 0 && gamma > 0)
+					if(alpha >= 0 && beta >= 0 && gamma >= 0)
 					{
 						message.add_multiple_response(p, thing_in_cell->get_type());
 					}

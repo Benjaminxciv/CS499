@@ -106,13 +106,28 @@ HRESULT SimulationApp::Initialize()
             this
         );
 
+        HWND c_hWndx0 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Pause Simulation"),
+            WS_CHILD | WS_VISIBLE,
+            1050,
+            10,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X0,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
         HWND c_hWndx1 = CreateWindowExW(
             NULL,
             TEXT("BUTTON"),
             TEXT("Simulation speed x1"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            10,
+            35,
             150,
             25,
             m_hwnd,
@@ -127,7 +142,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("Simulation speed x10"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            35,
+            60,
             150,
             25,
             m_hwnd,
@@ -142,7 +157,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("Simulation speed x50"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            60,
+            85,
             150,
             25,
             m_hwnd,
@@ -157,7 +172,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("Simulation speed x100"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            85,
+            110,
             150,
             25,
             m_hwnd,
@@ -172,7 +187,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("Status Report"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            110,
+            135,
             150,
             25,
             m_hwnd,
@@ -184,6 +199,7 @@ HRESULT SimulationApp::Initialize()
         hr = m_hwnd ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
         {
+            SetTimer(m_hwnd, SIM_TIMER_X0, 100, NULL);
             SetTimer(m_hwnd, SIM_TIMER_X1, 1000, NULL); 
             SetTimer(m_hwnd, SIM_TIMER_X10, 100, NULL); 
             SetTimer(m_hwnd, SIM_TIMER_X50, 20, NULL); 
@@ -349,6 +365,9 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             int tick_speed = pSimulationApp->sim.get_tick_speed();
             switch (wParam)
             {
+                case SIM_TIMER_X0:
+                    if(tick_speed == x0){}
+                    break;
                 case SIM_TIMER_X1:
                     if(tick_speed == x1)
                     {
@@ -395,6 +414,10 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             switch (message)
             {
                 case WM_COMMAND:
+                    if(LOWORD(wParam) == IDM_SET_TICK_X0)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x0);
+                    }
                     if(LOWORD(wParam) == IDM_SET_TICK_X1)
                     {
                         pSimulationApp->sim.set_tick_speed(x1);
@@ -546,12 +569,18 @@ void SimulationApp::DrawObject(environment_object* target)
 {
     HRESULT hr = S_OK;
     point target_loc = target->get_loc();
-    D2D1_RECT_F rectangle2 = D2D1::RectF(
-        (target_loc.x_loc+5)-5.0f,
-        (target_loc.y_loc+5)-5.0f,
-        (target_loc.x_loc+5)+5.0f,
-        (target_loc.y_loc+5)+5.0f
+    D2D1_RECT_F e_obj_rect = D2D1::RectF(
+        (target_loc.x_loc)-5.0f,
+        (target_loc.y_loc)-5.0f,
+        (target_loc.x_loc)+5.0f,
+        (target_loc.y_loc)+5.0f
     );
+    //D2D1_RECT_F e_obj_outline_rect = D2D1::RectF(
+    //    (target_loc.x_loc+5)-5.0f,
+    //    (target_loc.y_loc+5)-5.0f,
+    //    (target_loc.x_loc+5)+5.0f,
+    //    (target_loc.y_loc+5)+5.0f
+    //);
 
     // Draw the outline of a rectangle.
     ID2D1SolidColorBrush* brush;
@@ -606,8 +635,12 @@ void SimulationApp::DrawObject(environment_object* target)
         {
             brush = m_pTealBrush;
         }
+        //if(g_target->is_eating())
+        //{
+        //    m_pRenderTarget->DrawRectangle(&)
+        //}
     }
-    m_pRenderTarget->FillRectangle(&rectangle2, brush);
+    m_pRenderTarget->FillRectangle(&e_obj_rect, brush);
 }
 
 HRESULT SimulationApp::OnRender()

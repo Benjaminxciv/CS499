@@ -37,7 +37,8 @@ class mammal : public environment_object
         int get_energy();
         void gain_energy(int);
         void set_energy(int);
-        bool move();
+        int move();
+        bool try_move();
         void set_speed(double);
         void reproduce();
         void set_current_speed(double);

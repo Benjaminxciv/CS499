@@ -68,6 +68,7 @@ Returns: N/A
 */
 void plant::grow()
 {
+    return;
     int num_total_leaves = max_size - current_size;
     int num_leaves_possible_in_tick = num_total_leaves * growth_rate;
 
@@ -76,8 +77,7 @@ void plant::grow()
         sim_message& message = sim_message::get_instance();
         if(message.place_organism( location, "leaf", id, (max_size/2)))
         {
-            message.request_child_list(id);
-            current_size = message.get_child_list().size();
+            
         }
     }
 }
@@ -128,9 +128,11 @@ void plant::radially_disperse_seed()
 
 void plant::act()
 {
+    sim_message& message = sim_message::get_instance();
+    message.request_child_list(id);
+    current_size = message.get_child_list().size();
     if (current_size >= max_size)
     {
-        sim_message& message = sim_message::get_instance();
         message.get_current_time();
         time_container current_time = message.get_time_info();
 

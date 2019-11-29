@@ -16,9 +16,7 @@ struct point
 {
     float x_loc;
     float y_loc;
-    int origin_x_loc;
-    int origin_y_loc;
-    point() { origin_x_loc = -1; origin_y_loc = -1; }
+    point() { }
     point(int x, int y) : x_loc(x), y_loc(y) {}
     int distance(const point& p1, point p2) const
     {
@@ -30,21 +28,10 @@ struct point
     }
     bool operator<(const point& p1) const
     {
-        if(origin_x_loc == -1 || origin_y_loc == -1)
-        {
-            point origin(0, 0);
-            point curr(x_loc, y_loc);
-            const point& p_curr = curr;
-            return distance(curr, origin) < distance(p1, origin);
-        }
-        else
-        {
-            point origin(origin_x_loc, origin_y_loc);
-            point curr(x_loc, y_loc);
-            const point& p_curr = curr;
-            return distance(curr, origin) < distance(p1, origin);
-        }
-        
+        point origin(0, 0);
+        point curr(x_loc, y_loc);
+        const point& p_curr = curr;
+        return distance(curr, origin) < distance(p1, origin);
     }
 };
 

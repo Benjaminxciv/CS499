@@ -27,20 +27,13 @@ class grazer : public mammal
         bool retained_danger_time;
         int init_speed;
         int curr_speed;
+        bool slowed;
 
         const int eat_reach = 5;
         const int plant_sight_dist = 150;
         const int pred_sight_dist = 25;
 
-        void start_movement_time();
-        void start_eat_time();
-        void start_gain_energy_time();
-        void reset_movement_time();
-        void reset_gain_energy_time();
-        void reset_eat_time();
-        bool eat(sim_message&, point);
-        void store_speed();
-        void reset_speed();
+        bool eat(point);
         direction invert_dir();
         
 
@@ -51,9 +44,8 @@ class grazer : public mammal
         int print_self();
         void act() override;
 
-        void check_energy();
-        void sight_cone();
-        void look_check(point, int);
+        bool is_eating();
+        bool is_fleeing();
         
 };
 #endif

@@ -51,7 +51,25 @@ void mammal::set_energy(int new_energy)
     energy = new_energy;
 }
 
-bool mammal::move()
+int mammal::move()
+{
+    int move_count = 0;
+    for (int i = 0; i < floor(banked_moves); i++)
+    {
+        if(try_move())
+        {
+            move_count++;
+            banked_moves--;
+        }
+        else
+        {
+            continue;
+        }
+    }
+    return move_count;
+}
+
+bool mammal::try_move()
 {
     sim_message& message = sim_message::get_instance();
     vector<direction> untried_dirs = {up, up_right, right, down_right, down, down_left, left, up_left};
@@ -62,7 +80,7 @@ bool mammal::move()
         switch(dir)
         {
             case up:
-                move_to.y_loc++;
+                move_to.y_loc--;
                 break;
             case up_right:
                 move_to.x_loc++;
