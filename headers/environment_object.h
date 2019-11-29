@@ -26,6 +26,10 @@ struct point
     {
         return (x_loc == p1.x_loc && y_loc == p1.y_loc);
     }
+    bool operator==(const point& p1) const
+    {
+        return (x_loc == p1.x_loc && y_loc == p1.y_loc);
+    }
     bool operator<(const point& p1) const
     {
         point origin(0, 0);

@@ -499,6 +499,23 @@ point simulation::find_empty_cell(point center, int search_radius)
 	return center;
 }
 
+bool barycentric_within(double x)
+{
+	return (x > 0 && x <= 1);
+}
+
+bool calc_barycentric(const point& A, const point& B, const point& C, const point& P)
+{
+	double det = (B.y_loc - C.y_loc)*(A.x_loc - C.x_loc) + (C.x_loc - B.x_loc)*(A.y_loc - C.y_loc);
+    double factor_alpha = (B.y_loc - C.y_loc)*(P.x_loc - C.x_loc) + (C.x_loc - B.x_loc)*(P.y_loc - C.y_loc);
+    double factor_beta = (C.y_loc - A.y_loc)*(P.x_loc - C.x_loc) + (A.x_loc - C.x_loc)*(P.y_loc - C.y_loc);
+    double alpha = factor_alpha / det;
+    double beta = factor_beta / det;
+    double gamma = 1.0 - alpha - beta;
+
+    return P == A || P == B || P == C || (barycentric_within(alpha) && barycentric_within(beta) && barycentric_within(gamma));
+}
+
 bool simulation::process_sim_message()
 {
 	sim_message& message = sim_message::get_instance(false);
@@ -641,27 +658,14 @@ bool simulation::process_sim_message()
 					continue;
 				}
 				point p = thing_in_cell->get_loc();
-				//if(p.distance(p, p1) > 600 && p.distance(p, p2) > 600 && p.distance(p, p3) > 600)
-				//{
-				//	continue;
-				//}
-				float alpha = ((p2.y_loc - p3.y_loc)*(p.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p.y_loc - p3.y_loc)) /
-					((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
-				float beta = ((p3.y_loc - p1.y_loc)*(p.x_loc - p3.x_loc) + (p1.x_loc - p3.x_loc)*(p.y_loc - p3.y_loc)) /
-					((p2.y_loc - p3.y_loc)*(p1.x_loc - p3.x_loc) + (p3.x_loc - p2.x_loc)*(p1.y_loc - p3.y_loc));
-				float gamma = 1.0f - alpha - beta;
-				if(alpha >= 0 && beta >= 0 && gamma >= 0)
+				
+				if(calc_barycentric(p1, p2, p3, p))
 				{
 					message.add_multiple_response(p, thing_in_cell->get_type());
 				}
 				if(p4.x_loc != -1)
 				{
-					alpha = ((p5.y_loc - p6.y_loc)*(p.x_loc - p6.x_loc) + (p6.x_loc - p5.x_loc)*(p.y_loc - p6.y_loc)) /
-						((p5.y_loc - p6.y_loc)*(p4.x_loc - p6.x_loc) + (p6.x_loc - p5.x_loc)*(p4.y_loc - p6.y_loc));
-					beta = ((p6.y_loc - p4.y_loc)*(p.x_loc - p6.x_loc) + (p4.x_loc - p6.x_loc)*(p.y_loc - p6.y_loc)) /
-						((p5.y_loc - p6.y_loc)*(p4.x_loc - p6.x_loc) + (p6.x_loc - p5.x_loc)*(p4.y_loc - p6.y_loc));
-					gamma = 1.0f - alpha - beta;
-					if(alpha >= 0 && beta >= 0 && gamma >= 0)
+					if(calc_barycentric(p4, p5, p6, p))
 					{
 						message.add_multiple_response(p, thing_in_cell->get_type());
 					}

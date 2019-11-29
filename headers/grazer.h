@@ -28,6 +28,8 @@ class grazer : public mammal
         int init_speed;
         int curr_speed;
         bool slowed;
+        bool food_in_sight;
+        bool danger_in_sight;
 
         const int eat_reach = 5;
         const int plant_sight_dist = 150;
@@ -44,8 +46,8 @@ class grazer : public mammal
         int print_self();
         void act() override;
 
-        bool is_eating();
-        bool is_fleeing();
+        bool found_food();
+        bool found_danger();
         
 };
 #endif

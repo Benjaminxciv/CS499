@@ -15,6 +15,7 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     this->retained_gain_energy_time = false;
     banked_moves = 0;
     slowed = false;
+    food_in_sight = false;
 }
 
 grazer::~grazer()
@@ -167,6 +168,7 @@ void grazer::act()
 
     if(danger.x_loc != -1)
     {
+        danger_in_sight = true;
         retained_eat_time = false;
         retained_gain_energy_time = false;
         if(!retained_danger_time)
@@ -210,6 +212,7 @@ void grazer::act()
         }
         if(food.x_loc != -1)
         {
+            food_in_sight = true;
             if(eat(food))
             {
                 return;
@@ -218,11 +221,18 @@ void grazer::act()
     }
     else if(food.x_loc != -1)
     {
+        food_in_sight = true;
         if(eat(food))
         {
             return;
         }
     }
+    else
+    {
+        food_in_sight = false;
+        danger_in_sight = false;
+    }
+    
     if(ready_to_reproduce())
     {
         if(message.request_reproduce(location, this))
@@ -261,12 +271,12 @@ void grazer::act()
     }
 }
 
-bool grazer::is_eating()
+bool grazer::found_food()
 {
-    return retained_eat_time;
+    return food_in_sight;
 }
 
-bool grazer::is_fleeing()
+bool grazer::found_danger()
 {
-    return retained_danger_time;
+    return danger_in_sight;
 }

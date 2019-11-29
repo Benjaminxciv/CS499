@@ -569,18 +569,19 @@ void SimulationApp::DrawObject(environment_object* target)
 {
     HRESULT hr = S_OK;
     point target_loc = target->get_loc();
+    //Offset location by 5 because the grid & objects go off-screen otherwise
     D2D1_RECT_F e_obj_rect = D2D1::RectF(
-        (target_loc.x_loc)-5.0f,
-        (target_loc.y_loc)-5.0f,
-        (target_loc.x_loc)+5.0f,
-        (target_loc.y_loc)+5.0f
+        (target_loc.x_loc+5)-4.5f,
+        (target_loc.y_loc+5)-4.5f,
+        (target_loc.x_loc+5)+4.5f,
+        (target_loc.y_loc+5)+4.5f
     );
-    //D2D1_RECT_F e_obj_outline_rect = D2D1::RectF(
-    //    (target_loc.x_loc+5)-5.0f,
-    //    (target_loc.y_loc+5)-5.0f,
-    //    (target_loc.x_loc+5)+5.0f,
-    //    (target_loc.y_loc+5)+5.0f
-    //);
+    D2D1_RECT_F e_obj_outline_rect = D2D1::RectF(
+        (target_loc.x_loc+5)-5.0f,
+        (target_loc.y_loc+5)-5.0f,
+        (target_loc.x_loc+5)+5.0f,
+        (target_loc.y_loc+5)+5.0f
+    );
 
     // Draw the outline of a rectangle.
     ID2D1SolidColorBrush* brush;
@@ -635,10 +636,14 @@ void SimulationApp::DrawObject(environment_object* target)
         {
             brush = m_pTealBrush;
         }
-        //if(g_target->is_eating())
-        //{
-        //    m_pRenderTarget->DrawRectangle(&)
-        //}
+        if(g_target->found_food())
+        {
+            m_pRenderTarget->DrawRectangle(&e_obj_outline_rect, m_pGreenBrush);
+        }
+        if(g_target->found_danger())
+        {
+            m_pRenderTarget->DrawRectangle(&e_obj_outline_rect, m_pRedBrush, 2.0);
+        }
     }
     m_pRenderTarget->FillRectangle(&e_obj_rect, brush);
 }
