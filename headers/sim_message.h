@@ -61,7 +61,7 @@ class sim_message
         bool replace_organism(point, std::string);
         bool die(environment_object*);
         bool eat_organism(point);
-        bool look_at_cell(point, vector<point> = vector<point>());
+        bool look_at_cell(point, vector<point> = vector<point>(), environment_object* = nullptr);
         bool request_reproduce(point, environment_object*);
         void set_garbage(environment_object*);
         void set_child_id(int id);

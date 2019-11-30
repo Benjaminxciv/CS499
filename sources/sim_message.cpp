@@ -183,7 +183,7 @@ bool sim_message::eat_organism(point target_loc)
     return sim->process_sim_message();
 }
 
-bool sim_message::look_at_cell(point target_loc, vector<point> multiple_locs)
+bool sim_message::look_at_cell(point target_loc, vector<point> multiple_locs, environment_object* looker)
 {
     action_requested = "look cell";
     if(multiple_locs.size() > 0)
@@ -194,6 +194,7 @@ bool sim_message::look_at_cell(point target_loc, vector<point> multiple_locs)
     {
         location.push_back(target_loc);   
     }
+    organism = looker;
     return sim->process_sim_message();
 }
 

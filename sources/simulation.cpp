@@ -103,7 +103,7 @@ void simulation::iterate_cells()
 	{
 		environment_object* cell = created_objects[iter];
 		std::string cell_type = cell->get_type();
-		if(cell_type != "boulder" && cell_type != "leaf")
+		if(cell_type != "boulder" && cell_type != "leaf" && !cell->is_garbage())
 		{
 			cell->act();;
 		}
@@ -168,8 +168,15 @@ bool simulation::create_boulder(point boulder_pt, int diameter, int height)
 		return false;
 	}
 	boulder* bold = new boulder(boulder_pt, diameter, height);
+	if(sim_grid->check_bounds(boulder_pt) && sim_grid->get_cell_contents(boulder_pt) == nullptr)
+	{
+		sim_grid->set_cell_contents(boulder_pt, bold);
+	}
+	else
+	{
+		return false;
+	}
 	created_objects.push_back(bold);
-	sim_grid->set_cell_contents(boulder_pt, bold);
 	for(int i = 0; i < diameter / 2; i++)
 	{
 		create_boulder_piece(boulder_pt, diameter);
@@ -189,8 +196,15 @@ bool simulation::create_boulder_piece(point start_pt, int diameter)
 		return false;
 	}
 	boulder_piece* bold_pc = new boulder_piece(bld_pc_pt);
+	if(sim_grid->check_bounds(bld_pc_pt) && sim_grid->get_cell_contents(bld_pc_pt) == nullptr)
+	{
+		sim_grid->set_cell_contents(bld_pc_pt, bold_pc);
+	}
+	else
+	{
+		return false;
+	}
 	created_objects.push_back(bold_pc);
-	sim_grid->set_cell_contents(bld_pc_pt, bold_pc);
 	return true;
 }
 
@@ -209,8 +223,15 @@ bool simulation::create_plant(point plant_pt, int diameter)
 	int plt_max_seed_num = lsdp->getMaxSeedNumber();
 	double plt_seed_viability = lsdp->getSeedViability();
 	plant* plt = new plant(plant_pt, plt_growth_rate, plt_max_size, plt_max_seed_cast_dist, plt_max_seed_num, plt_seed_viability, diameter);
+	if(sim_grid->check_bounds(plant_pt) && sim_grid->get_cell_contents(plant_pt) == nullptr)
+	{
+		sim_grid->set_cell_contents(plant_pt, plt);
+	}
+	else
+	{
+		return false;
+	}
 	created_objects.push_back(plt);
-	sim_grid->set_cell_contents(plant_pt, plt);
 	for(int i = 0; i < diameter / 2; i++)
 	{
 		create_leaf(plant_pt, diameter, plt->get_id());
@@ -230,8 +251,15 @@ bool simulation::create_leaf(point start_pt, int diameter, int p_id)
 		return false;
 	}
 	leaf* lf = new leaf(lf_pt);
+	if(sim_grid->check_bounds(lf_pt) && sim_grid->get_cell_contents(lf_pt) == nullptr)
+	{
+		sim_grid->set_cell_contents(lf_pt, lf);
+	}
+	else
+	{
+		return false;
+	}
 	created_objects.push_back(lf);
-	sim_grid->set_cell_contents(lf_pt, lf);
 	parent_children[p_id].push_back(lf->get_id());
 	children_parent[lf->get_id()].push_back(p_id);
 	return true;
@@ -244,8 +272,15 @@ bool simulation::create_seed(point seed_pt)
 		return false;
 	}
 	seed* sd = new seed(seed_pt);
+	if(sim_grid->check_bounds(seed_pt) && sim_grid->get_cell_contents(seed_pt) == nullptr)
+	{
+		sim_grid->set_cell_contents(seed_pt, sd);
+	}
+	else
+	{
+		return false;
+	}
 	created_objects.push_back(sd);
-	sim_grid->set_cell_contents(seed_pt, sd);
 	return true;
 }
 
@@ -264,8 +299,15 @@ bool simulation::create_grazer(point grazer_pt, int init_energy, int p_id)
 	double grz_max_speed = lsdp->getGrazerMaxSpeed();						// Max speed in DU per minute
 	double grz_maintain_speed = lsdp->getGrazerMaintainSpeedTime();		// Minutes of simulation to maintain max speed
 	grazer* grz = new grazer(grazer_pt, init_energy, grz_energy_input, grz_energy_output, grz_energy_reprod, grz_max_speed, grz_maintain_speed);
+	if(sim_grid->check_bounds(grazer_pt) && sim_grid->get_cell_contents(grazer_pt) == nullptr)
+	{
+		sim_grid->set_cell_contents(grazer_pt, grz);
+	}
+	else
+	{
+		return false;
+	}
 	created_objects.push_back(grz);
-	sim_grid->set_cell_contents(grazer_pt, grz);
 	if(p_id > 0)
 	{
 		parent_children[p_id].push_back(grz->get_id());
@@ -348,8 +390,15 @@ bool simulation::create_predator(point predator_pt, int init_energy, char* genot
 	predator* pred = new predator(predator_pt, genotype_str, init_energy, pred_energy_output, pred_energy_reprod, pred_max_speed, pred_maintain_speed,
 									pred_max_speed_hod, pred_max_speed_hed, pred_max_speed_hor, pred_max_offspring,
 									pred_gestation_period, pred_offspring_energy_level);
+	if(sim_grid->check_bounds(predator_pt) && sim_grid->get_cell_contents(predator_pt) == nullptr)
+	{
+		sim_grid->set_cell_contents(predator_pt, pred);
+	}
+	else
+	{
+		return false;
+	}
 	created_objects.push_back(pred);
-	sim_grid->set_cell_contents(predator_pt, pred);
 	if(is_offspring)
 	{
 		for(int i = 0; i < p_id_list.size(); i++)
@@ -504,7 +553,7 @@ bool barycentric_within(double x)
 	return (x > 0 && x <= 1);
 }
 
-bool calc_barycentric(const point& A, const point& B, const point& C, const point& P)
+/*bool calc_barycentric(const point& A, const point& B, const point& C, const point& P)
 {
 	double det = (B.y_loc - C.y_loc)*(A.x_loc - C.x_loc) + (C.x_loc - B.x_loc)*(A.y_loc - C.y_loc);
     double factor_alpha = (B.y_loc - C.y_loc)*(P.x_loc - C.x_loc) + (C.x_loc - B.x_loc)*(P.y_loc - C.y_loc);
@@ -514,6 +563,22 @@ bool calc_barycentric(const point& A, const point& B, const point& C, const poin
     double gamma = 1.0 - alpha - beta;
 
     return P == A || P == B || P == C || (barycentric_within(alpha) && barycentric_within(beta) && barycentric_within(gamma));
+}*/
+bool calc_barycentric(const point& A, const point& B, const point& C, const point& P)
+{
+	point v0 = B-A, v1 = C-A, v2 = P-A;
+
+	double d00 = v0*v0;
+	double d01 = v0*v1;
+	double d11 = v1*v1;
+	double d20 = v2*v0;
+	double d21 = v2*v1;
+	double denom = d00*d11 - d01*d01;
+
+	// compute parametric coordinates
+	double v = (d11 * d20 - d01 * d21) / denom;
+	double w = (d00 * d21 - d01 * d20) / denom;  
+	return v >= 0. && w >= 0.; //&& v + w <= 1.;
 }
 
 bool simulation::process_sim_message()
@@ -639,17 +704,117 @@ bool simulation::process_sim_message()
 		else
 		{
 			point p1 = location[0];
+			/*if(p1.x_loc < 0)
+			{
+				p1.x_loc = 0;
+			}
+			if(p1.x_loc > world_width)
+			{
+				p1.x_loc = world_width;
+			}
+			if(p1.y_loc < 0)
+			{
+				p1.y_loc = 0;
+			}
+			if(p1.y_loc > world_height)
+			{
+				p1.y_loc = world_height;
+			}*/
 			point p2 = location[1];
+			/*if(p2.x_loc < 0)
+			{
+				p2.x_loc = 0;
+			}
+			if(p2.x_loc > world_width)
+			{
+				p2.x_loc = world_width;
+			}
+			if(p2.y_loc < 0)
+			{
+				p2.y_loc = 0;
+			}
+			if(p2.y_loc > world_height)
+			{
+				p2.y_loc = world_height;
+			}*/
 			point p3 = location[2];
+			/*if(p3.x_loc < 0)
+			{
+				p3.x_loc = 0;
+			}
+			if(p3.x_loc > world_width)
+			{
+				p3.x_loc = world_width;
+			}
+			if(p3.y_loc < 0)
+			{
+				p3.y_loc = 0;
+			}
+			if(p3.y_loc > world_height)
+			{
+				p3.y_loc = world_height;
+			}*/
 			point p4(-1,-1);
 			point p5(-1,-1);
 			point p6(-1,-1);
 			if(location.size() > 3)
 			{
 				p4 = location[3];
+				/*if(p4.x_loc < 0)
+				{
+					p4.x_loc = 0;
+				}
+				if(p4.x_loc > world_width)
+				{
+					p4.x_loc = world_width;
+				}
+				if(p4.y_loc < 0)
+				{
+					p4.y_loc = 0;
+				}
+				if(p4.y_loc > world_height)
+				{
+					p4.y_loc = world_height;
+				}*/
 				p5 = location[4];
+				/*if(p5.x_loc < 0)
+				{
+					p5.x_loc = 0;
+				}
+				if(p5.x_loc > world_width)
+				{
+					p5.x_loc = world_width;
+				}
+				if(p5.y_loc < 0)
+				{
+					p5.y_loc = 0;
+				}
+				if(p5.y_loc > world_height)
+				{
+					p5.y_loc = world_height;
+				}*/
 				p6 = location[5];
+				/*if(p6.x_loc < 0)
+				{
+					p6.x_loc = 0;
+				}
+				if(p6.x_loc > world_width)
+				{
+					p6.x_loc = world_width;
+				}
+				if(p6.y_loc < 0)
+				{
+					p6.y_loc = 0;
+				}
+				if(p6.y_loc > world_height)
+				{
+					p6.y_loc = world_height;
+				}*/
 			}
+			//if(organism != nullptr && organism->get_type() == "grazer" && reinterpret_cast<grazer*>(organism)->found_food())
+			//{
+			//	int x =0;
+			//}
 			for(int i = 0; i < created_objects.size(); i++)
 			{
 				environment_object* thing_in_cell = created_objects[i];
@@ -661,6 +826,10 @@ bool simulation::process_sim_message()
 				
 				if(calc_barycentric(p1, p2, p3, p))
 				{
+					if(thing_in_cell->get_type() == "plant" || thing_in_cell->get_type() == "leaf")
+					{
+						int x = 0;
+					}
 					message.add_multiple_response(p, thing_in_cell->get_type());
 				}
 				if(p4.x_loc != -1)

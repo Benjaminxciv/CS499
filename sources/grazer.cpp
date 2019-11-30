@@ -16,6 +16,7 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     banked_moves = 0;
     slowed = false;
     food_in_sight = false;
+    move_count = 0;
 }
 
 grazer::~grazer()

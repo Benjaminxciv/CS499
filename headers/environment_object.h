@@ -14,8 +14,8 @@ Last editor: MG
 
 struct point
 {
-    float x_loc;
-    float y_loc;
+    double x_loc;
+    double y_loc;
     point() { }
     point(int x, int y) : x_loc(x), y_loc(y) {}
     int distance(const point& p1, point p2) const
@@ -36,6 +36,14 @@ struct point
         point curr(x_loc, y_loc);
         const point& p_curr = curr;
         return distance(curr, origin) < distance(p1, origin);
+    }
+    double operator*(const point& p1) const
+    {
+        return ((x_loc * p1.x_loc) + (y_loc * p1.y_loc));
+    }
+    point operator-(const point& p1) const
+    {
+        return point((x_loc - p1.x_loc), (y_loc - p1.y_loc));
     }
 };
 

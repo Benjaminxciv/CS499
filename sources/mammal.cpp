@@ -196,58 +196,45 @@ map<point, string> mammal::sight(int radius)
     point p1;
     point p2;
     point p3;
-    if(dir == up)
+    switch(dir)
     {
-        p1 = point(location.x_loc-radius, location.y_loc-1);
-        p2 = point(location.x_loc+radius, location.y_loc-1);
-        p3 = point(location.x_loc, location.y_loc-radius);
-    }
-    if(dir == up_left)
-    {
-        p1 = point(location.x_loc-radius, location.y_loc+(radius-2));
-        p2 = point(location.x_loc+(radius-2), location.y_loc-radius);
-        p3 = point(location.x_loc-radius, location.y_loc-radius);
-    }
-    if(dir == up_right)
-    {
-        p1 = point(location.x_loc+radius, location.y_loc+(radius-2));
-        p2 = point(location.x_loc-(radius-2), location.y_loc-radius);
-        p3 = point(location.x_loc+radius, location.y_loc-radius);
-    }
-    else if(dir == left)
-    {
-        p1 = point(location.x_loc-1, location.y_loc-radius);
-        p2 = point(location.x_loc-1, location.y_loc+radius);
-        p3 = point(location.x_loc-radius, location.y_loc);
-    }
-    else if(dir == right)
-    {
-        p1 = point(location.x_loc+1, location.y_loc-radius);
-        p2 = point(location.x_loc+1, location.y_loc+radius);
-        p3 = point(location.x_loc+radius, location.y_loc);
-    }
-    else if(dir == down)
-    {
-        p1 = point(location.x_loc-radius, location.y_loc+1);
-        p2 = point(location.x_loc+radius, location.y_loc+1);
-        p3 = point(location.x_loc, location.y_loc+radius);
-    }
-    if(dir == down_left)
-    {
-        p1 = point(location.x_loc-radius, location.y_loc-(radius-2));
-        p2 = point(location.x_loc+(radius-2), location.y_loc+radius);
-        p3 = point(location.x_loc-radius, location.y_loc+radius);
-    }
-    if(dir == down_right)
-    {
-        p1 = point(location.x_loc+radius, location.y_loc-(radius-2));
-        p2 = point(location.x_loc-(radius-2), location.y_loc+radius);
-        p3 = point(location.x_loc+radius, location.y_loc+radius);
+        case(up):
+            p1 = point(location.x_loc-radius, location.y_loc-1);
+            p2 = point(location.x_loc+radius, location.y_loc-1);
+            p3 = point(location.x_loc, location.y_loc-radius);
+        case(up_left):
+            p1 = point(location.x_loc-radius, location.y_loc+(radius-2));
+            p2 = point(location.x_loc+(radius-2), location.y_loc-radius);
+            p3 = point(location.x_loc-radius, location.y_loc-radius);
+        case(up_right):
+            p1 = point(location.x_loc+radius, location.y_loc+(radius-2));
+            p2 = point(location.x_loc-(radius-2), location.y_loc-radius);
+            p3 = point(location.x_loc+radius, location.y_loc-radius);
+        case(left):
+            p1 = point(location.x_loc-1, location.y_loc-radius);
+            p2 = point(location.x_loc-1, location.y_loc+radius);
+            p3 = point(location.x_loc-radius, location.y_loc);
+        case(right):
+            p1 = point(location.x_loc+1, location.y_loc-radius);
+            p2 = point(location.x_loc+1, location.y_loc+radius);
+            p3 = point(location.x_loc+radius, location.y_loc);
+        case(down):
+            p1 = point(location.x_loc-radius, location.y_loc+1);
+            p2 = point(location.x_loc+radius, location.y_loc+1);
+            p3 = point(location.x_loc, location.y_loc+radius);
+        case(down_left):
+            p1 = point(location.x_loc-radius, location.y_loc-(radius-2));
+            p2 = point(location.x_loc+(radius-2), location.y_loc+radius);
+            p3 = point(location.x_loc-radius, location.y_loc+radius);
+        case(down_right):
+            p1 = point(location.x_loc+radius, location.y_loc-(radius-2));
+            p2 = point(location.x_loc-(radius-2), location.y_loc+radius);
+            p3 = point(location.x_loc+radius, location.y_loc+radius);
     }
     points_to_check = {p1, p2, p3};
     point throwaway;
     sim_message& message = sim_message::get_instance();
-    message.look_at_cell(throwaway, points_to_check);
+    message.look_at_cell(throwaway, points_to_check, this);
     map<point, string> results = message.get_multiple_responses();
     return results;
 }

@@ -9,7 +9,7 @@
 	</LAND_BOUNDS>
 	<PLANTS>
 		<INITIAL_PLANT_COUNT>
-			1
+			25
 		</INITIAL_PLANT_COUNT>
 		<GROWTH_RATE>
 			0.1
@@ -26,6 +26,17 @@
 		<SEED_VIABILITY>
 			.50
 		</SEED_VIABILITY>
+		<PLANT>
+			<X_POS>
+				50
+			</X_POS>
+			<Y_POS>
+				125
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
 		<PLANT>
 			<X_POS>
 				225
@@ -299,7 +310,7 @@
 			5
 		</G_ENERGY_INPUT>
 		<G_ENERGY_OUTPUT>
-			0
+			1
 		</G_ENERGY_OUTPUT>
 		<G_ENERGY_TO_REPRODUCE>
 			100

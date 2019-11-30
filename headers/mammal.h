@@ -22,7 +22,6 @@ class mammal : public environment_object
         int energy;
         int energy_output;
         int energy_reproduce_min;
-        int looking_direction;
         double max_speed;
         double current_speed;
         double maintain_speed;

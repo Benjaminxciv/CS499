@@ -17,21 +17,31 @@ struct time_container
     {
         return (time_sec == t1.time_sec && time_min == t1.time_min && time_hour == t1.time_hour);
     }
-    bool operator>=(const time_container& t1)
+    bool operator>(const time_container& t1)
     {
-        if(time_hour >= t1.time_hour)
+        if(time_hour > t1.time_hour)
         {
             return true;
         }
-        if(time_min >= t1.time_hour)
+        else if(time_hour == t1.time_hour)
         {
-            return true;
-        }
-        if(time_sec >= t1.time_sec)
-        {
-            return true;
+            if(time_min > t1.time_min)
+            {
+                return true;
+            }
+            else if(time_min == t1.time_min)
+            {
+                if(time_sec > t1.time_sec)
+                {
+                    return true;
+                }
+            }
         }
         return false;
+    }
+    bool operator>=(const time_container& t1)
+    {
+        return (*this > t1 || *this == t1);
     }
 };
 
