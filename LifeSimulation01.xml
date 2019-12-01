@@ -9,7 +9,7 @@
 	</LAND_BOUNDS>
 	<PLANTS>
 		<INITIAL_PLANT_COUNT>
-			1
+			25
 		</INITIAL_PLANT_COUNT>
 		<GROWTH_RATE>
 			0.1
@@ -31,7 +31,7 @@
 				225
 			</X_POS>
 			<Y_POS>
-				50
+				200
 			</Y_POS>
 			<P_DIAMETER>
 				25			

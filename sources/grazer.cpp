@@ -17,6 +17,7 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     slowed = false;
     food_in_sight = false;
     move_count = 0;
+    danger_in_sight = false;
 }
 
 grazer::~grazer()
@@ -196,6 +197,7 @@ void grazer::act()
     }
     else if(retained_eat_time)
     {
+        danger_in_sight = false;
         map<point, string> things_in_smell = sight(25);
         for (auto const& x : things_in_sight)
         {
@@ -222,6 +224,7 @@ void grazer::act()
     }
     else if(food.x_loc != -1)
     {
+        danger_in_sight = false;
         food_in_sight = true;
         if(eat(food))
         {
@@ -230,8 +233,8 @@ void grazer::act()
     }
     else
     {
-        food_in_sight = false;
         danger_in_sight = false;
+        food_in_sight = false;
     }
     
     if(ready_to_reproduce())

@@ -578,7 +578,7 @@ bool calc_barycentric(const point& A, const point& B, const point& C, const poin
 	// compute parametric coordinates
 	double v = (d11 * d20 - d01 * d21) / denom;
 	double w = (d00 * d21 - d01 * d20) / denom;  
-	return v >= 0. && w >= 0.; //&& v + w <= 1.;
+	return v >= 0. && w >= 0. && v + w <= 1.;
 }
 
 bool simulation::process_sim_message()
@@ -708,51 +708,27 @@ bool simulation::process_sim_message()
 			{
 				p1.x_loc = 0;
 			}
-			if(p1.x_loc > world_width)
-			{
-				p1.x_loc = world_width;
-			}
 			if(p1.y_loc < 0)
 			{
 				p1.y_loc = 0;
-			}
-			if(p1.y_loc > world_height)
-			{
-				p1.y_loc = world_height;
 			}*/
 			point p2 = location[1];
 			/*if(p2.x_loc < 0)
 			{
 				p2.x_loc = 0;
 			}
-			if(p2.x_loc > world_width)
-			{
-				p2.x_loc = world_width;
-			}
 			if(p2.y_loc < 0)
 			{
 				p2.y_loc = 0;
-			}
-			if(p2.y_loc > world_height)
-			{
-				p2.y_loc = world_height;
 			}*/
 			point p3 = location[2];
 			/*if(p3.x_loc < 0)
 			{
 				p3.x_loc = 0;
 			}
-			if(p3.x_loc > world_width)
-			{
-				p3.x_loc = world_width;
-			}
 			if(p3.y_loc < 0)
 			{
 				p3.y_loc = 0;
-			}
-			if(p3.y_loc > world_height)
-			{
-				p3.y_loc = world_height;
 			}*/
 			point p4(-1,-1);
 			point p5(-1,-1);
@@ -764,57 +740,30 @@ bool simulation::process_sim_message()
 				{
 					p4.x_loc = 0;
 				}
-				if(p4.x_loc > world_width)
-				{
-					p4.x_loc = world_width;
-				}
 				if(p4.y_loc < 0)
 				{
 					p4.y_loc = 0;
-				}
-				if(p4.y_loc > world_height)
-				{
-					p4.y_loc = world_height;
 				}*/
 				p5 = location[4];
 				/*if(p5.x_loc < 0)
 				{
 					p5.x_loc = 0;
 				}
-				if(p5.x_loc > world_width)
-				{
-					p5.x_loc = world_width;
-				}
 				if(p5.y_loc < 0)
 				{
 					p5.y_loc = 0;
-				}
-				if(p5.y_loc > world_height)
-				{
-					p5.y_loc = world_height;
 				}*/
 				p6 = location[5];
 				/*if(p6.x_loc < 0)
 				{
 					p6.x_loc = 0;
 				}
-				if(p6.x_loc > world_width)
-				{
-					p6.x_loc = world_width;
-				}
 				if(p6.y_loc < 0)
 				{
 					p6.y_loc = 0;
-				}
-				if(p6.y_loc > world_height)
-				{
-					p6.y_loc = world_height;
 				}*/
 			}
-			//if(organism != nullptr && organism->get_type() == "grazer" && reinterpret_cast<grazer*>(organism)->found_food())
-			//{
-			//	int x =0;
-			//}
+			bool found_food = false;
 			for(int i = 0; i < created_objects.size(); i++)
 			{
 				environment_object* thing_in_cell = created_objects[i];
@@ -828,17 +777,22 @@ bool simulation::process_sim_message()
 				{
 					if(thing_in_cell->get_type() == "plant" || thing_in_cell->get_type() == "leaf")
 					{
+						found_food = true;
 						int x = 0;
 					}
 					message.add_multiple_response(p, thing_in_cell->get_type());
 				}
-				if(p4.x_loc != -1)
+				else if(p4.x_loc != -1)
 				{
 					if(calc_barycentric(p4, p5, p6, p))
 					{
 						message.add_multiple_response(p, thing_in_cell->get_type());
 					}
 				}
+			}
+			if(!found_food && organism != nullptr && organism->get_type() == "grazer" && reinterpret_cast<grazer*>(organism)->found_food())
+			{
+				int x =0;
 			}
 			return true;
 		}
