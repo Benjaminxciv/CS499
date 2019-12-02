@@ -68,7 +68,6 @@ Returns: N/A
 */
 void plant::grow()
 {
-    return;
     int num_total_leaves = max_size - current_size;
     int num_leaves_possible_in_tick = num_total_leaves * growth_rate;
 

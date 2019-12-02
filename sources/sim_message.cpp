@@ -243,8 +243,6 @@ int sim_message::get_parent_id()
 bool sim_message::request_child_list(int p_id)
 {
     action_requested = "child list";
-    point throwaway(1,1);
-    location.push_back(throwaway);
     parent_id = p_id;
     return sim->process_sim_message();
 }
@@ -252,8 +250,6 @@ bool sim_message::request_child_list(int p_id)
 bool sim_message::request_parent_list(int c_id)
 {
     action_requested = "parent list";
-    point throwaway(1,1);
-    location.push_back(throwaway);
     child_id = c_id;
     return sim->process_sim_message();
 }

@@ -4,6 +4,7 @@
 #define IDM_SET_TICK_X50 (152)
 #define IDM_SET_TICK_X100 (153)
 #define IDM_STATUS_REPORT (154)
+#define IDM_DEBUGGING (155)
 #define SIM_TIMER_X0 (999)
 #define SIM_TIMER_X1 (1000)
 #define SIM_TIMER_X10 (1001)

@@ -12,6 +12,7 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
 {
     this->retained_movement_time    = false;
     this->retained_eat_time         = false;
+    retained_danger_time = false;
     this->retained_gain_energy_time = false;
     banked_moves = 0;
     slowed = false;
@@ -129,23 +130,31 @@ void grazer::act()
     point danger(-1, -1);
     point food(-1, -1);
 
-    point left(-1, -1);
-    point right(-1, -1);
-    point middle(-1, -1);
+    //point left(-1, -1);
+    //point right(-1, -1);
+    //point middle(-1, -1);
+    bool ignore_left = false;
+    bool ignore_right = false;
+    bool ignore_middle = false;
 
     for (auto const& x : things_in_sight)
     {
-        /*direction obj_dir = find_direction(x.first);
         if(x.second == "boulder")
         {
-            if(location.x_loc == x.first.x_loc)
+            direction obj_dir = find_direction(x.first);
+            if(obj_dir == left)
             {
-                if(obj_dir == left)
-                {
-                    //ignore x,y's past boulder's x,y
-                }
+                ignore_left = true;
             }
-        }*/
+            else if(obj_dir == right)
+            {
+                ignore_right  = true;
+            }
+            else if(x.first.x_loc == location.x_loc)
+            {
+                ignore_middle = true;
+            }
+        }
         if(x.second == "predator" && x.first.distance(x.first, location) <= 25)
         {
             danger = x.first;
@@ -198,7 +207,7 @@ void grazer::act()
     else if(retained_eat_time)
     {
         danger_in_sight = false;
-        map<point, string> things_in_smell = sight(25);
+        map<point, string> things_in_smell = smell(25);
         for (auto const& x : things_in_sight)
         {
             if(x.second == "plant" || x.second == "leaf") 

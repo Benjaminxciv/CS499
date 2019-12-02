@@ -195,6 +195,21 @@ HRESULT SimulationApp::Initialize()
             (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
             NULL
         );
+
+        HWND c_hWndDebugging = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Toggle debugging"),
+            WS_CHILD | WS_VISIBLE,
+            1050,
+            160,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_DEBUGGING,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
         
         hr = m_hwnd ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
@@ -434,6 +449,10 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
                     {
                         pSimulationApp->sim.set_tick_speed(x100);
                     }
+                    if(LOWORD(wParam) == IDM_DEBUGGING)
+                    {
+                        debugging_enabled = !debugging_enabled;
+                    }
                     if(LOWORD(wParam) == IDM_STATUS_REPORT)
                     {
                         time_container curr_time = pSimulationApp->sim.get_simulation_time();
@@ -565,22 +584,70 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
     return result;
 }
 
+void SimulationApp::DrawVisionCone(mammal* target, ID2D1SolidColorBrush* brush)
+{
+    vector<point> vision_cone = target->get_vision_points();
+    ID2D1PathGeometry* cone;
+    HRESULT hr = m_pDirect2dFactory->CreatePathGeometry(&cone);
+    
+    if(SUCCEEDED(hr))
+    {
+        ID2D1GeometrySink *pSink = NULL;
+
+        hr = cone->Open(&pSink);
+        if (SUCCEEDED(hr))
+        {
+            pSink->SetFillMode(D2D1_FILL_MODE_WINDING);
+
+            pSink->BeginFigure(
+                D2D1::Point2F(vision_cone[0].x_loc, sim.get_world_height() - vision_cone[0].y_loc),
+                D2D1_FIGURE_BEGIN_FILLED
+                );
+            D2D1_POINT_2F points[] = {
+                D2D1::Point2F(vision_cone[1].x_loc, sim.get_world_height() - vision_cone[1].y_loc),
+                D2D1::Point2F(vision_cone[2].x_loc, sim.get_world_height() - vision_cone[2].y_loc),
+                };
+            pSink->AddLines(points, ARRAYSIZE(points));
+            pSink->EndFigure(D2D1_FIGURE_END_CLOSED);
+        }
+        hr = pSink->Close();
+
+        SafeRelease(&pSink);
+        m_pRenderTarget->DrawGeometry(cone, brush, 2.f);
+    }
+}
+
 void SimulationApp::DrawObject(environment_object* target)
 {
     HRESULT hr = S_OK;
+
+    int world_width = sim.get_world_width();
+    int world_height = sim.get_world_height();
     point target_loc = target->get_loc();
     //Offset location by 5 because the grid & objects go off-screen otherwise
-    D2D1_RECT_F e_obj_rect = D2D1::RectF(
+    /*D2D1_RECT_F e_obj_rect = D2D1::RectF(
         (target_loc.x_loc+5)-4.5f,
         (target_loc.y_loc+5)-4.5f,
         (target_loc.x_loc+5)+4.5f,
         (target_loc.y_loc+5)+4.5f
+    );*/
+    D2D1_RECT_F e_obj_rect = D2D1::RectF(
+        (target_loc.x_loc+5)-4.5f,
+        (world_height - target_loc.y_loc+5)-4.5f,
+        (target_loc.x_loc+5)+4.5f,
+        (world_height - target_loc.y_loc+5)+4.5f
     );
-    D2D1_RECT_F e_obj_outline_rect = D2D1::RectF(
+    /*D2D1_RECT_F e_obj_outline_rect = D2D1::RectF(
         (target_loc.x_loc+5)-5.0f,
         (target_loc.y_loc+5)-5.0f,
         (target_loc.x_loc+5)+5.0f,
         (target_loc.y_loc+5)+5.0f
+    );*/
+    D2D1_RECT_F e_obj_outline_rect = D2D1::RectF(
+        (target_loc.x_loc+5)-5.0f,
+        (world_height - target_loc.y_loc+5)-5.0f,
+        (target_loc.x_loc+5)+5.0f,
+        (world_height - target_loc.y_loc+5)+5.0f
     );
 
     // Draw the outline of a rectangle.
@@ -608,6 +675,10 @@ void SimulationApp::DrawObject(environment_object* target)
     else if(target_type == "predator")
     {
         predator* p_target = reinterpret_cast<predator*>(target);
+        if(debugging_enabled)
+        {
+            DrawVisionCone(p_target, m_pRedBrush);
+        }
         if(p_target->ready_to_reproduce())
         {
             brush = m_pRedBrush;
@@ -624,6 +695,10 @@ void SimulationApp::DrawObject(environment_object* target)
     else if(target_type == "grazer")
     {
         grazer* g_target = reinterpret_cast<grazer*>(target);
+        if(debugging_enabled)
+        {
+            DrawVisionCone(g_target, m_pNavyBrush);
+        }
         if(g_target->ready_to_reproduce())
         {
             brush = m_pCyanBrush;
@@ -645,6 +720,7 @@ void SimulationApp::DrawObject(environment_object* target)
             m_pRenderTarget->DrawRectangle(&e_obj_outline_rect, m_pRedBrush, 2.0);
         }
     }
+
     m_pRenderTarget->FillRectangle(&e_obj_rect, brush);
 }
 

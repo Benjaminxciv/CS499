@@ -17,7 +17,7 @@ struct point
     double x_loc;
     double y_loc;
     point() { }
-    point(int x, int y) : x_loc(x), y_loc(y) {}
+    point(double x, double y) : x_loc(x), y_loc(y) {}
     int distance(const point& p1, point p2) const
     {
         return sqrt(pow((p2.x_loc - p1.x_loc), 2) + pow((p2.y_loc - p1.y_loc), 2));

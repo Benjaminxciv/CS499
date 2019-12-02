@@ -27,6 +27,7 @@ class mammal : public environment_object
         double maintain_speed;
         int du_moved;
         float banked_moves;
+        vector<point> vision_points;
     public:
         mammal(point, int, int, int, double, double);
         mammal();
@@ -47,6 +48,7 @@ class mammal : public environment_object
         map<point, string> smell(int);
         direction find_direction(point);
         int get_energy_reproduce_min();
+        vector<point> get_vision_points();
 };
 
 #endif

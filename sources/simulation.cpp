@@ -564,7 +564,7 @@ bool barycentric_within(double x)
 
     return P == A || P == B || P == C || (barycentric_within(alpha) && barycentric_within(beta) && barycentric_within(gamma));
 }*/
-bool calc_barycentric(const point& A, const point& B, const point& C, const point& P)
+/*bool calc_barycentric(const point& A, const point& B, const point& C, const point& P)
 {
 	point v0 = B-A, v1 = C-A, v2 = P-A;
 
@@ -579,6 +579,26 @@ bool calc_barycentric(const point& A, const point& B, const point& C, const poin
 	double v = (d11 * d20 - d01 * d21) / denom;
 	double w = (d00 * d21 - d01 * d20) / denom;  
 	return v >= 0. && w >= 0. && v + w <= 1.;
+}*/
+
+bool right_of_line(const point a, const point b, const point c)
+{
+    return(((b.x_loc - a.x_loc) * (c.y_loc - a.y_loc) - (b.y_loc - a.y_loc) * (c.x_loc - a.x_loc)) <= 0);
+}
+
+bool left_of_line(const point a, const point b, const point c)
+{
+	return(((b.x_loc - a.x_loc) * (c.y_loc - a.y_loc) - (b.y_loc - a.y_loc) * (c.x_loc - a.x_loc)) >= 0);
+}
+
+bool is_in_triangle_right(const point p1, const point p2, const point p3, const point to_check)
+{
+    return (right_of_line(p1, p2, to_check) && right_of_line(p2, p3, to_check) && right_of_line(p3, p1, to_check));
+}
+
+bool is_in_triangle_left(const point p1, const point p2, const point p3, const point to_check)
+{
+	return (left_of_line(p1, p2, to_check) && left_of_line(p2, p3, to_check) && left_of_line(p3, p1, to_check));
 }
 
 bool simulation::process_sim_message()
@@ -599,8 +619,30 @@ bool simulation::process_sim_message()
 		message.set_time_info(future_clock.get_time());
 		return true;
 	}
+	else if(action == "child list")
+	{
+		int p_id = message.get_parent_id();
+		if(parent_children.count(p_id) == 0)
+		{
+			return false;
+		}
+		vector<int> c_list = parent_children.at(p_id);
+		message.set_child_list(c_list);
+		return true;
+	}
+	else if(action == "parent list")
+	{
+		int c_id = message.get_child_id();
+		if(children_parent.count(c_id) == 0)
+		{
+			return false;
+		}
+		vector<int> p_list = children_parent.at(c_id);
+		message.set_parent_list(p_list);
+		return true;
+	}
 	vector<point> location = message.get_location();
-	if(!sim_grid->check_bounds(location[0]))
+	if(location.size() == 1 && !sim_grid->check_bounds(location[0]))
 	{
 		return false;
 	}
@@ -704,76 +746,32 @@ bool simulation::process_sim_message()
 		else
 		{
 			point p1 = location[0];
-			/*if(p1.x_loc < 0)
-			{
-				p1.x_loc = 0;
-			}
-			if(p1.y_loc < 0)
-			{
-				p1.y_loc = 0;
-			}*/
 			point p2 = location[1];
-			/*if(p2.x_loc < 0)
-			{
-				p2.x_loc = 0;
-			}
-			if(p2.y_loc < 0)
-			{
-				p2.y_loc = 0;
-			}*/
 			point p3 = location[2];
-			/*if(p3.x_loc < 0)
-			{
-				p3.x_loc = 0;
-			}
-			if(p3.y_loc < 0)
-			{
-				p3.y_loc = 0;
-			}*/
 			point p4(-1,-1);
 			point p5(-1,-1);
 			point p6(-1,-1);
 			if(location.size() > 3)
 			{
 				p4 = location[3];
-				/*if(p4.x_loc < 0)
-				{
-					p4.x_loc = 0;
-				}
-				if(p4.y_loc < 0)
-				{
-					p4.y_loc = 0;
-				}*/
 				p5 = location[4];
-				/*if(p5.x_loc < 0)
-				{
-					p5.x_loc = 0;
-				}
-				if(p5.y_loc < 0)
-				{
-					p5.y_loc = 0;
-				}*/
 				p6 = location[5];
-				/*if(p6.x_loc < 0)
-				{
-					p6.x_loc = 0;
-				}
-				if(p6.y_loc < 0)
-				{
-					p6.y_loc = 0;
-				}*/
 			}
 			bool found_food = false;
 			for(int i = 0; i < created_objects.size(); i++)
 			{
 				environment_object* thing_in_cell = created_objects[i];
+				if(thing_in_cell->get_type() == "plant" || thing_in_cell->get_type() == "leaf")
+				{
+					int y = 0;
+				}
 				if(thing_in_cell->is_garbage())
 				{
 					continue;
 				}
 				point p = thing_in_cell->get_loc();
 				
-				if(calc_barycentric(p1, p2, p3, p))
+				if(is_in_triangle_right(p1, p2, p3, p) || is_in_triangle_left(p1, p2, p3, p))
 				{
 					if(thing_in_cell->get_type() == "plant" || thing_in_cell->get_type() == "leaf")
 					{
@@ -784,7 +782,7 @@ bool simulation::process_sim_message()
 				}
 				else if(p4.x_loc != -1)
 				{
-					if(calc_barycentric(p4, p5, p6, p))
+					if(is_in_triangle_right(p1, p2, p3, p) || is_in_triangle_left(p1, p2, p3, p))
 					{
 						message.add_multiple_response(p, thing_in_cell->get_type());
 					}
@@ -854,28 +852,6 @@ bool simulation::process_sim_message()
 			}
 		}
 		return false;
-	}
-	else if(action == "child list")
-	{
-		int p_id = message.get_parent_id();
-		if(parent_children.count(p_id) == 0)
-		{
-			return false;
-		}
-		vector<int> c_list = parent_children.at(p_id);
-		message.set_child_list(c_list);
-		return true;
-	}
-	else if(action == "parent list")
-	{
-		int c_id = message.get_child_id();
-		if(children_parent.count(c_id) == 0)
-		{
-			return false;
-		}
-		vector<int> p_list = children_parent.at(c_id);
-		message.set_parent_list(p_list);
-		return true;
 	}
 	else
 	{

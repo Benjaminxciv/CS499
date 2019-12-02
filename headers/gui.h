@@ -99,6 +99,8 @@ class SimulationApp
             LPARAM lParam
             );
 
+        void DrawVisionCone(mammal* target, ID2D1SolidColorBrush*);
+
         HWND m_hwnd;
         ID2D1Factory* m_pDirect2dFactory;
         ID2D1HwndRenderTarget* m_pRenderTarget;
@@ -118,6 +120,9 @@ class SimulationApp
         ID2D1SolidColorBrush* m_pRedBrush;
         ID2D1SolidColorBrush* m_pOrangeBrush;
         ID2D1SolidColorBrush* m_pMaroonBrush;
+        static bool debugging_enabled;
         
         simulation sim;
 };
+
+bool SimulationApp::debugging_enabled = false;
