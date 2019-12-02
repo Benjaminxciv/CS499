@@ -9,6 +9,7 @@ Last editor: MG*/
 #include "stdlib.h"
 #include "predator.h"
 #include "grazer.h"
+#include "geometry.h"
 
 #define DATAFILE "LifeSimulation01.xml"
 
@@ -581,31 +582,6 @@ bool barycentric_within(double x)
 	return v >= 0. && w >= 0. && v + w <= 1.;
 }*/
 
-bool right_of_line(const point a, const point b, const point c)
-{
-    return(((b.x_loc - a.x_loc) * (c.y_loc - a.y_loc) - (b.y_loc - a.y_loc) * (c.x_loc - a.x_loc)) <= 0);
-}
-
-bool left_of_line(const point a, const point b, const point c)
-{
-	return(((b.x_loc - a.x_loc) * (c.y_loc - a.y_loc) - (b.y_loc - a.y_loc) * (c.x_loc - a.x_loc)) >= 0);
-}
-
-bool is_in_triangle_right(const point p1, const point p2, const point p3, const point to_check)
-{
-    return (right_of_line(p1, p2, to_check) && right_of_line(p2, p3, to_check) && right_of_line(p3, p1, to_check));
-}
-
-bool is_in_triangle_left(const point p1, const point p2, const point p3, const point to_check)
-{
-	return (left_of_line(p1, p2, to_check) && left_of_line(p2, p3, to_check) && left_of_line(p3, p1, to_check));
-}
-
-bool point_in_triangle_petty(const point p1, const point p2, const point p3, const point to_check)
-{
-	return is_in_triangle_right(p1, p2, p3, to_check) || is_in_triangle_left(p1, p2, p3, to_check);
-}
-
 bool simulation::process_sim_message()
 {
 	sim_message& message = sim_message::get_instance(false);
@@ -776,7 +752,7 @@ bool simulation::process_sim_message()
 				}
 				point p = thing_in_cell->get_loc();
 				
-				if(point_in_triangle_petty(p1, p2, p3, p))
+				if(sim_ns::point_in_triangle_petty(p1, p2, p3, p))
 				{
 					if(thing_in_cell->get_type() == "plant" || thing_in_cell->get_type() == "leaf")
 					{
@@ -787,7 +763,7 @@ bool simulation::process_sim_message()
 				}
 				else if(p4.x_loc != -1)
 				{
-					if(point_in_triangle_petty(p1, p2, p3, p))
+					if(sim_ns::point_in_triangle_petty(p1, p2, p3, p))
 					{
 						message.add_multiple_response(p, thing_in_cell->get_type());
 					}
