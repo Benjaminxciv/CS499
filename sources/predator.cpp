@@ -19,7 +19,6 @@ predator::predator(point init_loc, std::string geno, int init_e, int e_output, i
     offspring_energy_level(offsprg_e_lvl),
     mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
-    banked_moves = 0;
 }
 
 predator::~predator()

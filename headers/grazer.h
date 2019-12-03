@@ -30,6 +30,7 @@ class grazer : public mammal
         bool slowed;
         bool food_in_sight;
         bool danger_in_sight;
+        float banked_cells_to_eat;
 
         const int eat_reach = 5;
         const int plant_sight_dist = 150;

@@ -11,15 +11,15 @@ grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_repr
     energy_input(e_input),
     mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
-    this->retained_movement_time    = false;
-    this->retained_eat_time         = false;
+    retained_movement_time = false;
+    retained_eat_time = false;
     retained_danger_time = false;
-    this->retained_gain_energy_time = false;
-    banked_moves = 0;
+    retained_gain_energy_time = false;
     slowed = false;
     food_in_sight = false;
     move_count = 0;
     danger_in_sight = false;
+    banked_cells_to_eat = 0;
 }
 
 grazer::~grazer()
@@ -57,11 +57,17 @@ bool grazer::eat(point food)
     int distance = location.distance(location, food);
     if(distance <= 5)
     {
+        banked_cells_to_eat += 0.073;
         retained_movement_time = false;
         curr_speed = init_speed;
+        if(banked_cells_to_eat >= 1)
+        {
+            message.eat_organism(food);
+            banked_cells_to_eat--;
+        }
         if(!retained_eat_time)
         {
-            message.get_future_time(1);
+            message.get_future_time(0,10);
             eat_time = message.get_time_info();
             retained_eat_time = true;
         }
@@ -74,9 +80,9 @@ bool grazer::eat(point food)
         if(current_time >= eat_time)
         {
             retained_eat_time = false;
-            message.eat_organism(food);
+            retained_gain_energy_time = false;
+            return false;
         }
-
         if(current_time >= gain_energy_time)
         {
             energy += energy_input;
@@ -86,9 +92,11 @@ bool grazer::eat(point food)
     }
     else
     {
+        banked_cells_to_eat = 0;
         dir = find_direction(food);
         return false;
     }
+    banked_cells_to_eat = 0;
     return false;
 }
 
@@ -195,7 +203,7 @@ void grazer::act()
     else if(retained_eat_time)
     {
         danger_in_sight = false;
-        map<point, string> things_in_smell = smell(25);
+        map<point, string> things_in_smell = smell(5);
         for (auto const& x : things_in_sight)
         {
             if(x.second == "plant" || x.second == "leaf") 

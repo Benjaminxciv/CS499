@@ -16,6 +16,7 @@ mammal::mammal(point init_loc, int init_e, int e_output, int e_reprod_min, doubl
 {
     dir = direction(rand() % 8 + 1);
     du_moved = 0;
+    banked_moves = 0;
 }
 
 mammal::mammal()
