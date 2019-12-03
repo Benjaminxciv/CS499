@@ -196,6 +196,67 @@ void mammal::reset_speed()
     this->current_speed = max_speed;
 }
 
+bool mammal::restrict_sight_boulder(vector<point> boulder_locs, point obj_loc)
+{
+    for(int i = 0; i < boulder_locs.size(); i++)
+    {
+        point boulder_loc = boulder_locs[i];
+        direction bould_dir = find_direction(boulder_loc);
+        switch(bould_dir)
+        {
+            case left:
+                if(obj_loc.x_loc < boulder_loc.x_loc)
+                {
+                    return false;
+                }
+                break;
+            case right:
+                if(obj_loc.x_loc > boulder_loc.x_loc)
+                {
+                    return false;
+                }
+                break;
+            case up:
+                if(obj_loc.y_loc > boulder_loc.y_loc)
+                {
+                    return false;
+                }
+                break;
+            case down:
+                if(obj_loc.y_loc < boulder_loc.y_loc)
+                {
+                    return false;
+                }
+                break;
+            case up_left:
+                if(obj_loc.x_loc <= boulder_loc.x_loc && obj_loc.y_loc >= boulder_loc.y_loc)
+                {
+                    return false;
+                }
+                break;
+            case up_right:
+                if(obj_loc.x_loc >= boulder_loc.x_loc && obj_loc.y_loc >= boulder_loc.y_loc)
+                {
+                    return false;
+                }
+                break;
+            case down_left:
+                if(obj_loc.x_loc <= boulder_loc.x_loc && obj_loc.y_loc <= boulder_loc.y_loc)
+                {
+                    return false;
+                }
+                break;
+            case down_right:
+                if(obj_loc.x_loc >= boulder_loc.x_loc && obj_loc.y_loc <= boulder_loc.y_loc)
+                {
+                    return false;
+                }
+                break;
+        }
+    }
+    return true;
+}
+
 map<point, string> mammal::sight(int radius)
 {
     vector<point> points_to_check;
@@ -250,9 +311,8 @@ map<point, string> mammal::sight(int radius)
     }
     points_to_check = {p1, p2, p3};
     vision_points = points_to_check;
-    point throwaway;
     sim_message& message = sim_message::get_instance();
-    message.look_at_cell(throwaway, points_to_check, this);
+    message.look_at_cell(location, points_to_check);
     map<point, string> results = message.get_multiple_responses();
     return results;
 }
@@ -275,9 +335,8 @@ map<point, string> mammal::smell(int radius)
     p6 = point(location.x_loc, location.y_loc+radius);
 
     points_to_check = {p1, p2, p3, p4, p5, p6};
-    point throwaway;
     sim_message& message = sim_message::get_instance();
-    message.look_at_cell(throwaway, points_to_check);
+    message.look_at_cell(location, points_to_check);
     map<point, string> results = message.get_multiple_responses();
     return results;
 }

@@ -84,13 +84,19 @@ void predator::act()
     point danger(-1, -1);
     point food(-1, -1);
 
-    point left(-1, -1);
-    point right(-1, -1);
-    point middle(-1, -1);
+    vector<point> boulder_locs;
 
     for (auto const& x : things_in_sight)
     {
-        if(x.second == "grazer" && food.x_loc == -1)
+        if(!restrict_sight_boulder(boulder_locs, x.first))
+        {
+            continue;
+        }
+        if(x.second == "boulder")
+        {
+            boulder_locs.push_back(x.first);
+        }
+        else if(x.second == "grazer" && food.x_loc == -1)
         {
             food = x.first;
         }

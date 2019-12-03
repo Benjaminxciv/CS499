@@ -13,7 +13,6 @@ Last editor: BP
 #include "environment_object.h"
 #include "sim_message.h"
 
-
 class mammal : public environment_object
 {
     protected:
@@ -28,6 +27,7 @@ class mammal : public environment_object
         int du_moved;
         float banked_moves;
         vector<point> vision_points;
+        bool restrict_sight_boulder(vector<point>, point);
     public:
         mammal(point, int, int, int, double, double);
         mammal();

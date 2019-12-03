@@ -37,7 +37,6 @@ class grazer : public mammal
 
         bool eat(point);
         direction invert_dir();
-        
 
     public:
         grazer(point, int, int, int, int, double, double);

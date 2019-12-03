@@ -5,6 +5,7 @@ Last edit: 11-18-2019
 Last editor: BP
 */
 #include "grazer.h"
+#include "geometry.h"
 
 grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_reprod_min, double m_spd, double maintain_spd) :
     energy_input(e_input),
@@ -126,41 +127,27 @@ grazer::direction grazer::invert_dir()
 void grazer::act()
 {
     map<point, string> things_in_sight = sight(150);
-    //return;   
     point danger(-1, -1);
     point food(-1, -1);
 
-    //point left(-1, -1);
-    //point right(-1, -1);
-    //point middle(-1, -1);
-    bool ignore_left = false;
-    bool ignore_right = false;
-    bool ignore_middle = false;
+    vector<point> boulder_locs;
 
     for (auto const& x : things_in_sight)
     {
+        if(!restrict_sight_boulder(boulder_locs, x.first))
+        {
+            continue;
+        }
         if(x.second == "boulder")
         {
-            direction obj_dir = find_direction(x.first);
-            if(obj_dir == left)
-            {
-                ignore_left = true;
-            }
-            else if(obj_dir == right)
-            {
-                ignore_right  = true;
-            }
-            else if(x.first.x_loc == location.x_loc)
-            {
-                ignore_middle = true;
-            }
+            boulder_locs.push_back(x.first);
         }
-        if(x.second == "predator" && x.first.distance(x.first, location) <= 25)
+        else if(x.second == "predator" && x.first.distance(x.first, location) <= 25)
         {
             danger = x.first;
             break;
         }
-        if((x.second == "plant" || x.second == "leaf") && !retained_eat_time)
+        else if((x.second == "plant" || x.second == "leaf") && !retained_eat_time)
         {
             if(food.x_loc == -1)
             {
@@ -189,6 +176,7 @@ void grazer::act()
             message.get_future_time(0, 7, 0);
             danger_time = message.get_time_info();
         }
+        //run away from danger
         dir = invert_dir();
     }
     else if(retained_danger_time)

@@ -726,39 +726,31 @@ bool simulation::process_sim_message()
 		}
 		else
 		{
-			point p1 = location[0];
-			point p2 = location[1];
-			point p3 = location[2];
+			point p1 = location[1];
+			point p2 = location[2];
+			point p3 = location[3];
 			point p4(-1,-1);
 			point p5(-1,-1);
 			point p6(-1,-1);
-			if(location.size() > 3)
+			if(location.size() > 4)
 			{
-				p4 = location[3];
-				p5 = location[4];
-				p6 = location[5];
+				p4 = location[4];
+				p5 = location[5];
+				p6 = location[6];
 			}
-			bool found_food = false;
 			for(int i = 0; i < created_objects.size(); i++)
 			{
 				environment_object* thing_in_cell = created_objects[i];
-				if(thing_in_cell->get_type() == "plant" || thing_in_cell->get_type() == "leaf")
-				{
-					int y = 0;
-				}
 				if(thing_in_cell->is_garbage())
 				{
 					continue;
 				}
 				point p = thing_in_cell->get_loc();
+				p.origin_x_loc = location[0].x_loc;
+				p.origin_y_loc = location[0].y_loc;
 				
 				if(sim_ns::point_in_triangle_petty(p1, p2, p3, p))
 				{
-					if(thing_in_cell->get_type() == "plant" || thing_in_cell->get_type() == "leaf")
-					{
-						found_food = true;
-						int x = 0;
-					}
 					message.add_multiple_response(p, thing_in_cell->get_type());
 				}
 				else if(p4.x_loc != -1)
@@ -768,10 +760,6 @@ bool simulation::process_sim_message()
 						message.add_multiple_response(p, thing_in_cell->get_type());
 					}
 				}
-			}
-			if(!found_food && organism != nullptr && organism->get_type() == "grazer" && reinterpret_cast<grazer*>(organism)->found_food())
-			{
-				int x =0;
 			}
 			return true;
 		}
