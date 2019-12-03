@@ -274,6 +274,10 @@ void grazer::act()
             message.die(this);
         }
     }
+    else
+    {
+        move_count = 0;
+    }
     if(energy <= 0)
     {
         message.die(this);
