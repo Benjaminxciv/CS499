@@ -256,50 +256,6 @@ void predator::act()
         }
     }
 
-    if(danger.x_loc != -1 && !ready_to_reproduce())
-    {
-        dir = invert_dir();
-    }
-    else if(g_food.x_loc != -1 && !ready_to_reproduce())
-    {
-        if(g_food.distance(g_food, location) <= 5)
-        {
-            if(eat_grazer())
-            {
-                if(message.eat_organism(g_food))
-                {
-                    int energy_to_gain = message.get_organism_energy();
-                    energy = energy += (energy_to_gain * .90);
-                }
-            }
-            return;
-        }
-        else
-        {
-            dir = find_direction(g_food);
-        }
-    }
-    else if(p_food.x_loc != -1 && !ready_to_reproduce())
-    {
-        if(p_food.distance(p_food, location) <= 5)
-        {
-            if(message.eat_organism(p_food, this))
-            {
-                int energy_to_gain = message.get_organism_energy();
-                energy = energy += (energy_to_gain * .90);
-            }
-            else
-            {
-                message.die(this);
-            }
-            return;
-        }
-        else
-        {
-            dir = find_direction(p_food);
-        }
-    }
-
     //move this between running from preds & before eating
     if(!is_pregnant && ready_to_reproduce())
     {
@@ -339,9 +295,52 @@ void predator::act()
                 dir = find_direction(mate);
             }
         }
-        
-        
     }
+
+    if(danger.x_loc != -1 && !ready_to_reproduce())
+    {
+        dir = invert_dir();
+    }
+    else if(g_food.x_loc != -1)
+    {
+        if(g_food.distance(g_food, location) <= 5)
+        {
+            if(eat_grazer())
+            {
+                if(message.eat_organism(g_food))
+                {
+                    int energy_to_gain = message.get_organism_energy();
+                    energy = energy += (energy_to_gain * .90);
+                }
+            }
+            return;
+        }
+        else
+        {
+            dir = find_direction(g_food);
+        }
+    }
+    else if(p_food.x_loc != -1 && !ready_to_reproduce())
+    {
+        if(p_food.distance(p_food, location) <= 5)
+        {
+            if(message.eat_organism(p_food, this))
+            {
+                int energy_to_gain = message.get_organism_energy();
+                energy = energy += (energy_to_gain * .90);
+            }
+            else
+            {
+                message.die(this);
+            }
+            return;
+        }
+        else
+        {
+            dir = find_direction(p_food);
+        }
+    }
+
     if(babies.size() > 0)
     {
         if(current_time >= babies[0])
