@@ -331,8 +331,8 @@ map<point, string> mammal::smell(int radius)
     p2 = point(location.x_loc+radius, location.y_loc-1);
     p3 = point(location.x_loc, location.y_loc-radius);
 
-    p4 = point(location.x_loc-radius, location.y_loc+1);
-    p5 = point(location.x_loc+radius, location.y_loc+1);
+    p4 = point(location.x_loc-1-radius, location.y_loc);
+    p5 = point(location.x_loc+1+radius, location.y_loc);
     p6 = point(location.x_loc, location.y_loc+radius);
 
     points_to_check = {p1, p2, p3, p4, p5, p6};
