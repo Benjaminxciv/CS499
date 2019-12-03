@@ -389,6 +389,38 @@ mammal::direction mammal::find_direction(point compare)
     return up;
 }
 
+mammal::direction mammal::invert_dir()
+{
+    switch(dir)
+    {
+        case up:
+            return down;
+            break;
+        case down:
+            return up;
+            break;
+        case left:
+            return right;
+            break;
+        case right:
+            return left;
+            break;
+        case up_left:
+            return down_right;
+            break;
+        case up_right:
+            return down_left;
+            break;
+        case down_left:
+            return up_right;
+            break;
+        case down_right:
+            return up_left;
+            break;
+    }
+    return up;
+}
+
 int mammal::get_energy_reproduce_min()
 {
     return energy_reproduce_min;

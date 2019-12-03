@@ -625,24 +625,12 @@ void SimulationApp::DrawObject(environment_object* target)
     int world_height = sim.get_world_height();
     point target_loc = target->get_loc();
     //Offset location by 5 because the grid & objects go off-screen otherwise
-    /*D2D1_RECT_F e_obj_rect = D2D1::RectF(
-        (target_loc.x_loc+5)-4.5f,
-        (target_loc.y_loc+5)-4.5f,
-        (target_loc.x_loc+5)+4.5f,
-        (target_loc.y_loc+5)+4.5f
-    );*/
     D2D1_RECT_F e_obj_rect = D2D1::RectF(
         (target_loc.x_loc+5)-4.5f,
         (world_height - target_loc.y_loc+5)-4.5f,
         (target_loc.x_loc+5)+4.5f,
         (world_height - target_loc.y_loc+5)+4.5f
     );
-    /*D2D1_RECT_F e_obj_outline_rect = D2D1::RectF(
-        (target_loc.x_loc+5)-5.0f,
-        (target_loc.y_loc+5)-5.0f,
-        (target_loc.x_loc+5)+5.0f,
-        (target_loc.y_loc+5)+5.0f
-    );*/
     D2D1_RECT_F e_obj_outline_rect = D2D1::RectF(
         (target_loc.x_loc+5)-5.0f,
         (world_height - target_loc.y_loc+5)-5.0f,
@@ -713,7 +701,7 @@ void SimulationApp::DrawObject(environment_object* target)
         }
         if(g_target->found_food())
         {
-            m_pRenderTarget->DrawRectangle(&e_obj_outline_rect, m_pGreenBrush);
+            m_pRenderTarget->DrawRectangle(&e_obj_outline_rect, m_pGreenBrush, 2.0);
         }
         if(g_target->found_danger())
         {

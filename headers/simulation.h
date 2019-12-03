@@ -40,7 +40,8 @@ class simulation
         point find_empty_cell(point, int search_radius = 1);
         vector<environment_object*> created_objects;
         map<int, vector<int>> parent_children;
-        map<int, vector<int>> children_parent;
+        map<int, int> children_parent;
+        map<int, vector<predator*>> unborn_babies;
     public:
         simulation();
         ~simulation();
@@ -59,7 +60,10 @@ class simulation
         bool create_leaf(point, int, int);
         bool create_seed(point);
         bool create_grazer(point, int, int p_id = -1);
-        bool create_predator(point, int, char*, bool, vector<int> p_id_list = {});
+        bool create_predator(point, int, char*, bool, int parent = -1);
+        bool homo_recessive_fight(bool, bool, bool);
+        bool homo_dominant_fight(bool, bool, bool);
+        bool hetero_fight(bool, bool, bool);
         void increment_simulation_clock();
         time_container get_simulation_time();
         bool process_sim_message();

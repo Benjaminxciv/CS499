@@ -37,7 +37,6 @@ class grazer : public mammal
         const int pred_sight_dist = 25;
 
         bool eat(point);
-        direction invert_dir();
 
     public:
         grazer(point, int, int, int, int, double, double);

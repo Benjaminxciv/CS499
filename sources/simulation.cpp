@@ -119,30 +119,36 @@ void simulation::iterate_cells()
 	{
 		environment_object* garbage = garbage_collection[iter];
 		created_objects.erase(remove(created_objects.begin(), created_objects.end(), garbage), created_objects.end());
-		map<int, vector<int>>::iterator it;
 		int g_id = garbage->get_id();
 		//check if object was a parent
-		it = parent_children.find(g_id);
-		if(it != parent_children.end())
+		auto p_it = parent_children.find(g_id);
+		if(p_it != parent_children.end())
 		{
-			//if it was, remove it from any child's parent list
-			for(auto& x : children_parent)
+			//if it was, remove it from any child
+			for(auto it = children_parent.begin(); it != children_parent.end();)
 			{
-				x.second.erase(remove(x.second.begin(), x.second.end(), g_id), x.second.end());
+				if(it->second == g_id)
+				{
+					it = children_parent.erase(it);
+				}
+				else
+				{
+					++it;
+				}
 			}
 			//remove it from parent map
-			parent_children.erase(it);
+			parent_children.erase(p_it);
 		}
 		//check if object was a child
-		it = children_parent.find(g_id);
-		if(it != children_parent.end())
+		auto c_it = children_parent.find(g_id);
+		if(c_it != children_parent.end())
 		{
 			//if it was, remove it from any parent's children list
 			for(auto& x : parent_children)
 			{
 				x.second.erase(remove(x.second.begin(), x.second.end(), g_id), x.second.end());
 			}
-			children_parent.erase(it);
+			children_parent.erase(c_it);
 		}
 		delete garbage;
 	}
@@ -262,7 +268,7 @@ bool simulation::create_leaf(point start_pt, int diameter, int p_id)
 	}
 	created_objects.push_back(lf);
 	parent_children[p_id].push_back(lf->get_id());
-	children_parent[lf->get_id()].push_back(p_id);
+	children_parent[lf->get_id()] = p_id;
 	return true;
 }
 
@@ -312,7 +318,7 @@ bool simulation::create_grazer(point grazer_pt, int init_energy, int p_id)
 	if(p_id > 0)
 	{
 		parent_children[p_id].push_back(grz->get_id());
-		children_parent[grz->get_id()].push_back(p_id);
+		children_parent[grz->get_id()] = p_id;
 	}
 	return true;
 }
@@ -347,9 +353,9 @@ char pred_factory_punnett_square(char gene_one, char gene_two)
 }
 
 bool simulation::create_predator(point predator_pt, int init_energy, char* genotype,
-							bool is_offspring = false, vector<int> p_id_list)
+							bool is_offspring = false, int parent)
 {
-	if(!sim_grid->check_bounds(predator_pt))
+	if(!is_offspring && !sim_grid->check_bounds(predator_pt))
 	{
 		return false;
 	}
@@ -390,25 +396,214 @@ bool simulation::create_predator(point predator_pt, int init_energy, char* genot
 	
 	predator* pred = new predator(predator_pt, genotype_str, init_energy, pred_energy_output, pred_energy_reprod, pred_max_speed, pred_maintain_speed,
 									pred_max_speed_hod, pred_max_speed_hed, pred_max_speed_hor, pred_max_offspring,
-									pred_gestation_period, pred_offspring_energy_level);
-	if(sim_grid->check_bounds(predator_pt) && sim_grid->get_cell_contents(predator_pt) == nullptr)
+									pred_gestation_period, pred_offspring_energy_level, is_offspring);
+	if(!is_offspring)
 	{
-		sim_grid->set_cell_contents(predator_pt, pred);
+		if(sim_grid->check_bounds(predator_pt) && sim_grid->get_cell_contents(predator_pt) == nullptr)
+		{
+			sim_grid->set_cell_contents(predator_pt, pred);
+		}
+		else
+		{
+			return false;
+		}
+		created_objects.push_back(pred);
 	}
+	else
+	{
+		parent_children[parent].push_back(pred->get_id());
+		children_parent[pred->get_id()] = parent;
+		unborn_babies[parent].push_back(pred);
+	}
+	return true;
+}
+
+/*
+Name: homo_recessive_fight()
+Purpose: handles the logic and execution if the ss_predator fought another predator.
+Trace: Traces to Epic 3, acceptance criteria 3
+Parameters: 2 char of genotype for Strength (ss,SS,sS||Ss). it's the genotype of the encountered predator.
+Returns: bool if the ss_predator won the fight or not.
+*/
+bool simulation::homo_recessive_fight(bool p2_s_homo_dom, bool p2_s_het_dom, bool p2_s_homo_rec)
+{
+    //if this is true, then pred2 has ss or SS
+    if(p2_s_homo_dom)
+	{
+		int recessive_vs_dominant = (rand() % 100 + 1);
+		if (recessive_vs_dominant >= 96)
+		{
+			//pred1 wins. 
+			return true;
+		}
+		//pred1 lost the fight
+		else 
+		{
+			return false;
+		}    
+	}
+	if(p2_s_homo_rec)
+	{
+		//pred1 has a 50% success rate of killing pred2.
+		int recessive_vs_recessive = predator::success_generator();
+		if ((recessive_vs_recessive == 1) || (recessive_vs_recessive ==2))
+		{
+			//pred2 dies
+			return true;
+		}
+		else 
+		{
+			//pred2 wins and eats pred1.
+			return false;
+		}
+	}
+     //if this happens, then pred2 is sS or Ss.
+    else if(p2_s_het_dom)
+    {
+        //pred1 is 25% successful
+        int dominant_vs_hetero = predator::success_generator();
+        if (dominant_vs_hetero == 1)
+        {
+            //means pred2 failed. pred1 wins.
+            return true;
+        }
+        else
+        {
+            //means pred2 won. pred1 dies.
+            return false;
+        }
+    }
+	else
+	{
+		//handle error
+		return false;
+	}
+}
+
+
+/*
+Name: homo_dominant_fight() 
+Purpose: handles the logic and execution if the SS_predator fought another predator.
+Trace: Traces to Epic 3, acceptance criteria 3
+Parameters: 2 char of genotype for Strength (ss,SS,sS||Ss). it's the genotype of the encountered predator.
+Returns: bool if the SS_predator won the fight or not.
+*/
+bool simulation::homo_dominant_fight(bool p2_s_homo_dom, bool p2_s_het_dom, bool p2_s_homo_rec)
+{
+    //if this is true, then pred2 has ss or SS
+    if(p2_s_homo_dom)
+	{
+		int dominant_vs_dominant = predator::success_generator();
+		if ((dominant_vs_dominant == 1) || (dominant_vs_dominant == 2))
+		{
+			//pred1 wins. 
+			return true;
+		}
+		//pred1 lost the fight
+		else 
+		{
+			return false;
+		}
+	}
+	if(p2_s_homo_rec)
+	{
+		//pred1 has a 95% success rate of killing pred2.
+		int dominant_vs_recessive = (rand() %  100 + 1);
+		if (dominant_vs_recessive <= 95)
+		{
+			//pred2 dies
+			return true;
+		}
+		else 
+		{
+			//pred2 wins and eats pred1.
+			return false;
+		}
+	}
+     //if this happens, then pred2 is sS or Ss.
+    else if(p2_s_het_dom)
+    {
+        //pred1 is 75% successful
+        int dominant_vs_hetero = predator::success_generator();
+        if (dominant_vs_hetero == 1)
+        {
+            //means pred1 failed. pred2 wins.
+            return false;
+        }
+        else
+        {
+            //means pred1 won. pred2 dies.
+            return true;
+        }
+    }
+	else
+	{
+		//handle errors
+		return false;
+	}
+}
+
+
+/*
+Name: hetero_fight()
+Purpose: handles the logic and execution if the sS_predator fought another predator.
+Trace: Traces to Epic 3, acceptance criteria 3
+Parameters: 2 char of genotype for Strength (ss,SS,sS||Ss). it's the genotype of the encountered predator.
+Returns: bool if the Ss_predator won the fight or not.
+*/
+bool simulation::hetero_fight(bool p2_s_homo_dom, bool p2_s_het_dom, bool p2_s_homo_rec)
+{
+	//if this is true, then pred2 has ss or SS
+    if(p2_s_homo_dom)
+	{
+		int hetero_vs_dominant = predator::success_generator();
+		if (hetero_vs_dominant == 1)
+		{
+			//pred1 wins. 
+			return true;
+		}
+		//pred1 lost the fight
+		else 
+		{
+			return false;
+		}    
+	}
+	//if this happens, then pred2 is ss.
+	else if(p2_s_homo_rec)
+	{
+		//pred1 is 75% successful
+		int hetero_vs_recessive = predator::success_generator();
+		if (hetero_vs_recessive == 1)
+		{
+			//means pred1 failed. pred2 wins.
+			return false;
+		}
+		else
+		{
+			//means pred1 won. pred2 dies.
+			return true;
+		}
+	}
+    //if this is true, then pred2 is sS or Ss.
+    else if(p2_s_het_dom)
+    {
+        //pred1 has a 50% success rate of killing pred2.
+        int hetero_vs_hetero = predator::success_generator();
+        if ((hetero_vs_hetero == 1) || (hetero_vs_hetero ==2))
+        {
+            //pred2 dies
+            return true;
+        }
+        else 
+        {
+            //pred2 wins and eats pred1.
+            return false;
+        }
+    }
 	else
 	{
 		return false;
 	}
-	created_objects.push_back(pred);
-	if(is_offspring)
-	{
-		for(int i = 0; i < p_id_list.size(); i++)
-		{
-			parent_children[p_id_list[i]].push_back(pred->get_id());
-			children_parent[pred->get_id()].push_back(p_id_list[i]);
-		}
-	}
-	return true;
 }
 
 void simulation::init_sim()
@@ -618,8 +813,8 @@ bool simulation::process_sim_message()
 		{
 			return false;
 		}
-		vector<int> p_list = children_parent.at(c_id);
-		message.set_parent_list(p_list);
+		int parent = children_parent.at(c_id);
+		message.set_parent(parent);
 		return true;
 	}
 	vector<point> location = message.get_location();
@@ -648,6 +843,48 @@ bool simulation::process_sim_message()
 			return false;
 		}
 	}
+	else if(action == "predator birth")
+	{
+		int p_id = message.get_parent_id();
+		if(unborn_babies.count(p_id) == 0)
+		{
+			return false;
+		}
+		vector<predator*> b_list = unborn_babies.at(p_id);
+		for(int i = 0; i < b_list.size(); i++)
+		{
+			point pt = find_empty_cell(location[0], 5);
+			if(pt == location[0])
+			{
+				continue;
+			}
+			else
+			{
+				if(sim_grid->check_bounds(pt))
+				{
+					b_list[i]->set_location(pt);
+					sim_grid->set_cell_contents(pt, b_list[i]);
+					created_objects.push_back(b_list[i]);
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+		for(auto it = unborn_babies.begin(); it != unborn_babies.end();)
+		{
+			if(it->first == p_id)
+			{
+				it = unborn_babies.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+		return true;
+	}
 	else if(action == "place organism")
 	{
 		int search_radius = message.get_search_radius();
@@ -662,6 +899,10 @@ bool simulation::process_sim_message()
 				return false;
 			}
 			return create_seed(location[0]);
+		}
+		else if(message.get_environment_obj_type() == "predator")
+		{
+
 		}
 		return false;
 	}
@@ -693,9 +934,38 @@ bool simulation::process_sim_message()
 	{
 		if(target_cell_contents != nullptr)
 		{
-			std::string target_type = target_cell_contents->get_type();
-			if(target_type == "grazer" || target_type == "predator")
+			if(organism != nullptr && organism->get_type() == "predator")
 			{
+				std::string target_type = target_cell_contents->get_type();
+				predator* p_org = reinterpret_cast<predator*>(organism);
+				if(target_type == "predator")
+				{
+					predator* p_target = reinterpret_cast<predator*>(target_cell_contents);
+					bool s_homo_dom = p_target->get_s_homo_dom();
+					bool s_het_dom = p_target->get_s_het_dom();
+					bool s_homo_rec = p_target->get_s_homo_rec();
+					if(p_org->get_s_homo_dom())
+					{
+						if(!homo_dominant_fight(s_homo_dom, s_het_dom, s_homo_rec))
+						{
+							return false;
+						}
+					}
+					if(p_org->get_s_het_dom())
+					{
+						if(!hetero_fight(s_homo_dom, s_het_dom, s_homo_rec))
+						{
+							return false;
+						}
+					}
+					if(p_org->get_s_homo_rec())
+					{
+						if(!homo_recessive_fight(s_homo_dom, s_het_dom, s_homo_rec))
+						{
+							return false;
+						}
+					}
+				}
 				mammal* target_mammal = reinterpret_cast<mammal*>(target_cell_contents);
 				message.set_organism_energy(target_mammal->get_energy());
 			}
@@ -752,12 +1022,14 @@ bool simulation::process_sim_message()
 				if(sim_ns::point_in_triangle_petty(p1, p2, p3, p))
 				{
 					message.add_multiple_response(p, thing_in_cell->get_type());
+					message.add_cell_id(p, thing_in_cell->get_id());
 				}
 				else if(p4.x_loc != -1)
 				{
 					if(sim_ns::point_in_triangle_petty(p1, p2, p3, p))
 					{
 						message.add_multiple_response(p, thing_in_cell->get_type());
+						message.add_cell_id(p, thing_in_cell->get_id());
 					}
 				}
 			}
@@ -791,11 +1063,7 @@ bool simulation::process_sim_message()
 					int offspring_count = rand() % max_offspring + 1;
 					for(int i = 0; i < offspring_count; i++)
 					{
-						point empty_spot = find_empty_cell(pred1->get_loc());
-						if(empty_spot == pred1->get_loc())
-						{
-							continue;
-						}
+						point init_loc(-1, -1);
 						std::string p1_genes = pred1->get_genotype();
 						std::string p2_genes = pred2->get_genotype();
 						char agr1 = pred_factory_punnett_square(p1_genes[0], p1_genes[1]);
@@ -804,9 +1072,24 @@ bool simulation::process_sim_message()
 						char str2 = pred_factory_punnett_square(p2_genes[3], p2_genes[4]);
 						char spd1 = pred_factory_punnett_square(p1_genes[6], p1_genes[7]);
 						char spd2 = pred_factory_punnett_square(p2_genes[6], p2_genes[7]);
-						std::string new_genotype{agr1, agr2, str1, str2, spd1, spd2};
-						vector<int> parents = {pred1->get_id(), pred2->get_id()};
-						create_predator(empty_spot, 0, &new_genotype[0], true, parents);
+						std::string new_genotype{agr1, agr2, ' ', str1, str2, ' ', spd1, spd2};
+						int parent = pred1->get_id();
+						create_predator(init_loc, 0, &new_genotype[0], true, parent);
+					}
+					for(int i = 0; i < offspring_count; i++)
+					{
+						point init_loc(-1, -1);
+						std::string p1_genes = pred1->get_genotype();
+						std::string p2_genes = pred2->get_genotype();
+						char agr1 = pred_factory_punnett_square(p1_genes[0], p1_genes[1]);
+						char agr2 = pred_factory_punnett_square(p2_genes[0], p2_genes[1]);
+						char str1 = pred_factory_punnett_square(p1_genes[3], p1_genes[4]);
+						char str2 = pred_factory_punnett_square(p2_genes[3], p2_genes[4]);
+						char spd1 = pred_factory_punnett_square(p1_genes[6], p1_genes[7]);
+						char spd2 = pred_factory_punnett_square(p2_genes[6], p2_genes[7]);
+						std::string new_genotype{agr1, agr2, ' ', str1, str2, ' ', spd1, spd2};
+						int parent = pred2->get_id();
+						create_predator(init_loc, 0, &new_genotype[0], true, parent);
 					}
 					return true;
 				}

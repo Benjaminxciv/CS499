@@ -29,7 +29,7 @@ sim_message& sim_message::get_instance(bool reset)
         sim_message_instance.multiple_responses.clear();
         sim_message_instance.energy_from_organism = -1;
         sim_message_instance.children_list.clear();
-        sim_message_instance.parent_list.clear();
+        sim_message_instance.parent = -1;
     }
     return sim_message_instance;
 }
@@ -176,9 +176,10 @@ bool sim_message::die(environment_object* organism_to_die)
     return sim->process_sim_message();
 }
 
-bool sim_message::eat_organism(point target_loc)
+bool sim_message::eat_organism(point target_loc, environment_object* eater)
 {
     action_requested = "eat organism";
+    organism = eater;
     location.push_back(target_loc);
     return sim->process_sim_message();
 }
@@ -247,6 +248,14 @@ bool sim_message::request_child_list(int p_id)
     return sim->process_sim_message();
 }
 
+bool sim_message::request_birth(int p_id, point birth_loc)
+{
+    action_requested = "predator birth";
+    location.push_back(birth_loc);
+    parent_id = p_id;
+    return sim->process_sim_message();
+}
+
 bool sim_message::request_parent_list(int c_id)
 {
     action_requested = "parent list";
@@ -259,9 +268,14 @@ void sim_message::set_child_list(vector<int> c_list)
     children_list = c_list;
 }
 
-void sim_message::set_parent_list(vector<int> p_list)
+void sim_message::set_baby_list(vector<int> b_list)
 {
-    parent_list = p_list;
+    baby_list = b_list;
+}
+
+void sim_message::set_parent(int par)
+{
+    parent = par;
 }
 
 vector<int> sim_message::get_child_list()
@@ -269,7 +283,22 @@ vector<int> sim_message::get_child_list()
     return children_list;
 }
 
-vector<int> sim_message::get_parent_list()
+vector<int> sim_message::get_baby_list()
 {
-    return parent_list;
+    return baby_list;
+}
+
+int sim_message::get_parent()
+{
+    return parent;
+}
+
+map<point, int> sim_message::get_cell_ids()
+{
+    return cell_ids;
+}
+
+void sim_message::add_cell_id(point cell_pt, int id)
+{
+    cell_ids.insert(make_pair(cell_pt, id));
 }

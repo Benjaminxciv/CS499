@@ -28,6 +28,7 @@ class mammal : public environment_object
         float banked_moves;
         vector<point> vision_points;
         bool restrict_sight_boulder(vector<point>, point);
+        direction invert_dir();
     public:
         mammal(point, int, int, int, double, double);
         mammal();

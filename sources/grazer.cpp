@@ -100,38 +100,6 @@ bool grazer::eat(point food)
     return false;
 }
 
-grazer::direction grazer::invert_dir()
-{
-    switch(dir)
-    {
-        case up:
-            return down;
-            break;
-        case down:
-            return up;
-            break;
-        case left:
-            return right;
-            break;
-        case right:
-            return left;
-            break;
-        case up_left:
-            return down_right;
-            break;
-        case up_right:
-            return down_left;
-            break;
-        case down_left:
-            return up_right;
-            break;
-        case down_right:
-            return up_left;
-            break;
-    }
-    return up;
-}
-
 void grazer::act()
 {
     map<point, string> things_in_sight = sight(150);

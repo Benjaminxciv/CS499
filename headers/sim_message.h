@@ -26,12 +26,14 @@ class sim_message
         //things returned from simulation:
         std::string simulation_response;
         map<point, std::string> multiple_responses;
+        map<point, int> cell_ids;
         int energy_from_organism;
         time_container time_info;
         simulation* sim;
         environment_object* garbage;
         vector<int> children_list;
-        vector<int> parent_list;
+        vector<int> baby_list;
+        int parent;
         sim_message();
         ~sim_message();
     public:
@@ -60,7 +62,7 @@ class sim_message
         bool place_organism(point, std::string, int, int search_ring = 1);
         bool replace_organism(point, std::string);
         bool die(environment_object*);
-        bool eat_organism(point);
+        bool eat_organism(point, environment_object* eater = nullptr);
         bool look_at_cell(point, vector<point> = vector<point>());
         bool request_reproduce(point, environment_object*);
         void set_garbage(environment_object*);
@@ -69,12 +71,17 @@ class sim_message
         void set_parent_id(int id);
         int get_parent_id();
         bool request_child_list(int);
+        bool request_birth(int, point);
         bool request_parent_list(int);
         void set_child_list(vector<int>);
-        void set_parent_list(vector<int>);
+        void set_baby_list(vector<int>);
+        void set_parent(int);
         vector<int> get_child_list();
-        vector<int> get_parent_list();
+        vector<int> get_baby_list();
+        int get_parent();
         environment_object* get_garbage();
+        map<point, int> get_cell_ids();
+        void add_cell_id(point, int);
 };
 
 
