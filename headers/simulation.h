@@ -1,8 +1,8 @@
 /*
 Name: simulation.h
-Purpose: Contains all header file information for simulation.cpp, controls flow of Life Simulation
-Last edit: 
-Last editor: 
+Purpose: Contains all header file information for simulation.cpp, controls flow of Life Simulation.
+Last edit: 12-3-19
+Last editor: AW
 */
 
 

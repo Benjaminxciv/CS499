@@ -1,7 +1,7 @@
 /*
 Name: environment_object.h
-Purpose: Header file for environment_object. 
-Last edit: 11-12-2019
+Purpose: Header file for environment_objects and point. Point represents the x,y location on the simulation grid. 
+Last edit: 12-3-19
 Last editor: MG
 */
 

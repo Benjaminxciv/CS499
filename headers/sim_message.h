@@ -1,3 +1,10 @@
+/*
+Name: sim_message.h
+Purpose: Header file for sim_message. These are all the wrappers for simulation calls.  
+Last edit: 12-3-19
+Last editor: AW
+*/
+
 #ifndef SIM_MESSAGE_H
 #define SIM_MESSAGE_H
 

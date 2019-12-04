@@ -1,6 +1,6 @@
 /*Name: mammal.cpp
 Purpose: Defines the structure for creating mammal objects and their functions: move ,reproduce, & gain_energy
-Last edit: 10-27-19/
+Last edit: 12-3-19/
 Last editor: BP*/
 
 #include "mammal.h"

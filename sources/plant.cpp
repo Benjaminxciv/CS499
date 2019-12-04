@@ -1,7 +1,7 @@
 /*
 Name: plant.cpp
 Purpose: Class defining all the plant's function, such as location and growing pattern.
-Last edit: 11-25-2019
+Last edit: 12-3-2019
 Last editor: MG
 */
 

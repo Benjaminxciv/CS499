@@ -1,3 +1,10 @@
+/*
+Name: sim_message.cpp
+Purpose: Class file for sim_message. These are all the wrappers for simulation calls. This is the one communicator to the simulation.
+        Thus, grid is preserved with this method. 
+Last edit: 12-3-19
+Last editor: AW
+*/
 #include "sim_message.h"
 
 sim_message::sim_message()

@@ -1,7 +1,7 @@
 /*
 Name: seed.cpp
 Purpose: Class defining all the seed_pod function, such as grow timer and instantiation of plant.
-Last edit: 11-10-2019
+Last edit: 12-3-2019
 Last editor: MG
 */
 

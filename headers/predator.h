@@ -1,7 +1,7 @@
 /*
 Name: predator.h
 Purpose: Header file for predators.
-Last edit: 09-29-2019
+Last edit: 12-3-19
 Last editor: MG
 */
 

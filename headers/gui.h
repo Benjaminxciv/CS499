@@ -1,6 +1,6 @@
 /*Name: gui.h
 Purpose: Definition of SimulationApp class for the GUI
-Last edit: 10-27-19
+Last edit: 12-3-19
 Last editor: AW
 Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-quickstart*/
 

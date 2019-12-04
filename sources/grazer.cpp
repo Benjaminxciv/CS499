@@ -1,7 +1,7 @@
 /*
 Name: grazer.cpp
 Purpose: Grazer's class that defines their EU consumption and reproduction information.
-Last edit: 11-18-2019
+Last edit: 12-3-19
 Last editor: BP
 */
 #include "grazer.h"

@@ -1,7 +1,7 @@
 /*
 Name: predator.cpp
 Purpose: Class to define predator's functions, such as energy units, reproduction, and genetic traits.
-Last edit: 09-29-2019
+Last edit: 12-3-2019
 Last editor: MG
 */
 
@@ -182,7 +182,6 @@ void predator::act()
 {
     map<point, string> things_in_sight = sight(150);
     sim_message& message = sim_message::get_instance(false);
-    //map<point, int> ids_in_sight = message.get_cell_ids();
     map<point, int> ids_in_sight;
     point danger(-1, -1);
     point g_food(-1, -1);
@@ -256,7 +255,6 @@ void predator::act()
         }
     }
 
-    //move this between running from preds & before eating
     if(!is_pregnant && ready_to_reproduce())
     {
         sim_message& message = sim_message::get_instance();
@@ -348,13 +346,9 @@ void predator::act()
             is_pregnant = false;
             message = sim_message::get_instance();
             message.request_birth(id, location);
-            //remove children after 1 hour
-            //message.request_child_list(id);
-            //message.get_child_list();
             babies.erase(babies.begin());
         }
     }
-    //loop for move rate
     banked_moves += float(current_speed/60);
     move();
     if(energy <= 0)

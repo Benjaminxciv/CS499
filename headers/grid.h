@@ -1,7 +1,9 @@
-/*******************************************************************
-*   grid.h
-*   Date: 09/04/19
-*******************************************************************/
+/*
+Name: grid.h
+Purpose: Header file for the grid. 
+Last edit: 12-3-19
+Last editor: MG
+*/
 
 #ifndef GRID_H
 #define GRID_H

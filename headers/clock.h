@@ -1,7 +1,7 @@
 /*
 Name: clock.h
-Purpose: Contains all header file information for clock.cpp, keeps central time for Life Simulation
-Last edit: 10-22-20
+Purpose: Contains all header file information for clock.cpp, keeps central time for Life Simulation.
+Last edit: 12-3-19
 Last editor: MG
 */
 

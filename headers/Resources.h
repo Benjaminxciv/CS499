@@ -1,3 +1,10 @@
+/*
+Name: Resources.h
+Purpose: Header file for resources to finish the GUI. 
+Last edit: 12-3-19
+Last editor: MG
+*/
+
 #define IDM_SET_TICK_X0 (149)
 #define IDM_SET_TICK_X1 (150)
 #define IDM_SET_TICK_X10 (151)

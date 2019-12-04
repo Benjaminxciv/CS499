@@ -1,7 +1,7 @@
 /*
 Name: mammal.h
 Purpose: Header file for mammal.cpp.
-Last edit: 10-27-2019
+Last edit: 12-3-2019
 Last editor: BP
 */
 

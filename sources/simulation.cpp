@@ -1,8 +1,9 @@
 
 /*Name: simulation.cpp
 Purpose: Runs the actual simulation, including calling all cell residents and passing their messages
-Last edit: 10-22-20
-Last editor: MG*/
+Last edit: 12-3-19
+Last editor: AW*/
+
 #include <iostream>
 #include "LifeSimDataParser.h"
 #include "simulation.h"

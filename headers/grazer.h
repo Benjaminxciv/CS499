@@ -1,7 +1,7 @@
 /*
 Name: grazer.h
-Purpose: Header file for grazers.
-Last edit: 11-18-2019
+Purpose: Header file for grazers. Has functions for the grazer's behaviors. 
+Last edit: 12-2-2019
 Last editor: BP
 */
 

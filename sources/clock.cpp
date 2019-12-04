@@ -1,12 +1,12 @@
 /*Name: clock.cpp
-Purpose: Keep time for Life Simulation, provides central clock for all objects to time their actions.
-Last edit: 10-22-20
+Purpose: Defines the timesteps for the simulation clock. Allows us to compare times directly. 
+Last edit: 12-2-19
 Last editor: MG*/
 
 #include "clock.h"
 using namespace sim_ns;
 
-//TODO: Add method comment block
+
 void clock::add_sec(int num_secs)
 {
     for(int i = 0; i < num_secs; i++)
