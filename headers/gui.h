@@ -1,6 +1,6 @@
 /*Name: gui.h
 Purpose: Definition of SimulationApp class for the GUI
-Last edit: 10-27-19
+Last edit: 12-3-19
 Last editor: AW
 Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-quickstart*/
 
@@ -99,6 +99,8 @@ class SimulationApp
             LPARAM lParam
             );
 
+        void DrawVisionCone(mammal* target, ID2D1SolidColorBrush*);
+
         HWND m_hwnd;
         ID2D1Factory* m_pDirect2dFactory;
         ID2D1HwndRenderTarget* m_pRenderTarget;
@@ -118,6 +120,9 @@ class SimulationApp
         ID2D1SolidColorBrush* m_pRedBrush;
         ID2D1SolidColorBrush* m_pOrangeBrush;
         ID2D1SolidColorBrush* m_pMaroonBrush;
+        static bool debugging_enabled;
         
         simulation sim;
 };
+
+bool SimulationApp::debugging_enabled = false;

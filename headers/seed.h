@@ -1,8 +1,8 @@
 /*
 Name: seed.h
 
-Purpose: Header file for seed pods.
-Last edit: 11-10-2019
+Purpose: Header file for seed pods. 
+Last edit: 12-3-2019
 Last editor: MG
 */
 

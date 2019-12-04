@@ -1,0 +1,161 @@
+=========Plant info=========
+Total number of plants: 18
+Plant 1:
+Max size: 100
+Current size: 100
+Location: 50, 125
+
+Plant 2:
+Max size: 100
+Current size: 100
+Location: 225, 50
+
+Plant 3:
+Max size: 100
+Current size: 100
+Location: 175, 175
+
+Plant 4:
+Max size: 100
+Current size: 100
+Location: 125, 30
+
+Plant 5:
+Max size: 100
+Current size: 100
+Location: 175, 35
+
+Plant 6:
+Max size: 100
+Current size: 100
+Location: 50, 75
+
+Plant 7:
+Max size: 100
+Current size: 100
+Location: 100, 75
+
+Plant 8:
+Max size: 100
+Current size: 100
+Location: 30, 42
+
+Plant 9:
+Max size: 100
+Current size: 100
+Location: 35, 220
+
+Plant 10:
+Max size: 100
+Current size: 100
+Location: 325, 90
+
+Plant 11:
+Max size: 100
+Current size: 100
+Location: 400, 115
+
+Plant 12:
+Max size: 100
+Current size: 100
+Location: 400, 140
+
+Plant 13:
+Max size: 100
+Current size: 100
+Location: 325, 150
+
+Plant 14:
+Max size: 100
+Current size: 100
+Location: 275, 140
+
+Plant 15:
+Max size: 100
+Current size: 100
+Location: 275, 115
+
+Plant 16:
+Max size: 100
+Current size: 100
+Location: 50, 275
+
+Plant 17:
+Max size: 100
+Current size: 100
+Location: 175, 300
+
+Plant 18:
+Max size: 100
+Current size: 100
+Location: 175, 472
+
+=========Grazer info=========
+Total number of grazers: 4
+Grazer 1:
+Energy level required for reproduction: 100
+Location: 320, 140
+Energy: 60
+
+Grazer 2:
+Energy level required for reproduction: 100
+Location: 184, 296
+Energy: 60
+
+Grazer 3:
+Energy level required for reproduction: 100
+Location: 189, 289
+Energy: 60
+
+Grazer 4:
+Energy level required for reproduction: 100
+Location: 319, 140
+Energy: 60
+
+=========Predator info=========
+Total number of predators: 9
+Predator 1:
+Energy level required for reproduction: 500
+Location: 492, 278
+Energy: 95
+
+Predator 2:
+Energy level required for reproduction: 500
+Location: 329, 283
+Energy: 70
+
+Predator 3:
+Energy level required for reproduction: 500
+Location: 255, 380
+Energy: 155
+
+Predator 4:
+Energy level required for reproduction: 500
+Location: 257, 466
+Energy: 94
+
+Predator 5:
+Energy level required for reproduction: 500
+Location: 187, 253
+Energy: 44
+
+Predator 6:
+Energy level required for reproduction: 500
+Location: 297, 219
+Energy: 95
+
+Predator 7:
+Energy level required for reproduction: 500
+Location: 328, 299
+Energy: 95
+
+Predator 8:
+Energy level required for reproduction: 500
+Location: 258, 398
+Energy: 45
+
+Predator 9:
+Energy level required for reproduction: 500
+Location: 140, 433
+Energy: 94
+

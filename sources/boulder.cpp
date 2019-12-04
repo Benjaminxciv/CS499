@@ -1,7 +1,7 @@
 /*
 Name: boulder.cpp
-Purpose: Header file for grazers.
-Last edit: 09-29-2019
+Purpose: STATE OF BOULDERS DEFINED. THEY BOULDER. 
+Last edit: 12-3-19
 Last editor: MG
 */
 

@@ -1,15 +1,15 @@
 <LIFE_SIMULATION>
 	<LAND_BOUNDS>
 		<WIDTH>
-			1000.0
+			500.0
 		</WIDTH>
 		<HEIGHT>
-			750.0
+			500.0
 		</HEIGHT>
 	</LAND_BOUNDS>
 	<PLANTS>
 		<INITIAL_PLANT_COUNT>
-			25
+			19
 		</INITIAL_PLANT_COUNT>
 		<GROWTH_RATE>
 			0.1
@@ -18,10 +18,10 @@
 			100
 		</MAX_SIZE>
 		<MAX_SEED_CAST_DISTANCE>
-			250
+			50
 		</MAX_SEED_CAST_DISTANCE>
 		<MAX_SEED_NUMBER>
-			10
+			7
 		</MAX_SEED_NUMBER>
 		<SEED_VIABILITY>
 			.50
@@ -53,7 +53,7 @@
 				175
 			</X_POS>
 			<Y_POS>
-				275
+				175
 			</Y_POS>
 			<P_DIAMETER>
 				25			
@@ -62,6 +62,149 @@
 		<PLANT>
 			<X_POS>
 				125
+			</X_POS>
+			<Y_POS>
+				30
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				175
+			</X_POS>
+			<Y_POS>
+				35
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				50
+			</X_POS>
+			<Y_POS>
+				75
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				100
+			</X_POS>
+			<Y_POS>
+				75
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				30
+			</X_POS>
+			<Y_POS>
+				42
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				35
+			</X_POS>
+			<Y_POS>
+				220
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				325
+			</X_POS>
+			<Y_POS>
+				90
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				400
+			</X_POS>
+			<Y_POS>
+				115
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				400
+			</X_POS>
+			<Y_POS>
+				140
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				325
+			</X_POS>
+			<Y_POS>
+				150
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				275
+			</X_POS>
+			<Y_POS>
+				140
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				275
+			</X_POS>
+			<Y_POS>
+				115
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				50
+			</X_POS>
+			<Y_POS>
+				275
+			</Y_POS>
+			<P_DIAMETER>
+				25			
+			</P_DIAMETER>			
+		</PLANT>
+		<PLANT>
+			<X_POS>
+				175
 			</X_POS>
 			<Y_POS>
 				300
@@ -75,7 +218,7 @@
 				175
 			</X_POS>
 			<Y_POS>
-				350
+				472
 			</Y_POS>
 			<P_DIAMETER>
 				25			
@@ -83,219 +226,10 @@
 		</PLANT>
 		<PLANT>
 			<X_POS>
-				50
-			</X_POS>
-			<Y_POS>
-				650
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				100
-			</X_POS>
-			<Y_POS>
-				675
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				300
-			</X_POS>
-			<Y_POS>
-				425
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				350
-			</X_POS>
-			<Y_POS>
-				200
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				350
-			</X_POS>
-			<Y_POS>
-				450
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				375
-			</X_POS>
-			<Y_POS>
-				675
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				400
-			</X_POS>
-			<Y_POS>
-				225
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				425
-			</X_POS>
-			<Y_POS>
-				675
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				450
-			</X_POS>
-			<Y_POS>
-				50
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				450
-			</X_POS>
-			<Y_POS>
-				125
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				475
-			</X_POS>
-			<Y_POS>
-				75
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				550
-			</X_POS>
-			<Y_POS>
-				350
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				725
-			</X_POS>
-			<Y_POS>
-				725
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				750
-			</X_POS>
-			<Y_POS>
-				300
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				750
-			</X_POS>
-			<Y_POS>
-				700
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				800
-			</X_POS>
-			<Y_POS>
-				275
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				800
-			</X_POS>
-			<Y_POS>
 				325
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				800
 			</X_POS>
 			<Y_POS>
-				500
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				825
-			</X_POS>
-			<Y_POS>
-				75
-			</Y_POS>
-			<P_DIAMETER>
-				25			
-			</P_DIAMETER>			
-		</PLANT>
-		<PLANT>
-			<X_POS>
-				850
-			</X_POS>
-			<Y_POS>
-				100
+				150
 			</Y_POS>
 			<P_DIAMETER>
 				25			
@@ -304,13 +238,13 @@
 	</PLANTS>
 	<GRAZERS>
 		<INITIAL_GRAZER_COUNT>
-			15
+			7
 		</INITIAL_GRAZER_COUNT>
 		<G_ENERGY_INPUT>
 			5
 		</G_ENERGY_INPUT>
 		<G_ENERGY_OUTPUT>
-			1
+			0
 		</G_ENERGY_OUTPUT>
 		<G_ENERGY_TO_REPRODUCE>
 			100
@@ -323,10 +257,10 @@
 		</G_MAX_SPEED>
 		<GRAZER>
 			<X_POS>
-				60
+				325
 			</X_POS>
 			<Y_POS>
-				135
+				125
 			</Y_POS>
 			<G_ENERGY_LEVEL>
 				75
@@ -334,10 +268,10 @@
 		</GRAZER>
 		<GRAZER>
 			<X_POS>
-				135
+				325
 			</X_POS>
 			<Y_POS>
-				310
+				325
 			</Y_POS>
 			<G_ENERGY_LEVEL>
 				75
@@ -345,10 +279,10 @@
 		</GRAZER>
 		<GRAZER>
 			<X_POS>
-				110
+				400
 			</X_POS>
 			<Y_POS>
-				685
+				375
 			</Y_POS>
 			<G_ENERGY_LEVEL>
 				75
@@ -356,7 +290,7 @@
 		</GRAZER>
 		<GRAZER>
 			<X_POS>
-				185
+				275
 			</X_POS>
 			<Y_POS>
 				285
@@ -367,62 +301,7 @@
 		</GRAZER>
 		<GRAZER>
 			<X_POS>
-				335
-			</X_POS>
-			<Y_POS>
-				185
-			</Y_POS>
-			<G_ENERGY_LEVEL>
-				75
-			</G_ENERGY_LEVEL>
-		</GRAZER>
-		<GRAZER>
-			<X_POS>
-				335
-			</X_POS>
-			<Y_POS>
-				445
-			</Y_POS>
-			<G_ENERGY_LEVEL>
-				75
-			</G_ENERGY_LEVEL>
-		</GRAZER>
-		<GRAZER>
-			<X_POS>
-				360
-			</X_POS>
-			<Y_POS>
-				460
-			</Y_POS>
-			<G_ENERGY_LEVEL>
-				75
-			</G_ENERGY_LEVEL>
-		</GRAZER>
-		<GRAZER>
-			<X_POS>
-				410
-			</X_POS>
-			<Y_POS>
-				235
-			</Y_POS>
-			<G_ENERGY_LEVEL>
-				75
-			</G_ENERGY_LEVEL>
-		</GRAZER>
-		<GRAZER>
-			<X_POS>
-				460
-			</X_POS>
-			<Y_POS>
-				85
-			</Y_POS>
-			<G_ENERGY_LEVEL>
-				75
-			</G_ENERGY_LEVEL>
-		</GRAZER>
-		<GRAZER>
-			<X_POS>
-				560
+				188
 			</X_POS>
 			<Y_POS>
 				335
@@ -433,10 +312,10 @@
 		</GRAZER>
 		<GRAZER>
 			<X_POS>
-				760
+				50
 			</X_POS>
 			<Y_POS>
-				285
+				400
 			</Y_POS>
 			<G_ENERGY_LEVEL>
 				75
@@ -444,43 +323,10 @@
 		</GRAZER>
 		<GRAZER>
 			<X_POS>
-				810
+				190
 			</X_POS>
 			<Y_POS>
-				335
-			</Y_POS>
-			<G_ENERGY_LEVEL>
-				75
-			</G_ENERGY_LEVEL>
-		</GRAZER>
-		<GRAZER>
-			<X_POS>
-				810
-			</X_POS>
-			<Y_POS>
-				510
-			</Y_POS>
-			<G_ENERGY_LEVEL>
-				75
-			</G_ENERGY_LEVEL>
-		</GRAZER>
-		<GRAZER>
-			<X_POS>
-				760
-			</X_POS>
-			<Y_POS>
-				710
-			</Y_POS>
-			<G_ENERGY_LEVEL>
-				75
-			</G_ENERGY_LEVEL>
-		</GRAZER>
-		<GRAZER>
-			<X_POS>
-				860
-			</X_POS>
-			<Y_POS>
-				110
+				300
 			</Y_POS>
 			<G_ENERGY_LEVEL>
 				75
@@ -489,7 +335,7 @@
 	</GRAZERS>
 	<PREDATORS>
 		<INITIAL_PREDATOR_COUNT>
-			5
+			15
 		</INITIAL_PREDATOR_COUNT>
 		<MAX_SPEED_HOD>
 			20.0
@@ -523,7 +369,7 @@
 				275
 			</X_POS>
 			<Y_POS>
-				125
+				255
 			</Y_POS>
 			<P_ENERGY_LEVEL>
 				450
@@ -534,10 +380,10 @@
 		</PREDATOR>
 		<PREDATOR>
 			<X_POS>
-				200
+				270
 			</X_POS>
 			<Y_POS>
-				575
+				275
 			</Y_POS>
 			<P_ENERGY_LEVEL>
 				425
@@ -551,7 +397,7 @@
 				475
 			</X_POS>
 			<Y_POS>
-				400
+				300
 			</Y_POS>
 			<P_ENERGY_LEVEL>
 				475
@@ -562,10 +408,10 @@
 		</PREDATOR>
 		<PREDATOR>
 			<X_POS>
-				775
+				475
 			</X_POS>
 			<Y_POS>
-				225
+				425
 			</Y_POS>
 			<P_ENERGY_LEVEL>
 				450
@@ -576,10 +422,10 @@
 		</PREDATOR>
 		<PREDATOR>
 			<X_POS>
-				825
+				425
 			</X_POS>
 			<Y_POS>
-				600
+				420
 			</Y_POS>
 			<P_ENERGY_LEVEL>
 				475
@@ -588,20 +434,328 @@
 				aa ss ff
 			</GENOTYPE>
 		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				325
+			</X_POS>
+			<Y_POS>
+				420
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				aa SS ff
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				365
+			</X_POS>
+			<Y_POS>
+				420
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				AA Ss ff
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				325
+			</X_POS>
+			<Y_POS>
+				420
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				aa Ss fF
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				175
+			</X_POS>
+			<Y_POS>
+				320
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				Aa Ss Ff
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				350
+			</X_POS>
+			<Y_POS>
+				350
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				Aa Ss FF
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				325
+			</X_POS>
+			<Y_POS>
+				330
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				AA Ss Ff
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				385
+			</X_POS>
+			<Y_POS>
+				300
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				Aa Ss Ff
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				270
+			</X_POS>
+			<Y_POS>
+				420
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				Aa SS Ff
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				280
+			</X_POS>
+			<Y_POS>
+				420
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				aa Ss FF
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				275
+			</X_POS>
+			<Y_POS>
+				440
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				Aa Ss Ff
+			</GENOTYPE>
+		</PREDATOR>
 	</PREDATORS>
 	<OBSTACLES>
 		<INITIAL_OBSTACLE_COUNT>
-			15
+			42
 		</INITIAL_OBSTACLE_COUNT>
 		<OBSTACLE>
 			<X_POS>
-				75
+				250
+			</X_POS>
+			<Y_POS>
+				0
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				50
+			</Y_POS>
+			<O_DIAMETER>
+				150				
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				10
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				100
+			</Y_POS>
+			<O_DIAMETER>
+				150				
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				150
+			</Y_POS>
+			<O_DIAMETER>
+				150				
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				200
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				10
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				20
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				300
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				350
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				10
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				400
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
 			</X_POS>
 			<Y_POS>
 				450
 			</Y_POS>
 			<O_DIAMETER>
-				50			
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				500
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				10
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				0
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				50
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				10
@@ -612,10 +766,10 @@
 				100
 			</X_POS>
 			<Y_POS>
-				50
+				250
 			</Y_POS>
 			<O_DIAMETER>
-				50			
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -626,10 +780,52 @@
 				150
 			</X_POS>
 			<Y_POS>
-				475
+				250
 			</Y_POS>
 			<O_DIAMETER>
-				50			
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				10
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				200
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				300
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -640,27 +836,41 @@
 				350
 			</X_POS>
 			<Y_POS>
-				600
+				250
 			</Y_POS>
 			<O_DIAMETER>
-				50			
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
-				10
+				15
 			</O_HEIGHT>
 		</OBSTACLE>
 		<OBSTACLE>
 			<X_POS>
-				550
+				400
 			</X_POS>
 			<Y_POS>
-				600
+				250
 			</Y_POS>
 			<O_DIAMETER>
-				50			
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
-				20
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				450
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
 			</O_HEIGHT>
 		</OBSTACLE>
 		<OBSTACLE>
@@ -671,7 +881,7 @@
 				250
 			</Y_POS>
 			<O_DIAMETER>
-				75			
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -679,27 +889,13 @@
 		</OBSTACLE>
 		<OBSTACLE>
 			<X_POS>
-				650
+				250
 			</X_POS>
 			<Y_POS>
-				550
+				25
 			</Y_POS>
 			<O_DIAMETER>
-				75			
-			</O_DIAMETER>			
-			<O_HEIGHT>
-				10
-			</O_HEIGHT>
-		</OBSTACLE>
-		<OBSTACLE>
-			<X_POS>
-				775
-			</X_POS>
-			<Y_POS>
-				150
-			</Y_POS>
-			<O_DIAMETER>
-				75			
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -707,13 +903,195 @@
 		</OBSTACLE>
 		<OBSTACLE>
 			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				75
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				125
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				175
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				175
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
 				275
-			</X_POS>
-			<Y_POS>
-				100
 			</Y_POS>
 			<O_DIAMETER>
-				25			
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				325
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				375
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				425
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				250
+			</X_POS>
+			<Y_POS>
+				475
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				25
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				75
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150		
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				125
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				175
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				225
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -727,21 +1105,7 @@
 				250
 			</Y_POS>
 			<O_DIAMETER>
-				25			
-			</O_DIAMETER>			
-			<O_HEIGHT>
-				10
-			</O_HEIGHT>
-		</OBSTACLE>
-		<OBSTACLE>
-			<X_POS>
-				350
-			</X_POS>
-			<Y_POS>
-				375
-			</Y_POS>
-			<O_DIAMETER>
-				25			
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -749,27 +1113,13 @@
 		</OBSTACLE>
 		<OBSTACLE>
 			<X_POS>
-				400
-			</X_POS>
-			<Y_POS>
-				175
-			</Y_POS>
-			<O_DIAMETER>
-				25			
-			</O_DIAMETER>			
-			<O_HEIGHT>
-				10
-			</O_HEIGHT>
-		</OBSTACLE>
-		<OBSTACLE>
-			<X_POS>
-				525
-			</X_POS>
-			<Y_POS>
 				325
+			</X_POS>
+			<Y_POS>
+				250
 			</Y_POS>
 			<O_DIAMETER>
-				25			
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -777,27 +1127,55 @@
 		</OBSTACLE>
 		<OBSTACLE>
 			<X_POS>
-				725
+				375
 			</X_POS>
 			<Y_POS>
-				125
+				250
 			</Y_POS>
 			<O_DIAMETER>
-				25			
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
-				10
+				15
 			</O_HEIGHT>
 		</OBSTACLE>
 		<OBSTACLE>
 			<X_POS>
-				825
+				425
 			</X_POS>
 			<Y_POS>
-				550
+				250
 			</Y_POS>
 			<O_DIAMETER>
-				25			
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				475
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
+			</O_DIAMETER>			
+			<O_HEIGHT>
+				15
+			</O_HEIGHT>
+		</OBSTACLE>
+		<OBSTACLE>
+			<X_POS>
+				490
+			</X_POS>
+			<Y_POS>
+				250
+			</Y_POS>
+			<O_DIAMETER>
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15

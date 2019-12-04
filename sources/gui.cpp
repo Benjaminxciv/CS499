@@ -1,6 +1,6 @@
 /*Name: gui.cpp
 Purpose: Function definitions for SimulationApp class for the GUI
-Last edit: 10-27-19
+Last edit: 12-3-19
 Last editor: AW
 Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-quickstart*/
 
@@ -106,13 +106,28 @@ HRESULT SimulationApp::Initialize()
             this
         );
 
+        HWND c_hWndx0 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Pause Simulation"),
+            WS_CHILD | WS_VISIBLE,
+            1050,
+            10,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X0,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
         HWND c_hWndx1 = CreateWindowExW(
             NULL,
             TEXT("BUTTON"),
             TEXT("Simulation speed x1"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            10,
+            35,
             150,
             25,
             m_hwnd,
@@ -127,7 +142,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("Simulation speed x10"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            35,
+            60,
             150,
             25,
             m_hwnd,
@@ -142,7 +157,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("Simulation speed x50"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            60,
+            85,
             150,
             25,
             m_hwnd,
@@ -157,7 +172,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("Simulation speed x100"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            85,
+            110,
             150,
             25,
             m_hwnd,
@@ -172,7 +187,7 @@ HRESULT SimulationApp::Initialize()
             TEXT("Status Report"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            110,
+            135,
             150,
             25,
             m_hwnd,
@@ -180,10 +195,26 @@ HRESULT SimulationApp::Initialize()
             (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
             NULL
         );
+
+        HWND c_hWndDebugging = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Toggle debugging"),
+            WS_CHILD | WS_VISIBLE,
+            1050,
+            160,
+            150,
+            25,
+            m_hwnd,
+            (HMENU)IDM_DEBUGGING,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
         
         hr = m_hwnd ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
         {
+            SetTimer(m_hwnd, SIM_TIMER_X0, 100, NULL);
             SetTimer(m_hwnd, SIM_TIMER_X1, 1000, NULL); 
             SetTimer(m_hwnd, SIM_TIMER_X10, 100, NULL); 
             SetTimer(m_hwnd, SIM_TIMER_X50, 20, NULL); 
@@ -349,6 +380,9 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             int tick_speed = pSimulationApp->sim.get_tick_speed();
             switch (wParam)
             {
+                case SIM_TIMER_X0:
+                    if(tick_speed == x0){}
+                    break;
                 case SIM_TIMER_X1:
                     if(tick_speed == x1)
                     {
@@ -395,6 +429,10 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             switch (message)
             {
                 case WM_COMMAND:
+                    if(LOWORD(wParam) == IDM_SET_TICK_X0)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x0);
+                    }
                     if(LOWORD(wParam) == IDM_SET_TICK_X1)
                     {
                         pSimulationApp->sim.set_tick_speed(x1);
@@ -410,6 +448,10 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
                     if(LOWORD(wParam) == IDM_SET_TICK_X100)
                     {
                         pSimulationApp->sim.set_tick_speed(x100);
+                    }
+                    if(LOWORD(wParam) == IDM_DEBUGGING)
+                    {
+                        debugging_enabled = !debugging_enabled;
                     }
                     if(LOWORD(wParam) == IDM_STATUS_REPORT)
                     {
@@ -542,15 +584,58 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
     return result;
 }
 
+void SimulationApp::DrawVisionCone(mammal* target, ID2D1SolidColorBrush* brush)
+{
+    vector<point> vision_cone = target->get_vision_points();
+    ID2D1PathGeometry* cone;
+    HRESULT hr = m_pDirect2dFactory->CreatePathGeometry(&cone);
+    
+    if(SUCCEEDED(hr))
+    {
+        ID2D1GeometrySink *pSink = NULL;
+
+        hr = cone->Open(&pSink);
+        if (SUCCEEDED(hr))
+        {
+            pSink->SetFillMode(D2D1_FILL_MODE_WINDING);
+
+            pSink->BeginFigure(
+                D2D1::Point2F(vision_cone[0].x_loc, sim.get_world_height() - vision_cone[0].y_loc),
+                D2D1_FIGURE_BEGIN_FILLED
+                );
+            D2D1_POINT_2F points[] = {
+                D2D1::Point2F(vision_cone[1].x_loc, sim.get_world_height() - vision_cone[1].y_loc),
+                D2D1::Point2F(vision_cone[2].x_loc, sim.get_world_height() - vision_cone[2].y_loc),
+                };
+            pSink->AddLines(points, ARRAYSIZE(points));
+            pSink->EndFigure(D2D1_FIGURE_END_CLOSED);
+        }
+        hr = pSink->Close();
+
+        SafeRelease(&pSink);
+        m_pRenderTarget->DrawGeometry(cone, brush, 2.f);
+    }
+}
+
 void SimulationApp::DrawObject(environment_object* target)
 {
     HRESULT hr = S_OK;
+
+    int world_width = sim.get_world_width();
+    int world_height = sim.get_world_height();
     point target_loc = target->get_loc();
-    D2D1_RECT_F rectangle2 = D2D1::RectF(
+    //Offset location by 5 because the grid & objects go off-screen otherwise
+    D2D1_RECT_F e_obj_rect = D2D1::RectF(
+        (target_loc.x_loc+5)-4.5f,
+        (world_height - target_loc.y_loc+5)-4.5f,
+        (target_loc.x_loc+5)+4.5f,
+        (world_height - target_loc.y_loc+5)+4.5f
+    );
+    D2D1_RECT_F e_obj_outline_rect = D2D1::RectF(
         (target_loc.x_loc+5)-5.0f,
-        (target_loc.y_loc+5)-5.0f,
+        (world_height - target_loc.y_loc+5)-5.0f,
         (target_loc.x_loc+5)+5.0f,
-        (target_loc.y_loc+5)+5.0f
+        (world_height - target_loc.y_loc+5)+5.0f
     );
 
     // Draw the outline of a rectangle.
@@ -578,6 +663,10 @@ void SimulationApp::DrawObject(environment_object* target)
     else if(target_type == "predator")
     {
         predator* p_target = reinterpret_cast<predator*>(target);
+        if(debugging_enabled)
+        {
+            DrawVisionCone(p_target, m_pRedBrush);
+        }
         if(p_target->ready_to_reproduce())
         {
             brush = m_pRedBrush;
@@ -594,6 +683,10 @@ void SimulationApp::DrawObject(environment_object* target)
     else if(target_type == "grazer")
     {
         grazer* g_target = reinterpret_cast<grazer*>(target);
+        if(debugging_enabled)
+        {
+            DrawVisionCone(g_target, m_pNavyBrush);
+        }
         if(g_target->ready_to_reproduce())
         {
             brush = m_pCyanBrush;
@@ -606,8 +699,17 @@ void SimulationApp::DrawObject(environment_object* target)
         {
             brush = m_pTealBrush;
         }
+        if(g_target->found_food())
+        {
+            m_pRenderTarget->DrawRectangle(&e_obj_outline_rect, m_pGreenBrush, 2.0);
+        }
+        if(g_target->found_danger())
+        {
+            m_pRenderTarget->DrawRectangle(&e_obj_outline_rect, m_pRedBrush, 2.0);
+        }
     }
-    m_pRenderTarget->FillRectangle(&rectangle2, brush);
+
+    m_pRenderTarget->FillRectangle(&e_obj_rect, brush);
 }
 
 HRESULT SimulationApp::OnRender()

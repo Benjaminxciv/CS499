@@ -1,7 +1,7 @@
 /*
 Name: leaf.h
 Purpose: Class containing definitions for leaf environment_object.
-Last edit: 11-12-2019
+Last edit: 12-3-2019
 Last editor: MG
 */
 

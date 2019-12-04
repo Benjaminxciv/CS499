@@ -1,7 +1,7 @@
 
 /*Name: environment_object.cpp
 Purpose: Defines the basic object for the simulation, which holds any shared attributes for all objects
-Last edit: 11-12-19
+Last edit: 12-3-19
 Last editor: MG*/
 
 #include "environment_object.h"

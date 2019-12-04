@@ -1,7 +1,7 @@
 /*
 Name: environment_object.h
-Purpose: Header file for environment_object. 
-Last edit: 11-12-2019
+Purpose: Header file for environment_objects and point. Point represents the x,y location on the simulation grid. 
+Last edit: 12-3-19
 Last editor: MG
 */
 
@@ -14,13 +14,46 @@ Last editor: MG
 
 struct point
 {
-    int x_loc;
-    int y_loc;
-    point() {}
-    point(int x, int y) : x_loc(x), y_loc(y) {}
+    double x_loc;
+    double y_loc;
+    double origin_x_loc;
+    double origin_y_loc;
+    point() { }
+    point(double x, double y) : x_loc(x), y_loc(y) {origin_x_loc = -1; origin_y_loc = -1;}
+    int distance(const point& p1, point p2) const
+    {
+        return sqrt(pow((p2.x_loc - p1.x_loc), 2) + pow((p2.y_loc - p1.y_loc), 2));
+    }
     bool operator==(const point& p1)
     {
         return (x_loc == p1.x_loc && y_loc == p1.y_loc);
+    }
+    bool operator==(const point& p1) const
+    {
+        return (x_loc == p1.x_loc && y_loc == p1.y_loc);
+    }
+    bool operator<(const point& p1) const
+    {
+        point origin;
+        if(origin_x_loc != -1)
+        {
+            origin = point(origin_x_loc, origin_y_loc);
+        }
+        else
+        {
+            origin = point(0,0);
+        }
+        point curr(x_loc, y_loc);
+        const point& p_curr = curr;
+        return distance(curr, origin) < distance(p1, origin);
+    }
+    double operator*(const point& p1) const
+    {
+        return ((x_loc * p1.x_loc) + (y_loc * p1.y_loc));
+    }
+    point operator-(const point& p1) const
+    {
+        return point((x_loc - p1.x_loc), (y_loc - p1.y_loc));
     }
 };
 

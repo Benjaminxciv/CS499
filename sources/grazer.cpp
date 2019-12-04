@@ -1,20 +1,25 @@
 /*
 Name: grazer.cpp
 Purpose: Grazer's class that defines their EU consumption and reproduction information.
-Last edit: 11-18-2019
+Last edit: 12-3-19
 Last editor: BP
 */
 #include "grazer.h"
+#include "geometry.h"
 
 grazer::grazer(point init_loc, int init_e, int e_input, int e_output, int e_reprod_min, double m_spd, double maintain_spd) :
     energy_input(e_input),
     mammal(init_loc, init_e, e_output, e_reprod_min, m_spd, maintain_spd)
 {
-    this->danger                    = false;
-    this->food_available            = false;
-    this->retained_movement_time    = false;
-    this->retained_eat_time         = false;
-    this->retained_gain_energy_time = false;
+    retained_movement_time = false;
+    retained_eat_time = false;
+    retained_danger_time = false;
+    retained_gain_energy_time = false;
+    slowed = false;
+    food_in_sight = false;
+    move_count = 0;
+    danger_in_sight = false;
+    banked_cells_to_eat = 0;
 }
 
 grazer::~grazer()
@@ -46,249 +51,213 @@ Trace: Traces to Epic 3, Acceptance Criteria 2
 Parameters: N/A
 BP 11/18/19
 */
-void grazer::eat()
+bool grazer::eat(point food)
 {
-     if(current_time == eat_time)
-     {
-        reset_eat_time();
-        //move: this is based on eating all plants in 5du not the grazers sight
-     }
-    
-    if(current_time == gain_energy_time)
+    sim_message& message = sim_message::get_instance();
+    int distance = location.distance(location, food);
+    if(distance <= 5)
     {
-        this->energy += energy_input;
-        reset_gain_energy_time();
-        //call for deletion of leaf
+        banked_cells_to_eat += 0.073;
+        retained_movement_time = false;
+        curr_speed = init_speed;
+        if(banked_cells_to_eat >= 1)
+        {
+            message.eat_organism(food);
+            banked_cells_to_eat--;
+        }
+        if(!retained_eat_time)
+        {
+            message.get_future_time(0,10);
+            eat_time = message.get_time_info();
+            retained_eat_time = true;
+        }
+        if(!retained_gain_energy_time)
+        {
+            message.get_future_time(0,1);
+            gain_energy_time = message.get_time_info();
+            retained_gain_energy_time = true;
+        }
+        if(current_time >= eat_time)
+        {
+            retained_eat_time = false;
+            retained_gain_energy_time = false;
+            return false;
+        }
+        if(current_time >= gain_energy_time)
+        {
+            energy += energy_input;
+            retained_gain_energy_time = false;
+        }
+        return true;
     }
+    else
+    {
+        banked_cells_to_eat = 0;
+        dir = find_direction(food);
+        return false;
+    }
+    banked_cells_to_eat = 0;
+    return false;
 }
 
 void grazer::act()
 {
+    map<point, string> things_in_sight = sight(150);
+    point danger(-1, -1);
+    point food(-1, -1);
+
+    vector<point> boulder_locs;
+
+    for (auto const& x : things_in_sight)
+    {
+        if(!restrict_sight_boulder(boulder_locs, x.first))
+        {
+            continue;
+        }
+        if(x.second == "boulder")
+        {
+            boulder_locs.push_back(x.first);
+        }
+        else if(x.second == "predator" && x.first.distance(x.first, location) <= 25)
+        {
+            danger = x.first;
+            break;
+        }
+        else if((x.second == "plant" || x.second == "leaf") && !retained_eat_time)
+        {
+            if(food.x_loc == -1)
+            {
+                food = x.first;
+            }
+            if(location.distance(location, x.first) < location.distance(location, food))
+            {
+                food = x.first;
+            }
+        }
+    }
+
     sim_message& message = sim_message::get_instance();
     message.get_current_time();
     current_time = message.get_time_info();
 
-    if(this->danger)
+    if(danger.x_loc != -1)
     {
-        reset_eat_time();
-        reset_gain_energy_time();
-        //request movement : if true increment number of moves
-        if(!retained_movement_time)
+        danger_in_sight = true;
+        retained_eat_time = false;
+        retained_gain_energy_time = false;
+        if(!retained_danger_time)
         {
-            start_movement_time();
+            retained_danger_time = true;
+            //need to look at this amount of time
+            message.get_future_time(0, 7, 0);
+            danger_time = message.get_time_info();
         }
-        
-        if(current_time == movement_time)
-        {
-            //check behind
-            this->current_speed *=.75;
-            reset_movement_time(); 
-        } 
-    } 
-    else if(this->food_available)
-    {
-        reset_movement_time();
-        this->reset_speed();
-        if(!retained_eat_time)
-        {
-            start_eat_time();
-        }
-       
-        if(!retained_gain_energy_time)
-        {
-            start_gain_energy_time();
-        }
-        eat();
+        //run away from danger
+        dir = invert_dir();
     }
-    else 
+    else if(retained_danger_time)
     {
-        /*reset_eat_time();
-        reset_gain_energy_time();
-        //request movement : if true increment number of moves
-        //move(up, 1);
-        
-        if(!retained_movement_time)
+        if(danger_time >= current_time)
         {
-            start_movement_time();
-        }   
-
-        if(this->energy <= 0)
-        {
-            sim_message& message = sim_message::get_instance();
-            message.die(this);
+            //stop & look behind
+            dir = invert_dir();
+            retained_movement_time = false;
+            retained_danger_time = false;
+            slowed = false;
+            curr_speed = init_speed;
+            return;
         }
-        else if(ready_to_reproduce())
+    }
+    else if(retained_eat_time)
+    {
+        danger_in_sight = false;
+        map<point, string> things_in_smell = smell(5);
+        for (auto const& x : things_in_sight)
         {
-            sim_message& message = sim_message::get_instance();
-            if(message.request_reproduce(location, this))
+            if(x.second == "plant" || x.second == "leaf") 
             {
-                energy /= 2;
+                if(food.x_loc == -1)
+                {
+                    food = x.first;
+                }
+                if(location.distance(location, x.first) < location.distance(location, food))
+                {
+                    food = x.first;
+                }
             }
         }
-        // else
-        // {
-        //     if(move(up, 1))
-        //     {
-
-        //     }
-        // }
-    */
+        if(food.x_loc != -1)
+        {
+            food_in_sight = true;
+            if(eat(food))
+            {
+                return;
+            }
+        }
     }
-    /*if (movement_timer.time_min == current_time.time_min)
+    else if(food.x_loc != -1)
     {
-        this->curr_speed *= .75;       
+        danger_in_sight = false;
+        food_in_sight = true;
+        if(eat(food))
+        {
+            return;
+        }
+    }
+    else
+    {
+        danger_in_sight = false;
+        food_in_sight = false;
+    }
+    
+    if(ready_to_reproduce())
+    {
+        if(message.request_reproduce(location, this))
+        {
+            energy /= 2;
+        }
     }
 
-    this->set_speed(this->curr_speed);*/
-    move();
-}
-
-
-/*
-Name: check_energy()
-Purpose: Add function that ensures after the grazer's energy unit drops below the defined level, 
-therefore the grazer cannot move more than 10 Distance Unit.
-Trace: Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-Returns: N/A
-*/
-void grazer::check_energy()
-{
-    if(this->energy < 25)
+    if(!retained_movement_time)
     {
-        this->move_count++;
+        message.get_future_time(0, maintain_speed, 0);
+        movement_time = message.get_time_info();
+        retained_movement_time = true;
+    }
+    else
+    {
+        if(!slowed && current_time >= movement_time)
+        {
+            current_speed *= .75;
+            slowed = true;
+        }
+    }
+    banked_moves += float(current_speed/60);
+    int num_moves = move();
+    if(energy < 25)
+    {
+        move_count += num_moves;
+        if(move_count >= 10)
+        {
+            message.die(this);
+        }
     }
     else
     {
         move_count = 0;
     }
-
-    if(this->move_count > 10)
+    if(energy <= 0)
     {
-        //message.die(this);
+        message.die(this);
     }
 }
 
-/*Name: reset_eat_timer()
-Purpose: reset eat_timer member variable to zero
-Parameters: N/A
-Traces to Epic 3, Acceptance Criteria 2
-BP 11/18/19
-*/
-void grazer::reset_eat_time()
+bool grazer::found_food()
 {
-    eat_time = {0,0,0};
-    retained_eat_time = false;
+    return food_in_sight;
 }
 
-/*Name: reset_movement_time()
-Purpose: resets time_container movement_time min, secs, & hours = 0 
-Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-BP 11/18/19
-*/
-void grazer::reset_movement_time()
+bool grazer::found_danger()
 {
-    movement_time = {0,0,0};
-    retained_movement_time = false;
-}
-
-/*Name: reset_gain_energy_time()
-Purpose: resets time_container gain_energy_time min, secs, & hours = 0 
-Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-BP 11/18/19
-*/
-void grazer::reset_gain_energy_time()
-{
-    gain_energy_time = {0,0,0};
-    retained_gain_energy_time = false;
-}
-
-/*Name: reset_movement_time()
-Purpose: resets time_container movement_time min, secs, & hours = 0 
-Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-BP 11/18/19
-*/
-void grazer::start_movement_time()
-{
-    sim_message& message = sim_message::get_instance();
-    message.get_future_time(0,this->maintain_speed);
-    message.process_message();
-    movement_time = message.get_time_info();
-    retained_movement_time = true;
-}
-
-/*Name: start_eat_time()
-Purpose: Sets eat_time to a future time_container 10 minutes from current_time.
-void grazer::reset_gain_energy_time()
-{
-    gain_energy_time = {0,0,0};
-    retained_gain_energy_time = false;
-}
-
-/*Name: start_movement_time()
-Purpose: Sets movement_time to a future time_container. The future time created uses
-            the data file defined maintain_speed
-Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-BP 11/18/19
-*/
-void grazer::start_eat_time()
-{
-    sim_message& message = sim_message::get_instance();
-    message.get_future_time(0,this->maintain_speed);
-    message.process_message();
-    movement_time = message.get_time_info();
-    retained_movement_time = true;
-}
-
-/*Name: start_energy_time()
-Purpose: Sets energy_time to a future time_container 1 minute from current_time.
-Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-BP 11/18/19
-*/
-void grazer::start_gain_energy_time()
-{
-    sim_message& message = sim_message::get_instance();
-    message.get_future_time(0,1);
-    message.process_message();
-    gain_energy_time = message.get_time_info();
-    retained_gain_energy_time = true;
-}
-
-/*
-Name: sight_on_plant()
-Purpose: Add aspect to Grazer's class that the grazer's can see a plant within 150DU.
-Trace: Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-Returns: N/A
-*/
-
-void grazer::sight_on_plant()
-{
-    //get_cell() get all the cells within 150du
-    //
-}
-
-/*
-Name: sight_on_predator()
-Purpose: Add aspect of Grazer's class that the grazer can see predators within 25 DU.
-Trace: Traces to Epic 3, Acceptance Criteria 2
-Parameters: N/A
-Returns: N/A
-*/
-
-void grazer::sight_on_predator()
-{
-    //if withing 25 du 
-    //get_cell()
-    //danger = true
-}
-
-void grazer::reset_speed()
-{
-    
+    return danger_in_sight;
 }
