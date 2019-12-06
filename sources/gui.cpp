@@ -113,7 +113,7 @@ HRESULT SimulationApp::Initialize()
             WS_CHILD | WS_VISIBLE,
             1050,
             10,
-            150,
+            170,
             25,
             m_hwnd,
             (HMENU)IDM_SET_TICK_X0,
@@ -128,7 +128,7 @@ HRESULT SimulationApp::Initialize()
             WS_CHILD | WS_VISIBLE,
             1050,
             35,
-            150,
+            170,
             25,
             m_hwnd,
             (HMENU)IDM_SET_TICK_X1,
@@ -143,7 +143,7 @@ HRESULT SimulationApp::Initialize()
             WS_CHILD | WS_VISIBLE,
             1050,
             60,
-            150,
+            170,
             25,
             m_hwnd,
             (HMENU)IDM_SET_TICK_X10,
@@ -158,7 +158,7 @@ HRESULT SimulationApp::Initialize()
             WS_CHILD | WS_VISIBLE,
             1050,
             85,
-            150,
+            170,
             25,
             m_hwnd,
             (HMENU)IDM_SET_TICK_X50,
@@ -173,10 +173,25 @@ HRESULT SimulationApp::Initialize()
             WS_CHILD | WS_VISIBLE,
             1050,
             110,
-            150,
+            170,
             25,
             m_hwnd,
             (HMENU)IDM_SET_TICK_X100,
+            (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
+            NULL
+        );
+
+        HWND c_hWndx1000 = CreateWindowExW(
+            NULL,
+            TEXT("BUTTON"),
+            TEXT("Simulation speed x1000"),
+            WS_CHILD | WS_VISIBLE,
+            1050,
+            135,
+            170,
+            25,
+            m_hwnd,
+            (HMENU)IDM_SET_TICK_X1000,
             (HINSTANCE)GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE),
             NULL
         );
@@ -187,8 +202,8 @@ HRESULT SimulationApp::Initialize()
             TEXT("Status Report"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            135,
-            150,
+            160,
+            170,
             25,
             m_hwnd,
             (HMENU)IDM_STATUS_REPORT,
@@ -202,8 +217,8 @@ HRESULT SimulationApp::Initialize()
             TEXT("Toggle debugging"),
             WS_CHILD | WS_VISIBLE,
             1050,
-            160,
-            150,
+            185,
+            170,
             25,
             m_hwnd,
             (HMENU)IDM_DEBUGGING,
@@ -214,11 +229,6 @@ HRESULT SimulationApp::Initialize()
         hr = m_hwnd ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
         {
-            SetTimer(m_hwnd, SIM_TIMER_X0, 100, NULL);
-            SetTimer(m_hwnd, SIM_TIMER_X1, 1000, NULL); 
-            SetTimer(m_hwnd, SIM_TIMER_X10, 100, NULL); 
-            SetTimer(m_hwnd, SIM_TIMER_X50, 20, NULL); 
-            SetTimer(m_hwnd, SIM_TIMER_X100, 10, NULL); 
             ShowWindow(m_hwnd, SW_SHOWNORMAL);
             UpdateWindow(m_hwnd);
         }
@@ -367,52 +377,31 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
             );
         result = 1;
     }
-    else if (message == WM_TIMER)
+    else if(message == WM_PAINT)
     {
+        PAINTSTRUCT ps;
+        HDC h_device_context = BeginPaint(hwnd, &ps);
         SimulationApp *pSimulationApp = reinterpret_cast<SimulationApp*>(static_cast<LONG_PTR>(
             ::GetWindowLongPtrW(
                 hwnd,
                 GWLP_USERDATA
                 )));
-
-        if (pSimulationApp)
+        int tick_speed = pSimulationApp->sim.get_tick_speed();
+        chrono::high_resolution_clock::time_point timer_comp = chrono::high_resolution_clock::now();
+        auto time_span = chrono::duration_cast<chrono::milliseconds>(timer_comp - timer_base);
+        if(tick_speed == 0)
         {
-            int tick_speed = pSimulationApp->sim.get_tick_speed();
-            switch (wParam)
-            {
-                case SIM_TIMER_X0:
-                    if(tick_speed == x0){}
-                    break;
-                case SIM_TIMER_X1:
-                    if(tick_speed == x1)
-                    {
-                        pSimulationApp->OnRender();
-                        ValidateRect(hwnd, NULL);
-                    }
-                    break;
-                case SIM_TIMER_X10:
-                    if(tick_speed == x10)
-                    {
-                        pSimulationApp->OnRender();
-                        ValidateRect(hwnd, NULL);
-                    }
-                    break;
-                case SIM_TIMER_X50:
-                    if(tick_speed == x50)
-                    {
-                        pSimulationApp->OnRender();
-                        ValidateRect(hwnd, NULL);
-                    }
-                    break;
-                case SIM_TIMER_X100:
-                    if(tick_speed == x100)
-                    {
-                        pSimulationApp->OnRender();
-                        ValidateRect(hwnd, NULL);
-                    }
-                    break;
-            }
+            InvalidateRect(hwnd, NULL, false);
+            EndPaint(hwnd, &ps);
+            return result;
         }
+        if(time_span.count() >= (double)(1000/tick_speed))
+        {
+            pSimulationApp->OnRender();
+            timer_base = chrono::high_resolution_clock::now();
+        }
+        InvalidateRect(hwnd, NULL, false);
+        EndPaint(hwnd, &ps);
     }
     else
     {
@@ -433,27 +422,31 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
                     {
                         pSimulationApp->sim.set_tick_speed(x0);
                     }
-                    if(LOWORD(wParam) == IDM_SET_TICK_X1)
+                    else if(LOWORD(wParam) == IDM_SET_TICK_X1)
                     {
                         pSimulationApp->sim.set_tick_speed(x1);
                     }
-                    if(LOWORD(wParam) == IDM_SET_TICK_X10)
+                    else if(LOWORD(wParam) == IDM_SET_TICK_X10)
                     {
                         pSimulationApp->sim.set_tick_speed(x10);
                     }
-                    if(LOWORD(wParam) == IDM_SET_TICK_X50)
+                    else if(LOWORD(wParam) == IDM_SET_TICK_X50)
                     {
                         pSimulationApp->sim.set_tick_speed(x50);
                     }
-                    if(LOWORD(wParam) == IDM_SET_TICK_X100)
+                    else if(LOWORD(wParam) == IDM_SET_TICK_X100)
                     {
                         pSimulationApp->sim.set_tick_speed(x100);
                     }
-                    if(LOWORD(wParam) == IDM_DEBUGGING)
+                    else if(LOWORD(wParam) == IDM_SET_TICK_X100)
+                    {
+                        pSimulationApp->sim.set_tick_speed(x1000);
+                    }
+                    else if(LOWORD(wParam) == IDM_DEBUGGING)
                     {
                         debugging_enabled = !debugging_enabled;
                     }
-                    if(LOWORD(wParam) == IDM_STATUS_REPORT)
+                    else if(LOWORD(wParam) == IDM_STATUS_REPORT)
                     {
                         time_container curr_time = pSimulationApp->sim.get_simulation_time();
 

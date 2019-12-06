@@ -14,6 +14,7 @@ Note: This is based on a Direct2D tutorial from Microsoft: https://docs.microsof
 #include <wchar.h>
 #include <math.h>
 #include <fstream>
+#include <chrono>
 
 #include <d2d1.h>
 #include <d2d1helper.h>
@@ -123,6 +124,9 @@ class SimulationApp
         static bool debugging_enabled;
         
         simulation sim;
+
+        static chrono::high_resolution_clock::time_point timer_base;
 };
 
 bool SimulationApp::debugging_enabled = false;
+chrono::high_resolution_clock::time_point SimulationApp::timer_base = chrono::high_resolution_clock::now();
