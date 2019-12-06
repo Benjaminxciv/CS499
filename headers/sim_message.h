@@ -33,7 +33,6 @@ class sim_message
         //things returned from simulation:
         std::string simulation_response;
         map<point, std::string> multiple_responses;
-        map<point, int> cell_ids;
         int energy_from_organism;
         time_container time_info;
         simulation* sim;
@@ -43,13 +42,13 @@ class sim_message
         int parent;
         sim_message();
         ~sim_message();
+        friend class simulation;
     public:
         static sim_message& get_instance(bool reset = true);
         void set_sim(simulation*);
         bool process_message();
         std::string get_action_requested();
         void set_simulation_response(std::string);
-        void add_multiple_response(point, std::string);
         std::string get_simulation_response();
         map<point, std::string> get_multiple_responses();
         void set_organism_energy(int);
@@ -87,8 +86,6 @@ class sim_message
         vector<int> get_baby_list();
         int get_parent();
         environment_object* get_garbage();
-        map<point, int> get_cell_ids();
-        void add_cell_id(point, int);
 };
 
 

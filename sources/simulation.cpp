@@ -1002,15 +1002,13 @@ bool simulation::process_sim_message()
 				
 				if(sim_ns::point_in_triangle_petty(p1, p2, p3, p))
 				{
-					message.add_multiple_response(p, thing_in_cell->get_type());
-					message.add_cell_id(p, thing_in_cell->get_id());
+					message.multiple_responses[p] = thing_in_cell->get_type();
 				}
 				else if(p4.x_loc != -1)
 				{
 					if(sim_ns::point_in_triangle_petty(p4, p5, p6, p))
 					{
-						message.add_multiple_response(p, thing_in_cell->get_type());
-						message.add_cell_id(p, thing_in_cell->get_id());
+						message.multiple_responses[p] = thing_in_cell->get_type();
 					}
 				}
 			}

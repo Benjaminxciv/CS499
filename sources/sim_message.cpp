@@ -61,11 +61,6 @@ void sim_message::set_simulation_response(std::string sim_response)
     simulation_response = sim_response;
 }
 
-void sim_message::add_multiple_response(point pt, std::string sim_response)
-{
-    multiple_responses[pt] = sim_response;
-}
-
 std::string sim_message::get_simulation_response()
 {
     return simulation_response;
@@ -298,14 +293,4 @@ vector<int> sim_message::get_baby_list()
 int sim_message::get_parent()
 {
     return parent;
-}
-
-map<point, int> sim_message::get_cell_ids()
-{
-    return cell_ids;
-}
-
-void sim_message::add_cell_id(point cell_pt, int id)
-{
-    cell_ids.insert(make_pair(cell_pt, id));
 }

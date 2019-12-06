@@ -741,7 +741,7 @@ HRESULT SimulationApp::OnRender()
         auto start = std::chrono::high_resolution_clock::now();
         sim.iterate_cells();
         auto stop = std::chrono::high_resolution_clock::now();
-        auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
         start = std::chrono::high_resolution_clock::now();
         vector<environment_object*> cells = sim.get_created_objects();
@@ -751,14 +751,16 @@ HRESULT SimulationApp::OnRender()
             DrawObject(*cell);
         }
         stop = std::chrono::high_resolution_clock::now();
-        auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
         ofstream timings;
         timings.open("timings.txt", std::ios_base::app);
+        timings << "Iterate cells: ";
         timings << duration1.count();
-        timings << "\n";
+        timings << "ms\n";
+        timings << "Draw cells: ";
         timings << duration2.count();
-        timings << "\n\n";
+        timings << "ms\n\n";
         timings.close();
 
         hr = m_pRenderTarget->EndDraw();
