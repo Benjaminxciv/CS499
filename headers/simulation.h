@@ -51,7 +51,6 @@ class simulation
         void run_sim();
         void set_tick_speed(int);
         int get_tick_speed();
-        void increase_tick_speed();
         void iterate_cells();
         vector<environment_object*> get_created_objects();
         bool create_boulder(point, int, int);

@@ -438,7 +438,7 @@ LRESULT CALLBACK SimulationApp::WndProc(HWND hwnd, UINT message, WPARAM wParam, 
                     {
                         pSimulationApp->sim.set_tick_speed(x100);
                     }
-                    else if(LOWORD(wParam) == IDM_SET_TICK_X100)
+                    else if(LOWORD(wParam) == IDM_SET_TICK_X1000)
                     {
                         pSimulationApp->sim.set_tick_speed(x1000);
                     }
@@ -738,28 +738,28 @@ HRESULT SimulationApp::OnRender()
                 0.5f
             );
         }
-        //auto start = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         sim.iterate_cells();
-        //auto stop = std::chrono::high_resolution_clock::now();
-        //auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
-        //start = std::chrono::high_resolution_clock::now();
+        start = std::chrono::high_resolution_clock::now();
         vector<environment_object*> cells = sim.get_created_objects();
         vector<environment_object*>::iterator cell;
         for(cell = cells.begin(); cell != cells.end(); cell++)
         {
             DrawObject(*cell);
         }
-        //stop = std::chrono::high_resolution_clock::now();
-        //auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        stop = std::chrono::high_resolution_clock::now();
+        auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
-        /*ofstream timings;
+        ofstream timings;
         timings.open("timings.txt", std::ios_base::app);
         timings << duration1.count();
         timings << "\n";
         timings << duration2.count();
         timings << "\n\n";
-        timings.close();*/
+        timings.close();
 
         hr = m_pRenderTarget->EndDraw();
     }

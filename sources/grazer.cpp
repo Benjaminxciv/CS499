@@ -172,7 +172,7 @@ void grazer::act()
     {
         danger_in_sight = false;
         map<point, string> things_in_smell = smell(5);
-        for (auto const& x : things_in_sight)
+        for (auto const& x : things_in_smell)
         {
             if(x.second == "plant" || x.second == "leaf") 
             {

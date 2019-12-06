@@ -55,9 +55,6 @@ time_container simulation::get_simulation_time()
 	return this->simulation_clock->get_time();
 }
 
-
-
-
 /*Name: set_tick_speed
 Purpose: Set the refresh speed of the simulation
 Trace: Epic 1 Acceptance Criteria 3
@@ -75,27 +72,6 @@ int simulation::get_tick_speed()
 	return tick_speed;
 }
 
-void simulation::increase_tick_speed()
-{
-	switch(this->tick_speed)
-	{
-		case x1:
-			this->set_tick_speed(1000 / x10);
-			break;
-		case x10:
-			this->set_tick_speed(1000 / x50);
-			break;
-		case x50:
-			this->set_tick_speed(1000 / x100);
-			break;
-		case x100:
-			this->set_tick_speed(1000 / x1);
-			break;
-		default:
-			break;
-	}
-}
-
 //Put test code in here
 void simulation::iterate_cells()
 {
@@ -107,7 +83,7 @@ void simulation::iterate_cells()
 		std::string cell_type = cell->get_type();
 		if(cell_type != "boulder" && cell_type != "leaf" && !cell->is_garbage())
 		{
-			cell->act();;
+			cell->act();
 		}
 		environment_object* garbage = message.get_garbage();
 		if(garbage != nullptr)
@@ -1017,6 +993,10 @@ bool simulation::process_sim_message()
 					continue;
 				}
 				point p = thing_in_cell->get_loc();
+				if(p.distance(p, location[0]) > 200)
+				{
+					continue;
+				}
 				p.origin_x_loc = location[0].x_loc;
 				p.origin_y_loc = location[0].y_loc;
 				
@@ -1027,7 +1007,7 @@ bool simulation::process_sim_message()
 				}
 				else if(p4.x_loc != -1)
 				{
-					if(sim_ns::point_in_triangle_petty(p1, p2, p3, p))
+					if(sim_ns::point_in_triangle_petty(p4, p5, p6, p))
 					{
 						message.add_multiple_response(p, thing_in_cell->get_type());
 						message.add_cell_id(p, thing_in_cell->get_id());
